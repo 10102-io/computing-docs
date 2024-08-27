@@ -1,4 +1,8 @@
-# MVP Build
+---
+hidden: true
+---
+
+# DEV
 
 ## 1. Configure inheritance will type
 
@@ -26,8 +30,6 @@ Specify which assets should be sent to which Ethereum accounts. This option is m
 
 * Same logic in terms of triggers, duration
 * Pre-filled with Ethereum genesis address
-
-
 
 ## Superseding will
 
