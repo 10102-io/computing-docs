@@ -24,4 +24,12 @@ The forwarding will type essentially locks up specific assets that are designed 
 Verify that at minimum, the following types of connections are supported:\
 Metamask, Wallet Connect, Ledger, Trezor, Rainbow, and Coinbase Wallet.
 
+Eventually, all the wallets that are supported on Safe should be supported on 10102's app.&#x20;
+
 #### ENS all around compatibility
+
+Make sure the Ethereum addresses are displayed by their assigned ENS if applicable, in all areas of the dApp.
+
+#### Network switch capability
+
+Allow the selection of main or test networks (e.g Sepolia) within the dApp, so that users can test the concept before connecting their real wallets. Check the Safe app for inspiration here again.&#x20;
