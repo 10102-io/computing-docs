@@ -32,4 +32,12 @@ Make sure the Ethereum addresses are displayed by their assigned ENS if applicab
 
 #### Network switch capability
 
-Allow the selection of main or test networks (e.g Sepolia) within the dApp, so that users can test the concept before connecting their real wallets. Check the Safe app for inspiration here again.&#x20;
+Allow the selection of main or test networks (e.g Sepolia) within the dApp, so that users can test the concept before connecting their real wallets. Check the Safe app for inspiration here again.
+
+Additionally, since users on a test network aim to play around the app swiftly, change the default unit of will activation from "months" to "minutes".
+
+
+
+**QR code optional send**
+
+Possibility for the owner generating a wallet as beneficiary to send the QR code / private key by email.
