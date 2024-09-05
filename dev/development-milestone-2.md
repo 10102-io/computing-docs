@@ -46,10 +46,10 @@ Tag all buttons and pages, analytics vendor will be provided.
 
 Under "Generate a new address", add:&#x20;
 
-"Remember to save the public address and private key. Give them to your beneficiary or keep them in a safe place for later access."&#x20;
+"Remember to save the QR code for private key. Give it to your beneficiary or keep it in a safe place for later access."&#x20;
 
 If the user doesn't click download QR code and proceed to click "Configure will", prompt a modal&#x20;
 
 h1: "Did you forget to download the QR code for private key?"&#x20;
 
-p: "Your beneficiary will need both the public key and private key to access the inheritance once the will is activated."
+p: "Your beneficiary will need the private key to access the inheritance once the will is activated."
