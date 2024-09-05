@@ -12,7 +12,7 @@ There is more immediate work to do following our first milestone, such as using 
 
 The major part of this milestone however is to fully complete the forwarding will type, which is a complete different flow than the inheritance will type.&#x20;
 
-The forwarding will type essentially locks up specific assets that are designed to be sent to pre-defined beneficiaries in the future. The original owner's wallet does not matter in this case, the instructions however have to be more specific, such as which assets to sent, how much, and where. A different flow, for a different need.
+The forwarding will type essentially predetermine allocations of specific assets to be sent to beneficiaries once the will is activated. The original owner's wallet does not matter in this case, the instructions however have to be more specific, such as which assets to sent, how much, and where. A different flow, for a different need.
 
 #### Quick summary on the two different flows
 
@@ -36,8 +36,20 @@ Allow the selection of main or test networks (e.g Sepolia) within the dApp, so t
 
 Additionally, since users on a test network aim to play around the app swiftly, change the default unit of will activation from "months" to "minutes".
 
+**Analytics**
+
+Tag all buttons and pages, analytics vendor will be provided.
 
 
-**QR code optional send**
 
-Possibility for the owner generating a wallet as beneficiary to send the QR code / private key by email.
+**QR code download**
+
+Under "Generate a new address", add:&#x20;
+
+"Remember to save the public address and private key. Give them to your beneficiary or keep them in a safe place for later access."&#x20;
+
+If the user doesn't click download QR code and procee, prompt a modal&#x20;
+
+h1: "Did you forget to download to download the QR code for private key?"&#x20;
+
+p: "Your beneficiary will need both the public key and private key to access the inheritance once the will is activated."
