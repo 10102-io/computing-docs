@@ -1,7 +1,3 @@
----
-hidden: true
----
-
 # DEV
 
 ## 1. Configure inheritance will type

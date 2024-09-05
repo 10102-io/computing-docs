@@ -12,7 +12,7 @@ There is more immediate work to do following our first milestone, such as using 
 
 The major part of this milestone however is to fully complete the forwarding will type, which is a complete different flow than the inheritance will type.&#x20;
 
-The forwarding will type essentially predetermine allocations of specific assets to be sent to beneficiaries once the will is activated. The original owner's wallet does not matter in this case, the instructions however have to be more specific, such as which assets to sent, how much, and where. A different flow, for a different need.
+The forwarding will type essentially predetermine allocations of specific assets to be sent to beneficiaries once the will is activated. The original owner's wallet type which assets are to be inherited  from does not matter in this case (meaning it should work with any type of wallet, not just Safe wallet), the instructions however have to be more specific, such as which assets to sent, how much, and where. A different flow, for a different need.
 
 #### Quick summary on the two different flows
 
@@ -48,7 +48,7 @@ Under "Generate a new address", add:&#x20;
 
 "Remember to save the QR code for private key. Give it to your beneficiary or keep it in a safe place for later access."&#x20;
 
-If the user doesn't click download QR code and proceed to click "Configure will", prompt a modal&#x20;
+If the user doesn't click download QR code and proceed to click "Configure will", prompt a modal with following;
 
 h1: "Did you forget to download the QR code for private key?"&#x20;
 
