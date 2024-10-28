@@ -1,15 +1,13 @@
-# Architecture using Safe wallet
+# Architecture
+
+## 1. Safe SDK
+
+* Safe Module contract executes logic when activating will.
+* SafeGuard contract saves the latest timestamp of the transaction.
 
 ![](<../.gitbook/assets/0 (1).png>)
 
-Link draw.io: [flow.drawio - draw.io (diagrams.net)](https://app.diagrams.net/#G1nT\_94NsXZNhopJYV-lInEC7njBCxfqwg#%7B%22pageId%22%3A%228dWKgsQEE3mBGTgm3GKU%22%7D)
 
-### **Prepare 2 contract:** <a href="#vyh116ocntri" id="vyh116ocntri"></a>
-
-Firstly, we need to prepare 2 smart contract including: Safe module and SafeGuard
-
-1. Safe Module contract is prepared to execute logic when activating will
-2. SafeGuard contract is prepared to save latest timestamp transaction of safe wallet
 
 ### **Create will flow:** <a href="#x66hygxf4de9" id="x66hygxf4de9"></a>
 
@@ -24,3 +22,5 @@ Firstly, we need to prepare 2 smart contract including: Safe module and SafeGuar
 * Step 2:If enough minimum required signatures -> SafeModule check the latest timestamps transaction in SafeGuard
 * Step 3: Safe Module execTransactionFromModule to SafeProxy ( the will contract)
 * Step 4: SafeProxy ( the will contract) transfer money from SafeWallet to SafeModule and divide to beneficiary -> Beneficiary can receive funds
+
+## 2. Subgraph
