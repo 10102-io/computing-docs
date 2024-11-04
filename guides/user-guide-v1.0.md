@@ -1,4 +1,4 @@
-# \[Computing Will] User guide
+# User guide v1.0
 
 USER GUIDE
 
@@ -52,22 +52,22 @@ Access Computing Will by entering [Computing Will (sotatek.works)](https://stg.c
 
 #### **2.1.1 Connect wallet** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
 
-![](../.gitbook/assets/0.png)
+![](<../.gitbook/assets/0 (1).png>)
 
 Precondition:
 
 1. User click Connect Wallet to open Pop-up:
 
-![](../.gitbook/assets/1.png)
+![](<../.gitbook/assets/1 (1).png>)
 
 * If user choose Metamask:
   * If user have not install Metamask before -> The screen will show as below:
 
-![](../.gitbook/assets/2.png)
+![](<../.gitbook/assets/2 (1).png>)
 
 \-> User click “Metamask” to navigate to [https://metamask.io/download/](https://metamask.io/download/)
 
-![](../.gitbook/assets/3.png)
+![](<../.gitbook/assets/3 (1).png>)
 
 * If user have had Metamask before
 
@@ -91,7 +91,7 @@ User will navigate to Connect Wallet screen
 #### **2.2.1 Set up profile** <a href="#j6vcwei9xf5b" id="j6vcwei9xf5b"></a>
 
 1. Click nametag on bottom right of the screen -> Open Manage profile screen\
-   ![](../.gitbook/assets/9.png)
+   ![](<../.gitbook/assets/9 (1).png>)
 
 * In this screen, the user can set up: avatar, name, email. Gender and their country.
 * After set up profile successfully -> Navigate to My Will List screen
@@ -100,7 +100,7 @@ User will navigate to Connect Wallet screen
 
 1. Click nametag on bottom right of the screen -> Open Manage profile screen with initial value:
 
-![](../.gitbook/assets/10.png)\
+![](<../.gitbook/assets/10 (1).png>)\
 
 
 * In this screen, the user can update: avatar, name, email. Gender and their country.
@@ -151,14 +151,14 @@ _My will details screen_
 
 _No data screen_
 
-![](../.gitbook/assets/18.png)
+![](<../.gitbook/assets/18 (1).png>)
 
 * User can view list of Inherited wills they are as beneficiaries and co-signer
 * Click right arrow in right side of the tag to view will details screen
 
 **2.3.2.1 My inherited will details screen**
 
-![](../.gitbook/assets/19.png)
+![](<../.gitbook/assets/19 (1).png>)
 
 * User can click Check will’s status -> Open metamask extension to check time trigger of will
   * If it qualified -> this user pay gas fee to set list of beneficiaries to become signer of this will
@@ -167,18 +167,18 @@ _No data screen_
 
 1. User click con “Create a will” in My will list screen
 2. Open PU: Choose will type\
-   ![](../.gitbook/assets/20.png)
+   ![](<../.gitbook/assets/20 (1).png>)
 3. In this phase, we only do with Inheritance will so Forwarding selection is disable
 4. Click Inheritance -> Click “Create a will” -> Navigate to **Create Will screen**
    1. First, user have to check their Safe Wallet in Checking your Safe Wallet screen
    2. Next, user have to input the address into text box
       1. If user have not Safe account before -> Click [Safe{Wallet} – Welcome](https://app.safe.global/) to create a Safe Account in **Safe Wallet platform**\
-         ![](../.gitbook/assets/21.png)
+         ![](<../.gitbook/assets/21 (1).png>)
       2. If inputted address is a Safe account -> Enable button Next Step and user can click to navigate to **Configure will screen**
 
-![](../.gitbook/assets/22.png)
+![](<../.gitbook/assets/22 (1).png>)
 
-![](../.gitbook/assets/25.png)
+![](<../.gitbook/assets/25 (1).png>)
 
 ### **3. Appendices** <a href="#id-1t3h5sf" id="id-1t3h5sf"></a>
 

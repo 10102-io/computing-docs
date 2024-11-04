@@ -10,9 +10,9 @@ Cryptography is at the core of any decentralized project, and that involves what
 
 Private keys are the keys to open safes of this new world, and therefore they need to be well guarded. In our case, private keys are the ones we need to delicately pass around based on one's predefined rules.
 
-#### [Smart Contract](#user-content-fn-1)[^1]
+#### Smart Contracts
 
-Smart contract are executers of rules contained in a pre-defined contract. There is a smart contract owner initially, one that can be removed. While often regarded as a flaw, being able to change the rules of a smart contract can come really convenient in real life.&#x20;
+Smart contracts are executers of rules contained in a pre-defined contract. There is a smart contract owner initially, one that can be removed. While often regarded as a flaw, being able to change the rules of a smart contract can come really convenient in real life.&#x20;
 
 For example, the owner of a Safe can decide to change some of the approvers if they have been compromised at any moment, and that is not a bug, but a feature. Similarly, one may want to change the specified heritance in the case of any status change (or relationship).
 
@@ -36,19 +36,19 @@ A function defined in the smart contract wallet that will check its activity on 
   * The owner is required to sign a message while connecting to the dApp. That way, simply connecting counts as a sign of life in the heart-bit's detection framework.
 * Frequency of the heart-bit can be set to daily, weekly, or monthly.
 
-#### Conditional actions types
+#### Inheritance will type
 
-**Inheritance.** Provide the pre-designated account(s) with full wallet permissions.
+The inheritance will type essentially provides the pre-designated account(s) with full wallet permissions, adding beneficiaries to a shared wallet once the will is activated. The inheritance will type executes directly on the Safe wallet and infrastructure. We leave the security of the assets to a battle-tested popular wallet.&#x20;
 
-**Forwarding**. Send all the assets to the pre-designated account(s).
+Our module is an added layer to existing multi-sig wallets specialized in adding beneficiaries in flexible and convenient ways, offering the best of both worlds to web3 users.
 
-**Destruction.** Send all the assets to Ethereum genesis address, essentially burning the value in the wallet. Essentially, destruction is a special case of 'Forwarding' will, all assets being forwarded to one specific unusable address.
+#### Forwarding will type
+
+The forwarding will type essentially predetermines allocations of specific assets to be sent to beneficiaries once the will is activated. The instructions here are more specific, such as which assets to sent, how much, and where. A different flow, for a different need. The original owner's wallet type which assets are to be inherited  from can either be a multi-sig wallet such as Safe, or an EOA such as a Ledger, Trezor. or Metamask account.
 
 A combination of any two above can be used in conjunction for more advanced strategies. For example, someone with little kids might want to make sure that until a mature age, a 3rd party can manage some of the funds in case of emergency.&#x20;
 
-
-
-#### Beneficiar(ies) - conditional pre-authorized public key(s)
+#### Beneficiaries, or pre-authorized public key(s)
 
 This part might be one of the most challenging thus far. On one hand, we want to operate via secure and on-chain means only, namely, via Ethereum accounts. On the other hand, the most likely recipients one desires (mainstream) are not familiar enough with the Ethereum rails at this time (nature of any niche emerging technology industry). We discuss here options and ideas to best compromise. Current options from most secure to most friendly:
 
@@ -58,6 +58,3 @@ This part might be one of the most challenging thus far. On one hand, we want to
 * Printing shall be our main communication channel, as this action is performed by the owner only, avoiding any interaction with a 3rd party service provider.
   * Printing of private keys should come with different options covering the various use cases and level of familiarity with crypto.&#x20;
   * An endpoint to immutable interface should be part of the printed paper for the beneficiary to check at any time, from anywhere. The interface will show the time left to future eligibility, if any. \
-
-
-[^1]: 

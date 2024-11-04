@@ -1,13 +1,4 @@
-# Architecture
-
-## 1. Safe SDK
-
-* Safe Module contract executes logic when activating will.
-* SafeGuard contract saves the latest timestamp of the transaction.
-
-![](<../.gitbook/assets/0 (1) (1).png>)
-
-
+# Inheritance will flow
 
 ### **Create will flow** <a href="#x66hygxf4de9" id="x66hygxf4de9"></a>
 
@@ -22,5 +13,3 @@
 * Step 2:If enough minimum required signatures -> SafeModule check the latest timestamps transaction in SafeGuard
 * Step 3: Safe Module execTransactionFromModule to SafeProxy ( the will contract)
 * Step 4: SafeProxy ( the will contract) transfer money from SafeWallet to SafeModule and divide to beneficiary -> Beneficiary can receive funds
-
-## 2. Subgraph
