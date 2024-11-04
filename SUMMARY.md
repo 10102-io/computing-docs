@@ -2,9 +2,10 @@
 
 * [Introduction](README.md)
 * [Summary](summary.md)
-* [Inheritance will flow](inheritance-will-flow.md)
-* [Forwarding will flow](forwarding-will-flow.md)
-* [Core mechanisms](core-mechanisms.md)
+* [Core mechanisms](core-mechanisms/README.md)
+  * [QR code and account generation details](core-mechanisms/qr-code-and-account-generation-details.md)
+* [Inheritance will](inheritance-will.md)
+* [Forwarding will](forwarding-will.md)
 
 ## GUIDES
 

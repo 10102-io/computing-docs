@@ -1,4 +1,12 @@
-# Inheritance will flow
+# Inheritance will
+
+The inheritance will type essentially provides the pre-designated account(s) with full wallet permissions, adding beneficiaries to a shared wallet once the will is activated. The inheritance will type executes directly on the Safe wallet and infrastructure. We leave the security of the assets to a battle-tested popular wallet.&#x20;
+
+Our module is an added layer to existing multi-sig wallets specialized in adding beneficiaries in flexible and convenient ways, offering the best of both worlds to web3 users.
+
+* Beneficiaries can claim any kind of assets, not some specific ones.
+* Beneficiaries can claim the Safe Wallet’s staked assets from other platform/protocol (the assets are not stored directly inside the wallet).
+* Beneficiaries can inherit potential non-assets properties, like the reputation, bonus points/rewards, airdrop, etc.. from some new platform.
 
 ### **Create will flow** <a href="#x66hygxf4de9" id="x66hygxf4de9"></a>
 
