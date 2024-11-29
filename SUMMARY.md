@@ -3,8 +3,8 @@
 * [Introduction](README.md)
 * [Summary](summary.md)
 * [Core mechanisms](core-mechanisms/README.md)
-  * [Architecture](core-mechanisms/architecture.md)
   * [QR code and account generation details](core-mechanisms/qr-code-and-account-generation-details.md)
+* [Architecture](architecture.md)
 * [Inheritance will](inheritance-will.md)
 * [Forwarding will](forwarding-will.md)
 
