@@ -88,7 +88,7 @@ Precondition:
 * **Click Wallet Connect to** -> Show QR code to connect with Wallet connect
 
 **With Ledger wallet**\
-**-> click to open QR:**\
+&#xNAN;**-> click to open QR:**\
 ![](../.gitbook/assets/9.png)![](../.gitbook/assets/10.png)
 
 **With Trezor wallet**
@@ -98,7 +98,7 @@ Precondition:
 * ![](../.gitbook/assets/18.png)Open CoinBase wallet extension and sign to connect wallet
 
 **With Rainbow wallet**\
-**-> Click to open extension as same as Metamask**
+&#xNAN;**-> Click to open extension as same as Metamask**
 
 #### **2.1.2 Log out** <a href="#ovwrfi22xsry" id="ovwrfi22xsry"></a>
 
