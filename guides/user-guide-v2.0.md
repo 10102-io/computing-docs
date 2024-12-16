@@ -66,18 +66,17 @@ Access Computing Will by entering https://computing-will.sotatek.works/
 
 #### **2.1.1 Connect wallet** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
 
-![](../.gitbook/assets/0.png)
+<figure><img src="../.gitbook/assets/Screen Shot 2024-12-16 at 2.20.44 PM.png" alt=""><figcaption></figcaption></figure>
 
-Precondition:
+User click Connect Wallet to open Pop-up:
 
-1. User click Connect Wallet to open Pop-up:
+![](<../.gitbook/assets/Screen Shot 2024-12-16 at 2.22.41 PM.png>)
 
-![](../.gitbook/assets/1.png)
+
 
 **With Metamask**
 
-*
-  * If user have not install Metamask before -> The screen will show as below:
+* If user have not install Metamask before -> The screen will show as below:
 
 ![](../.gitbook/assets/2.png)
 
@@ -89,13 +88,20 @@ Precondition:
 
 **With Ledger wallet**\
 &#xNAN;**-> click to open QR:**\
-![](../.gitbook/assets/9.png)![](../.gitbook/assets/10.png)
+
+
+<figure><img src="../.gitbook/assets/10.png" alt="" width="563"><figcaption></figcaption></figure>
+
+<figure><img src="../.gitbook/assets/9.png" alt="" width="563"><figcaption></figcaption></figure>
 
 **With Trezor wallet**
 
 **With CoinBase Wallet**
 
-* ![](../.gitbook/assets/18.png)Open CoinBase wallet extension and sign to connect wallet
+*
+
+    <figure><img src="../.gitbook/assets/18.png" alt="" width="563"><figcaption></figcaption></figure>
+* Open CoinBase wallet extension and sign to connect wallet
 
 **With Rainbow wallet**\
 &#xNAN;**-> Click to open extension as same as Metamask**
@@ -103,31 +109,33 @@ Precondition:
 #### **2.1.2 Log out** <a href="#ovwrfi22xsry" id="ovwrfi22xsry"></a>
 
 1. To logout -> Click Wallet Address on top right
-2. Click disconnect
+2. Click Disconnect
 
-User will navigate to Connect Wallet screen
+User will be redirected to the Connect Wallet screen
 
-### **2.3 My will list screen** <a href="#id-7z308uhitv5g" id="id-7z308uhitv5g"></a>
+### **2.3 My will(s) list screen** <a href="#id-7z308uhitv5g" id="id-7z308uhitv5g"></a>
 
-#### **2.3.1 My will** <a href="#ec58v7g7qh2m" id="ec58v7g7qh2m"></a>
+#### **2.3.1 My will(s)** <a href="#ec58v7g7qh2m" id="ec58v7g7qh2m"></a>
 
-![](../.gitbook/assets/19.png)
+![](<../.gitbook/assets/Screen Shot 2024-12-16 at 2.25.38 PM.png>)
 
 1. If there is no will before -> Show No data screen as above
-2. If there are wills -> Show will list as below:\
-   ![](../.gitbook/assets/20.png)
+2.  If there are wills -> Show will list as below:\
 
-* User can view all wills they create or as a signer
-* User can filter or search will with search bar and ratio
-* User can click to right arrow of each will tag to view **My will details screen**
+
+    <figure><img src="../.gitbook/assets/screencapture-app-10102-io-2024-12-16-14_26_51.png" alt=""><figcaption></figcaption></figure>
+
+* User can view all the wills they have created, or wills that they are a co-signer in the case of Safe wallet.
+* User can filter or search will with search bar and ratio.
+* User can click to right arrow of each will tag to view **My will details screen.**
 
 **2.3.1.1 My will details screen ( with Safe Wallet flow)**
 
-1. After creating, this will has the status of **Signature needed**, signer can access Computing will system to sign or provide signatures is Safe wallet platform too.
+1. After the owner creates a will, it will initially have the status **Signature needed**, which requires a minimum number of co-signers to sign on the transaction in order to finalize creating the will contract. The minimum number of signatures is set in the Safe Account. Co-signers can provide signatures through the 10102's Digital Inheritance app, or through the Safe wallet platform.
 
 ![](../.gitbook/assets/21.png)
 
-1. When enough signatures -> The status of will is updated to **Need Finalizing** as below
+1. When enough signatures have been submitted, t![](<../.gitbook/assets/Screen Shot 2024-12-16 at 2.41.13 PM.png>)he status of will is updated to **Need Finalizing** as below
 
 ![](../.gitbook/assets/22.png)
 

@@ -1,23 +1,34 @@
 # Inheritance will
 
-The inheritance will type essentially provides the pre-designated account(s) with full wallet permissions, adding beneficiaries to a shared wallet once the will is activated. The inheritance will type executes directly on the Safe wallet and infrastructure. We leave the security of the assets to a battle-tested popular wallet.&#x20;
-
-Our module is an added layer to existing multi-sig wallets specialized in adding beneficiaries in flexible and convenient ways, offering the best of both worlds to web3 users.
+The inheritance will type use Safe wallet infrastructure, leveraging the battle-tested security of the popular estalished wallet. Once activated, an inheritance will provides pre-designated beneficiaries with full wallet permission by adding the beneficiaries as co-signers to a multisig Safe wallet, leveraging the battle-tested security of an established wallet infrastructure.&#x20;
 
 * Beneficiaries can claim any kind of assets, not some specific ones.
 * Beneficiaries can claim the Safe Wallet’s staked assets from other platform/protocol (the assets are not stored directly inside the wallet).
 * Beneficiaries can inherit potential non-assets properties, like the reputation, bonus points/rewards, airdrop, etc.. from some new platform.
 
-### **Create will flow** <a href="#x66hygxf4de9" id="x66hygxf4de9"></a>
+### **Details of the Inheritance will flow** <a href="#x66hygxf4de9" id="x66hygxf4de9"></a>
 
-* Step 1: Will owner create Safe wallet in [https://app.safe.global](https://app.safe.global/) and it is set as will contract ( Safe Proxy)
-* Step 2: After set will contract in Safe Proxy, we will set guard in [https://app.safe.global](https://app.safe.global/) or in Computing Will site and use Set Guard Function of SafeGuard
-* Step 3: Besides set guard, we set module in [https://app.safe.global](https://app.safe.global/) or in Computing Will site to set Module function
-* Step 4: After setting guard and set module, the will owner can configure will details with: list asset, list beneficiaries, customization of trigger,..
+#### Create a will
 
-### **Activate will flow** <a href="#id-5hdkpt7pd7fh" id="id-5hdkpt7pd7fh"></a>
+* The will owner can create a Safe wallet in [https://app.safe.global](https://app.safe.global/). The will is set as a will contract using Safe Proxy.
+* After setting the will contract in Safe Proxy, the will owner can set guard in [https://app.safe.global](https://app.safe.global/) or in the Digital Inheritance's site. The system uses Set Guard Function of SafeGuard.
+* The will owner can set module in [https://app.safe.global](https://app.safe.global/) or in the Digital Inheritance's site using Set Module function.
+* After setting guard and module, the will owner can configure will details including asset, beneficiaries and time to activation since last outgoing transaction.
+* Co-signers of the Safe Wallet will need to sign a transaction to finalize creating the will. Once the minimum number of signatures required in the Safe Wallet is met, the will is created.
 
-* Step 1: Beneficiary call activate will to Safe module contract ( beneficiary pay gas fee)
-* Step 2:If enough minimum required signatures -> SafeModule check the latest timestamps transaction in SafeGuard
-* Step 3: Safe Module execTransactionFromModule to SafeProxy ( the will contract)
-* Step 4: SafeProxy ( the will contract) transfer money from SafeWallet to SafeModule and divide to beneficiary -> Beneficiary can receive funds
+#### Edit will
+
+* After creating the will successfully, the owner can add more beneficiaries and/or adjust the time to activation.
+* Co-signers of the Safe Wallet will need to sign a transaction to finalize editing the will. Once the minimum number of signatures required in the Safe Wallet is met, the will is updated.
+
+#### Delete will
+
+* After creating will successfully, the owner can delete will.
+* Co-signers of the Safe Wallet will need to sign a transaction to finalize deleting the will. Once the minimum number of signatures required in the Safe Wallet is met, the will is deleted.
+
+#### **Activate a will**  <a href="#id-5hdkpt7pd7fh" id="id-5hdkpt7pd7fh"></a>
+
+* Any of the designated beneficiaries can make a call to activate a will to the Safe module contract and pay a gas fee.
+* SafeModule check the latest timestamps transaction in SafeGuard to see if enough time has passed.&#x20;
+* If enough time has passed, Safe Module will execute execTransactionFromModule to SafeProxy ( the will contract)
+* The beneficiaries will be added as new co-signers to the Safe Wallet that contains the inheritance. The minimum number of signatures required to initiate a transaction in the Safe wallet remains unchanged.
