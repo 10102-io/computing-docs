@@ -10,8 +10,12 @@
 
 ## GUIDES
 
-* [User guide v1.0](guides/user-guide-v1.0.md)
-* [User guide v2.0](guides/user-guide-v2.0.md)
+* [User guide](guides/user-guide/README.md)
+  * [Authentication](guides/user-guide/authentication.md)
+  * [Create a will](guides/user-guide/create-a-will.md)
+  * [Will details](guides/user-guide/will-details.md)
+  * [Edit or delete a will](guides/user-guide/edit-or-delete-a-will.md)
+  * [Activate a will and claim fund](guides/user-guide/activate-a-will-and-claim-fund.md)
 
 ***
 
