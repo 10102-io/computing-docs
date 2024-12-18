@@ -1,5 +1,17 @@
 # Will details
 
+### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+
+[My will(s)](will-details.md#l6ugmfkjrqu0)
+
+[My will details screen (with Safe Wallet)](will-details.md#my-wills-details-screen-with-safe-wallet)
+
+[My will details screen (with EOA)](will-details.md#my-will-details-screen-with-eoa)
+
+[My Inherited will(s)](will-details.md#id-9tlp3kbavosd)
+
+[My inherited will's details screen](will-details.md#my-inherited-wills-details-screen)
+
 ### **My will(s)** <a href="#l6ugmfkjrqu0" id="l6ugmfkjrqu0"></a>
 
 ![If no wills have been created, user will see this screen.](<../../.gitbook/assets/Screen Shot 2024-12-16 at 2.25.38 PM.png>)
@@ -10,7 +22,7 @@
 * User can filter or search will with search bar and ratio.
 * User can click to right arrow of each will tag to view **My will details screen.**
 
-### **My will details screen (with Safe Wallet)**
+### **My will's details screen (with Safe Wallet)**
 
 After a will is created with a Safe Wallet, it will initially have the status **Needs finalizing**, which requires a minimum number of co-signers to sign on the transaction in order to finalize creating the will contract. The minimum number of signatures is set in the Safe Account. Co-signers can provide signatures through the 10102's Digital Inheritance app, or through the Safe wallet platform.
 
@@ -27,7 +39,7 @@ After a will is created with a Safe Wallet, it will initially have the status **
 
 ![](../../.gitbook/assets/23.png)
 
-### **My will details screen (with EOA)**
+### **My will's details screen (with EOA)**
 
 After creating, the will's status is immediately **Live.** Unlike wills created with a Safe wallet, no finalizing is needed.
 
@@ -38,7 +50,7 @@ After creating, the will's status is immediately **Live.** Unlike wills created 
 
 ![](../../.gitbook/assets/25.png)
 
-### **My Inherited will ( With Safe Wallet )** <a href="#id-9tlp3kbavosd" id="id-9tlp3kbavosd"></a>
+### **My Inherited will(s)**  <a href="#id-9tlp3kbavosd" id="id-9tlp3kbavosd"></a>
 
 * User can view the list of Inherited wills which list them as a beneficiary
 * Clicking on the right arrow in right side of the will will take the user to the will's details screen
@@ -47,7 +59,7 @@ After creating, the will's status is immediately **Live.** Unlike wills created 
 
 ![](../../.gitbook/assets/screencapture-app-10102-io-2024-12-16-15_15_34.png)
 
-### **My inherited will details screen**
+### **My inherited will's details screen**
 
 <figure><img src="../../.gitbook/assets/Screen Shot 2024-12-16 at 5.31.34 PM.png" alt=""><figcaption></figcaption></figure>
 

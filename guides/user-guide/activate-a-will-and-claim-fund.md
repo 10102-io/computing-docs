@@ -1,5 +1,15 @@
 # Activate a will and claim fund
 
+### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+
+[Check will's status & claim fund](activate-a-will-and-claim-fund.md#check-wills-status-and-claim-fund)
+
+[Once the will is activated](activate-a-will-and-claim-fund.md#once-the-will-is-activated)
+
+[Claim remaining fund](activate-a-will-and-claim-fund.md#claim-remaining-fund)
+
+### Check will's status & claim fund
+
 Beneficiary can click **Check will’s status & Claim Fund**, which will prompt the system to check if enough time has passed for the will to be activated.
 
 <figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXecNsKnKfiM2kDxm3lNMyoPq-Y41W3Nd2HznJvHwqKzHFhihNIPMcPAKmIV5xMpxjRmBlXBZsejhDPbSNzJo1zcunHFkdGZMRU00KfGQXleteCB1vbxi0UAcz5-aVJtwt-5O9Fe6ni0fBiHu7yU_oXcucxz?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>

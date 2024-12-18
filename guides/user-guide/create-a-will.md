@@ -1,5 +1,15 @@
 # Create a will
 
+### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+
+[Create an Inheritance will with Safe Wallet](create-a-will.md#l6ugmfkjrqu0)
+
+[Create a Forwarding will with Safe Wallet](create-a-will.md#id-7z308uhitv5g)
+
+[Creating a Forwarding will with an Externally-Owned Account (EOA)](create-a-will.md#creating-a-forwarding-will-with-an-externally-owned-account-eoa)
+
+
+
 ### Create an **Inheritance will with Safe Wallet** <a href="#l6ugmfkjrqu0" id="l6ugmfkjrqu0"></a>
 
 See also [Inheritance will](../../inheritance-will.md)

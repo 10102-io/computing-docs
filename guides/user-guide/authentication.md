@@ -1,5 +1,21 @@
 # Authentication
 
+### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+
+[Metamask](authentication.md#with-metamask)
+
+[WalletConnect](authentication.md#with-walletconnect)
+
+[Ledger](authentication.md#with-ledger)
+
+[Trezor](authentication.md#with-trezor)
+
+[Coinbase Wallet](authentication.md#with-coinbase-wallet)
+
+[Rainbow](authentication.md#with-rainbow)
+
+[Disconnect Wallet](authentication.md#ovwrfi22xsry)
+
 ### **Connect wallet** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
 
 <figure><img src="../../.gitbook/assets/Screen Shot 2024-12-16 at 2.20.44 PM.png" alt=""><figcaption></figcaption></figure>
@@ -7,8 +23,6 @@
 User click Connect Wallet to open the Pop-up:
 
 <figure><img src="../../.gitbook/assets/Screen Shot 2024-12-16 at 2.22.41 PM.png" alt="" width="252"><figcaption></figcaption></figure>
-
-
 
 #### **With Metamask**
 
@@ -36,13 +50,16 @@ User click Connect Wallet to open the Pop-up:
 
 <figure><img src="../../.gitbook/assets/Screen Shot 2024-12-17 at 11.08.54 AM.png" alt=""><figcaption></figcaption></figure>
 
-#### **With Wallet Connect**
+#### **With WalletConnect**
 
 * If user clicks on **Wallet Connect,** a QR code will be shown to connect with Wallet connect
 
 <figure><img src="../../.gitbook/assets/10.png" alt="" width="563"><figcaption></figcaption></figure>
 
-#### **With Ledger wallet** If user clicks on **Ledger,** a QR code will be shown to connect with Ledger 
+#### **With Ledger**&#x20;
+
+If user clicks on **Ledger,** a QR code will be shown to connect with Ledger\
+
 
 <figure><img src="../../.gitbook/assets/9.png" alt="" width="563"><figcaption></figcaption></figure>
 
@@ -53,7 +70,7 @@ Upon clicking **Get,** Ledger live extension will be open for the user to choose
 
 <figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXd20FyQxVoPLj2qIcWpZzlg7grsPkOMV4LOckrEkGn1oGT4pbg_kqM4WgYP1mB9c65LL7v617EtSZRTuaPaEW7bawbBdsJUbndQi7xAbsnH6ndosrPniVth7pyf_g3XN9bZHpmjYEiBMqpziW2ILls9d0rv?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
 
-#### **With Trezor wallet**
+#### **With Trezor**&#x20;
 
 *   If user clicks on **Trezor,** the following pop-up will appear and allow the user to connect to their Trezor device:\
 
@@ -74,7 +91,7 @@ Upon clicking **Get,** Ledger live extension will be open for the user to choose
 
 * Open CoinBase wallet extension and sign to connect wallet
 
-#### **With Rainbow wallet**
+#### **With Rainbow**&#x20;
 
 * If user doesn't have Rainbow installed, the following pop-up will be displayed:
 

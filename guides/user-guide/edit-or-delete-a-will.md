@@ -6,7 +6,17 @@ description: >-
 
 # Edit or delete a will
 
-### Edit or delete a will created with a Safe wallet
+### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+
+[Edit a will created with a Safe wallet](edit-or-delete-a-will.md#edit-a-will-created-with-a-safe-wallet)
+
+[Delete a will created with a Safe wallet](edit-or-delete-a-will.md#delete-a-will-created-with-a-safe-wallet)
+
+[Edit a will created with an EOA](edit-or-delete-a-will.md#edit-a-will-created-with-an-eoa)
+
+[Delete a will created with an EOA](edit-or-delete-a-will.md#delete-a-will-created-with-an-eoa)
+
+### Edit a will created with a Safe wallet
 
 ![](../../.gitbook/assets/25.png)
 
@@ -15,17 +25,22 @@ description: >-
 
 <figure><img src="../../.gitbook/assets/Screen Shot 2024-12-17 at 5.50.46 PM.png" alt=""><figcaption></figcaption></figure>
 
+### Delete a will created with a Safe wallet
+
 * If the user clicks on **Delete will**, the system will prompt a popup to confirm the action. After that, a minimum number of signatures from co-signers is required to finalize deleting the will.
 
 ![](../../.gitbook/assets/26.png)
 
 <figure><img src="../../.gitbook/assets/Screen Shot 2024-12-17 at 6.18.03 PM.png" alt="" width="563"><figcaption></figcaption></figure>
 
-### Edit or delete a will created with an EOA
+### Edit a will created with an EOA
 
 ![](../../.gitbook/assets/25.png)
 
 * If the user clicks on **Edit will,** the system will navigate to **Configure will screen** where the user can make edits to will's name, beneficiaries, asset allocations, time to activation, note to beneficiaries, and approve or deposit/withdraw tokens.
+
+### Delete a will created with an EOA
+
 * If the user clicks on **Delete will**, the system will prompt a popup to confirm the action. After that, a minimum number of signatures from co-signers is required to finalize deleting the will.
 
 ![](../../.gitbook/assets/26.png)
