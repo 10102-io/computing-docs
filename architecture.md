@@ -4,12 +4,14 @@
 
 A Safe Wallet is a multi-signature smart account management tool on Ethereum that allows users to manage their crypto assets. A predefined number of private keys is required to sign off on any transaction, so no single person can move the funds without the consent of others.&#x20;
 
-| ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXd023Y5T85v3t-wdW8_Ibhcs3hr-jnc9si2jJKDEcC1GwVpzEvm3fcyEjq3gb6jhkVMPhPv-VJlnUmIlVCiQ1F26PiWNro4tWk5x-q0PjU8nUaVbdryAuXe8Zv-PVqGZeuAoYEIQQ?key=FU1CpoPnSDCdWQuIWr-ldA) |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   |
+| - |
 
-| ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeP_Mtt8Mt7hrEHu3mB7ODtwwC5A6ywCCKJNDlMHdFwAW6xehP5cAklLsFFjol9BcyB_jo0dOXx5L6_3CjyaznZ7KvrMfqGptvKfSWqr6Jqlmr1KaAn_QNoWSrw2nSstDMxADsh?key=FU1CpoPnSDCdWQuIWr-ldA) |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdhYB4xXaD6WdypcO0h-RSou1Em0-QsnHqSW9Y7ODdoyv4EDG_8OIu78Cmluc3_jUdXzKeOVBn6T_iCFG7XqE7gKKQWwKVZK9z5uS4MyBPNxQmjAQio-g2fE9IEq878LKVMTqsa?key=FU1CpoPnSDCdWQuIWr-ldA) |
+<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXd023Y5T85v3t-wdW8_Ibhcs3hr-jnc9si2jJKDEcC1GwVpzEvm3fcyEjq3gb6jhkVMPhPv-VJlnUmIlVCiQ1F26PiWNro4tWk5x-q0PjU8nUaVbdryAuXe8Zv-PVqGZeuAoYEIQQ?key=FU1CpoPnSDCdWQuIWr-ldA" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdhYB4xXaD6WdypcO0h-RSou1Em0-QsnHqSW9Y7ODdoyv4EDG_8OIu78Cmluc3_jUdXzKeOVBn6T_iCFG7XqE7gKKQWwKVZK9z5uS4MyBPNxQmjAQio-g2fE9IEq878LKVMTqsa?key=FU1CpoPnSDCdWQuIWr-ldA" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXeP_Mtt8Mt7hrEHu3mB7ODtwwC5A6ywCCKJNDlMHdFwAW6xehP5cAklLsFFjol9BcyB_jo0dOXx5L6_3CjyaznZ7KvrMfqGptvKfSWqr6Jqlmr1KaAn_QNoWSrw2nSstDMxADsh?key=FU1CpoPnSDCdWQuIWr-ldA" alt=""><figcaption></figcaption></figure>
 
 ### Create a new Safe Wallet:
 
@@ -58,8 +60,10 @@ Using an Externally Owned Account (EOA):\
 
 
 
-| ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXctjcYFMA8_AppgMKotPjN4zdZRtQrVsUDxwy5rRh1Yhq11Hb9K403BzNqKOYmR7AZxxBqfOElEJO5rRnNd3p-faR93mg9T16RLCCRdtA4q65DvkcxFbZXDF0RacmMmuV_Ao_vrMg?key=odBWC6NT8SMxbDV561Yp6OAP) |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   |
+| - |
+
+<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXctjcYFMA8_AppgMKotPjN4zdZRtQrVsUDxwy5rRh1Yhq11Hb9K403BzNqKOYmR7AZxxBqfOElEJO5rRnNd3p-faR93mg9T16RLCCRdtA4q65DvkcxFbZXDF0RacmMmuV_Ao_vrMg?key=odBWC6NT8SMxbDV561Yp6OAP" alt=""><figcaption></figcaption></figure>
 
 ### Create will
 

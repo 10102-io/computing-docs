@@ -44,24 +44,20 @@ Once activated, an inheritance will provides pre-designated beneficiaries with f
 
 The forwarding will lets the owner predetermine allocations of specific assets to be sent to each beneficiary's wallet once the will is activated.  A different flow, for a different need. The original owner's wallet from which assets are to be inherited  from can either be a multi-sig wallet such as Safe, or an EOA such as a Ledger, Trezor. or Metamask account.
 
-[A combination of any two above can be used in conjunction for more advanced strategies. For example, someone with little kids might want to make sure that until a mature age, a 3rd party can manage some of the funds in case of emergency.](#user-content-fn-1)[^1]&#x20;
+A combination of any two above can be used in conjunction for more advanced strategies. For example, someone with little kids might want to make sure that until a mature age, a 3rd party can manage some of the funds in case of emergency.&#x20;
 
 #### Beneficiaries, or pre-authorized public key(s)
 
 This part might be one of the most challenging thus far. On one hand, we want to operate via secure and on-chain means only, namely, via Ethereum accounts. On the other hand, the most likely recipients one desires (mainstream) are not familiar enough with the Ethereum rails at this time (nature of any niche emerging technology industry). We discuss here options and ideas to best compromise. Current options from most secure to most friendly:
 
 * An Ethereum public key (address).
-* A social wallet address. Another smart contract accessible by guardians, which can be identified by a phone number[^2] providing the corresponding app to such social wallet is installed[^3] (e.g Argent).
+* A social wallet address. Another smart contract accessible by guardians, which can be identified by a phone number[^1] providing the corresponding app to such social wallet is installed[^2] (e.g Argent).
 * A QR generated printed by the owner. The QR code represents the private key of such conditional pre-authorized public key.
 * Printing shall be our main communication channel, as this action is performed by the owner only, avoiding any interaction with a 3rd party service provider.
   * Printing of private keys should come with different options covering the various use cases and level of familiarity with crypto.&#x20;
   * An endpoint to immutable interface should be part of the printed paper for the beneficiary to check at any time, from anywhere. The interface will show the time left to future eligibility, if any. \
 
 
-[^1]: I'm not sure this is applicable?
+[^1]: should we remove this?
 
-
-
-[^2]: should we remove this?
-
-[^3]: 
+[^2]: 
