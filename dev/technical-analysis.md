@@ -61,3 +61,13 @@ There are some other kind of flows I see the similar products have implemented:
 * Define the lawyer’s wallet in the will contract, who can determine and execute the will (similar in the real world) - but this will be a completely different business requirement.
 
 The final decision is up to the product owner, but if I were the product owner, and in the context of the current project, I will use the proposed one in section “Owner’s wallet is EOA”, applied for all cases.
+
+
+
+### Future release: Forwarding will with Account Abstraction <a href="#id-88n18v90zj9t" id="id-88n18v90zj9t"></a>
+
+* If the owner’s wallet is an AA or multi-sig wallet that has a built-in function to keep track of the last transaction’s timestamp (or block number) inside their contract storage, the will contract can just call the function to retrieve the owner’s last activity information. (For now this kind of function is not a standard for AA/multisig wallet yet).
+* If the owner’s wallet is a Gnosis Safe wallet. We’ll develop a guard contract ([https://docs.safe.global/advanced/smart-account-guards](https://docs.safe.global/advanced/smart-account-guards)) which will keep track of the timestamp of the owner's last activity. If the owner’s wallet uses this guard, then the wallet can retrieve the necessary information from the guard contract.
+* If the owner’s wallet is another type of multi-sig wallet, we need to check whether it’s possible to hook into the outgoing transaction like Gnosis Safe. This depends on the particular multi-sig implementation, and requires more detailed analysis. Currently Gnosis Safe is the market leader for multi-sig wallet so I just use it as the typical use case.
+
+If the owner’s wallet is smart contract but doesn’t satisfy one of above conditions, the flow will be same as EOA’s

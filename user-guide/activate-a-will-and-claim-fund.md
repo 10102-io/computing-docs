@@ -24,10 +24,10 @@ Beneficiary can click **Check will’s status & Claim Fund**, which will prompt 
 
 ### Claim remaining fund
 
-*   For a **Forwarding** will created with a EOA, the system can handle a maximum of 30 transactions at a time. If there are more than 30 transactions needed in the asset distribution process (eg. there are 3 beneficiaries and 10+ assets), the system will distribute assets in multiple batches. The button **Claim Remaining Fund** will be available if there are more assets to be claimed in the will contract.\
+*   For a **Forwarding** will created with a EOA, the system can handle a maximum of 100 transactions at a time. If there are more than 100 transactions needed in the asset distribution process (eg. there are 4 beneficiaries and 25+ assets), the system will distribute assets in multiple batches. The button **Claim Remaining Fund** will be available if there are more assets to be claimed in the will contract.\
 
 
-    <figure><img src="../../.gitbook/assets/30.png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../.gitbook/assets/30.png" alt=""><figcaption></figcaption></figure>
 * Once all assets are distributed, the system will show that asset distribution is complete.&#x20;
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2024-12-17 at 6.09.11 PM.png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 6.09.11 PM.png" alt="" width="563"><figcaption></figcaption></figure>

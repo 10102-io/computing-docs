@@ -1,21 +1,22 @@
 # Table of contents
 
 * [Introduction](README.md)
-* [Summary](summary.md)
-* [Core mechanisms](core-mechanisms/README.md)
-  * [QR code and account generation details](core-mechanisms/qr-code-and-account-generation-details.md)
-* [Architecture](architecture.md)
-* [Inheritance will](inheritance-will.md)
-* [Forwarding will](forwarding-will.md)
+* [Summary](summary/README.md)
+  * [Inheritance will](summary/inheritance-will.md)
+  * [Forwarding will](summary/forwarding-will.md)
+* [Architecture](architecture/README.md)
+  * [Wills created with Safe SDK](architecture/wills-created-with-safe-sdk.md)
+  * [Wills created with EOAs](architecture/wills-created-with-eoas/README.md)
+    * [New account generation for beneficiaries](architecture/wills-created-with-eoas/new-account-generation-for-beneficiaries.md)
+  * [Indexing via The Graph](architecture/indexing-via-the-graph.md)
+* [User guide](user-guide/README.md)
+  * [Authentication](user-guide/authentication.md)
+  * [Create a will](user-guide/create-a-will.md)
+  * [Will details](user-guide/will-details.md)
+  * [Edit or delete a will](user-guide/edit-or-delete-a-will.md)
+  * [Activate a will and claim fund](user-guide/activate-a-will-and-claim-fund.md)
 
 ## GUIDES
-
-* [User guide](guides/user-guide/README.md)
-  * [Authentication](guides/user-guide/authentication.md)
-  * [Create a will](guides/user-guide/create-a-will.md)
-  * [Will details](guides/user-guide/will-details.md)
-  * [Edit or delete a will](guides/user-guide/edit-or-delete-a-will.md)
-  * [Activate a will and claim fund](guides/user-guide/activate-a-will-and-claim-fund.md)
 
 ***
 
@@ -25,3 +26,4 @@
   * [Development Milestone 1](dev/development-milestone-1.md)
   * [Development Milestone 2](dev/development-milestone-2.md)
   * [Backlog](dev/backlog.md)
+  * [Core mechanisms](dev/core-mechanisms.md)
