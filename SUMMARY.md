@@ -15,11 +15,6 @@
   * [Will details](user-guide/will-details.md)
   * [Edit or delete a will](user-guide/edit-or-delete-a-will.md)
   * [Activate a will and claim fund](user-guide/activate-a-will-and-claim-fund.md)
-
-## GUIDES
-
-***
-
 * [DEV](dev/README.md)
   * [Technical analysis](dev/technical-analysis.md)
   * [User Experience](dev/user-experience.md)
