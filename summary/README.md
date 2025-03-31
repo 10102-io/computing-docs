@@ -8,8 +8,8 @@ The goal of 10102's Digital Inheritance is to establish a flexible, decentralize
 
 ### Two different types of wills
 
-* [Inheritance](inheritance-will.md): Once activated after a specified duration of inactivity, the will provides pre-designated beneficiaries with full wallet permission by adding the beneficiaries as co-signers to a multisig Safe wallet, leveraging the battle-tested security of an established wallet infrastructure.&#x20;
-* [Forwarding](forwarding-will.md): Once activated after a specified duration of inactivity, the will sends approved and deposited assets to all beneficiaries' wallets based on the pre-defined allocations.
+* [Inheritance](multisig-legacy.md): Once activated after a specified duration of inactivity, the will provides pre-designated beneficiaries with full wallet permission by adding the beneficiaries as co-signers to a multisig Safe wallet, leveraging the battle-tested security of an established wallet infrastructure.&#x20;
+* [Forwarding](transfer-legacy.md): Once activated after a specified duration of inactivity, the will sends approved and deposited assets to all beneficiaries' wallets based on the pre-defined allocations.
 
 **Notes:**
 

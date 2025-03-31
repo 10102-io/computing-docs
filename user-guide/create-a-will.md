@@ -12,7 +12,7 @@
 
 ### Create an **Inheritance will with Safe Wallet** <a href="#l6ugmfkjrqu0" id="l6ugmfkjrqu0"></a>
 
-See also [Inheritance will](../summary/inheritance-will.md)
+See also [Inheritance will](../summary/multisig-legacy.md)
 
 * User clicks on “Create a will”&#x20;
 *   User chooses Inheritance type of will\
@@ -36,7 +36,7 @@ If user puts in a Safe address, the system will enable the **Next step** option 
 
 ### **Create a Forwarding will with Safe Wallet** <a href="#id-7z308uhitv5g" id="id-7z308uhitv5g"></a>
 
-See also [Forwarding will](../summary/forwarding-will.md)
+See also [Forwarding will](../summary/transfer-legacy.md)
 
 User clicks on **Create a will,** chooses **Forwarding** as the type of will, and selects to use a Safe account.&#x20;
 

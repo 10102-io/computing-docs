@@ -2,8 +2,11 @@
 
 * [Introduction](README.md)
 * [Summary](summary/README.md)
-  * [Inheritance will](summary/inheritance-will.md)
-  * [Forwarding will](summary/forwarding-will.md)
+  * [Multisig Legacy](summary/multisig-legacy.md)
+  * [Transfer Legacy](summary/transfer-legacy.md)
+  * [Timelock Features](summary/timelock-features.md)
+  * [Watcher Features](summary/watcher-features.md)
+  * [Advanced Features](summary/advanced-features.md)
 * [Architecture](architecture/README.md)
   * [Wills created with Safe SDK](architecture/wills-created-with-safe-sdk.md)
   * [Wills created with EOAs](architecture/wills-created-with-eoas/README.md)
