@@ -8,7 +8,7 @@ It is worth highlighting the difference between a centralized provider such as G
 
 As we transition to a fully digital era, we need a native process to preserve value transmission, leveraging the powerful properties of decentralized systems - immutability, transparency, and trustless automation. At the  best of our ability, we want to create a framework that can not only last forever, but also carry people's digital legacy over many generations.
 
-This is where this project takes shape. Welcome to 10102's Digital Inheritance.
+Welcome to 10102's mission - the forever app for your digital legacy.
 
 
 
