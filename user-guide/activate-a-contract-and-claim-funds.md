@@ -1,12 +1,12 @@
-# Activate a will and claim fund
+# Activate a contract and claim funds
 
 ### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
 
-[Check will's status & claim fund](activate-a-will-and-claim-fund.md#check-wills-status-and-claim-fund)
+[Check will's status & claim fund](activate-a-contract-and-claim-funds.md#check-wills-status-and-claim-fund)
 
-[Once the will is activated](activate-a-will-and-claim-fund.md#once-the-will-is-activated)
+[Once the will is activated](activate-a-contract-and-claim-funds.md#once-the-will-is-activated)
 
-[Claim remaining fund](activate-a-will-and-claim-fund.md#claim-remaining-fund)
+[Claim remaining fund](activate-a-contract-and-claim-funds.md#claim-remaining-fund)
 
 ### Check will's status & claim fund
 

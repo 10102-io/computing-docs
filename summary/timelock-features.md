@@ -1,11 +1,11 @@
 # Timelock Features
 
-Primary use case is for own protection, as well as a new kind of simple made long term saving account.
+Primary use cases are for own protection and self-made saving accounts.
 
-## Set Timelock
+## Timelock
 
-This will lock the funds until the specified block has passed. Provide the time estimation of the block so that the user doesn’t need to be an expert in converting or looking-up elsewhere.
+This will lock the funds until a specified date. The owner then can claim back the funds.
 
 ## Soft Timelock
 
-Soft timelock for unlimited amount of time with the possibility to unlock with X amount of hours/days (useful for wrench attack and other similar scenarios, giving time to get some help).
+This will lock the funds for an unlimited amount of time, but with the possibility to unlock them after a specified amount of hours/days (useful for wrench attack and other similar scenarios, leaving time to get some help).

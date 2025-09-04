@@ -1,4 +1,4 @@
-# Wills created with Safe SDK
+# Contracts created with Safe SDK
 
 A [Safe wallet](https://app.safe.global/) is a multi-signature smart account management tool on Ethereum that allows users to manage their crypto assets. A predefined number of private keys is required to sign off on any transaction, so no single person can execute a transaction without the consent of others.&#x20;
 
@@ -16,19 +16,19 @@ A [Safe wallet](https://app.safe.global/) is a multi-signature smart account man
 
 ### Table of contents
 
-[Create a new Safe Wallet](wills-created-with-safe-sdk.md#create-a-new-safe-wallet)
+[Create a new Safe Wallet](contracts-created-with-safe-sdk.md#create-a-new-safe-wallet)
 
-[Execute a transaction using Safe wallet](wills-created-with-safe-sdk.md#execute-a-transaction-using-safe-wallet)
+[Execute a transaction using Safe wallet](contracts-created-with-safe-sdk.md#execute-a-transaction-using-safe-wallet)
 
-[Set Guard and Module in Safe wallet](wills-created-with-safe-sdk.md#set-guard-and-module-in-safe-wallet)
+[Set Guard and Module in Safe wallet](contracts-created-with-safe-sdk.md#set-guard-and-module-in-safe-wallet)
 
-[Create a will](wills-created-with-safe-sdk.md#create-a-will)
+[Create a will](contracts-created-with-safe-sdk.md#create-a-will)
 
-[Edit a will](wills-created-with-safe-sdk.md#edit-a-will)
+[Edit a will](contracts-created-with-safe-sdk.md#edit-a-will)
 
-[Delete a will](wills-created-with-safe-sdk.md#delete-a-will)
+[Delete a will](contracts-created-with-safe-sdk.md#delete-a-will)
 
-[Activate a will](wills-created-with-safe-sdk.md#activate-a-will)
+[Activate a will](contracts-created-with-safe-sdk.md#activate-a-will)
 
 ### Create a new Safe Wallet:
 

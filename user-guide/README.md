@@ -8,10 +8,10 @@ This manual guide document provides comprehensive information to assist users ma
 
 [Authentication](authentication.md)
 
-[Create a will](create-a-will.md)
+[Create a will](create-a-legacy-contract.md)
 
-[Will details](will-details.md)
+[Will details](contract-details.md)
 
-[Edit or delete a will](edit-or-delete-a-will.md)
+[Edit or delete a will](edit-or-delete-a-contract.md)
 
-[Activate a will and claim fund](activate-a-will-and-claim-fund.md)
+[Activate a will and claim fund](activate-a-contract-and-claim-funds.md)

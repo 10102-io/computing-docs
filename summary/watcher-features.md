@@ -3,8 +3,7 @@
 ## Introduction
 
 Authorized Watchers\
-Limited visibility - Full visibility\
-Account ID
+Limited visibility - Full visibility
 
 While the watcher features can be used in various ways, we provide below a few real world use cases.
 

@@ -6,11 +6,11 @@ Due to the application's decentralized architecture, even when 10102's Digital I
 
 ### Table of contents
 
-[Wills created with Safe SDK](wills-created-with-safe-sdk.md)
+[Wills created with Safe SDK](contracts-created-with-safe-sdk.md)
 
-[Wills created with EOAs](wills-created-with-eoas/)
+[Wills created with EOAs](contracts-created-with-eoas/)
 
-* [New account generation for beneficiarie](wills-created-with-eoas/new-account-generation-for-beneficiaries.md)s
+* [New account generation for beneficiarie](contracts-created-with-eoas/new-account-generation-for-beneficiaries.md)s
 
 [Indexing via The Graph](indexing-via-the-graph.md)
 
