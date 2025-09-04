@@ -6,7 +6,7 @@ Within crypto, security has become indispensable, with smart contracts undergoin
 
 It is worth highlighting the difference between a centralized provider such as Google or Facebook, which can carry out traditional inheritance via its centralized and traditional corporate entities, and decentralized infrastructure such as Ethereum, which follows only the rules of its smart contracts.
 
-As we transition to a fully digital era, we need a native process to preserve value transmission, leveraging the powerful properties of decentralized systems - immutability, transparency, and trustless automation. At the  best of our ability, we want to create a framework that can not only last forever, but also carry people's digital legacy over many generations.
+As we transition to a fully digital era, we need a native process to accommodate digital value transmission, leveraging the powerful properties of decentralized systems - immutability, transparency, and trustless automation. At the  best of our ability, we want to create a framework that can not only last forever, but also carry people's digital legacy over many generations.
 
 Welcome to 10102's mission - the forever app for your digital legacy.
 

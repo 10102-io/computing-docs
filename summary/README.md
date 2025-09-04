@@ -6,10 +6,10 @@ description: 'An Ethereum decentralized application:'
 
 The goal of 10102's Digital Inheritance is to establish a flexible, decentralized framework for automated digital value transmissions. This framework supports both basic and advanced functions, catering to diverse needs. Our decentralized application enables beneficiaries to access valuable crypto inheritances based on predetermined conditions. Built on Ethereum, the most robust smart contract platform with extensive developer community and advanced wallet infrastructure, our solution leverages battle-tested security to provide seamless digital inheritance management.
 
-### Two different types of wills
+### Two different types of legacy contracts
 
-* [Inheritance](multisig-legacy.md): Once activated after a specified duration of inactivity, the will provides pre-designated beneficiaries with full wallet permission by adding the beneficiaries as co-signers to a multisig Safe wallet, leveraging the battle-tested security of an established wallet infrastructure.&#x20;
-* [Forwarding](transfer-legacy.md): Once activated after a specified duration of inactivity, the will sends approved and deposited assets to all beneficiaries' wallets based on the pre-defined allocations.
+* [Multisig](multisig-legacy.md): Once activated after a specified duration of inactivity, the contract provides pre-designated beneficiaries with full wallet permission by adding the beneficiaries as co-signers to a multisig Safe wallet, leveraging the battle-tested security of an established wallet infrastructure.&#x20;
+* [Transfer](transfer-legacy.md): Once activated after a specified duration of inactivity, the contract sends approved and deposited assets to all beneficiaries' wallets based on the pre-defined allocations.
 
 **Notes:**
 
