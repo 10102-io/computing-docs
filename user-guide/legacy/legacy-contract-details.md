@@ -1,6 +1,6 @@
 # Legacy Contract Details
 
-### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+### **Table of Contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
 
 [My Legacy](legacy-contract-details.md#l6ugmfkjrqu0)
 

@@ -12,7 +12,7 @@ If the legacy contract is created with a Safe wallet, the beneficiary can activa
 
 If the legacy contract is created with an EOA, the beneficiary can activate using either 10102 app or a blockchain explorer, such as Etherscan.
 
-### Check contract's status & claim funds
+### Check Contract's Status & Claim Funds
 
 Beneficiary can click **Check contract's status & claim funds**, which will prompt the system to check if enough time has passed for the contract to be activated.
 
@@ -22,7 +22,7 @@ Beneficiary can click **Check contract's status & claim funds**, which will prom
 * If not enough time has passed, the system will prompt an error. The legacy contract remains not activated.
 * Any of the designated beneficiaries can make a call to activate a legacy contract. Distribution will happen to all designated beneficiaries. The beneficiary that activates the contract will pay a gas fee.
 
-### Once the contract is activate
+### Once the Contract is Activated
 
 * For Multisig legacy contracts, the beneficiaries will be added as new co-signers to the Safe Wallet that contains the inheritance. The minimum number of signatures required to initiate a transaction in the Safe wallet is the minimum number of required signatures specified in the contract by the owner.
 * For Transfer legacy contracts, all approved tokens in the EOA wallet and deposited native token(s) in the legacy contract will be transferred to the listed beneficiaries based on the predetermined allocations. The system can handle a maximum of 100 transactions at a time. If there are more than 100 transactions needed in the asset distribution process (eg. there are 4 beneficiaries and 25+ assets), the system will distribute assets in multiple batches. The button **Claim Remaining Fund** will be available if there are more assets to be claimed in the will contract.<br>
@@ -31,9 +31,9 @@ Beneficiary can click **Check contract's status & claim funds**, which will prom
 
 * Once all assets are distributed, the system will show that asset distribution is complete.&#x20;
 
-### Claim funds using an explorer
+### Claim Funds Using an Explorer
 
-In the current design, transfer legacy contract can be activated directly on the explorer (like Etherscan) through the Router contract, which requires the **Legacy ID and the asset token addresses as inputs.**
+In the current design, transfer legacy contract can be activated directly on the explorer (such as Etherscan) through the Router contract, which requires the **Legacy ID and the asset token addresses as inputs.**
 
 <figure><img src="../../.gitbook/assets/6325572570664602402 (1).jpg" alt=""><figcaption></figcaption></figure>
 

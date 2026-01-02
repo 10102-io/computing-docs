@@ -1,6 +1,6 @@
 # Authentication
 
-### **Table of contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+### **Table of Contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
 
 [Metamask](authentication.md#with-metamask)
 
@@ -16,7 +16,7 @@
 
 [Disconnect Wallet](authentication.md#ovwrfi22xsry)
 
-### **Connect wallet** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+### **Connect Wallet** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
 
 <figure><img src="../.gitbook/assets/Screen Shot 2024-12-16 at 2.20.44 PM.png" alt=""><figcaption></figcaption></figure>
 

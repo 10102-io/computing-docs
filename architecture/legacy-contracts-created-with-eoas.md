@@ -2,7 +2,7 @@
 
 An **externally owned account (EOA)** is an account controlled by a cryptographic keypair and is most commonly referred to as a wallet. A key pair consists of a public key (a.k.a public address) and a private key. For **Transfer Legacy** contracts, the user has an option to create a will using their own Ethereum address.
 
-### Table of contents
+### Table of Contents
 
 [Create a Legacy Contract](legacy-contracts-created-with-eoas.md#create-a-legacy-contract)
 
