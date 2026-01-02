@@ -4,15 +4,17 @@
 
 Due to the application's decentralized architecture, even when 10102's Digital Inheritance front end no longer exists, the user will still be able to interact with the contract. They can continue to create, edit, delete, and activate wills on the blockchain.
 
-### Table of contents
+### Table of Contents
 
-[Wills created with Safe SDK](contracts-created-with-safe-sdk.md)
+[Legacy contracts created with Safe SDK](legacy-contracts-created-with-safe-sdk.md)
 
-[Wills created with EOAs](contracts-created-with-eoas/)
+[Legacy Contracts Created with EOAs](legacy-contracts-created-with-eoas.md)
 
-* [New account generation for beneficiarie](contracts-created-with-eoas/new-account-generation-for-beneficiaries.md)s
+[New account generation for beneficiaries](new-account-generation-for-beneficiaries.md)
 
-[Indexing via The Graph](indexing-via-the-graph.md)
+[Indexing & Activity Tracking](indexing-and-activity-tracking.md)
+
+[Email Reminders](email-reminders.md)
 
 
 
