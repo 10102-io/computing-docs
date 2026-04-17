@@ -1,55 +1,75 @@
 ---
 description: >-
-  User can edit or delete a legacy contract created by them or a co-signer of
-  their Safe Wallet, as long as the contract's status is Live.
+  Change allocations, add or remove beneficiaries, adjust the activation
+  trigger, or tear a legacy down entirely. EOA changes are instant; Safe
+  changes go through your normal Safe threshold.
 ---
 
 # Edit or Delete a Legacy Contract
 
-### **Table of Contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+Once a legacy is **Live**, the owner (or, for Safe legacies, any Safe signer) can edit or delete it at any time before it's activated.
 
-[Edit a Legacy Contract created with a Safe wallet](edit-or-delete-a-legacy-contract.md#edit-a-legacy-contract-created-with-a-safe-wallet)
+## Editing
 
-[Delete a Legacy Contract created with a Safe wallet](edit-or-delete-a-legacy-contract.md#delete-a-legacy-contract-created-with-a-safe-wallet)
+### What you can change
 
-[Edit a Legacy Contract created with an EOA](edit-or-delete-a-legacy-contract.md#edit-a-legacy-contract-created-with-an-eoa)
+- **Name** — private label.
+- **Beneficiaries** — add, remove, or replace up to 10 primary addresses.
+- **Allocations** — any percentages, as long as they sum to 100%. Single-beneficiary legacies auto-allocate 100%.
+- **Activation trigger** — the inactivity window (days).
+- **Note to beneficiaries** — an on-chain message they'll see in the inherited view.
+- **Approvals** — include new ERC-20s, adjust existing allowances, or remove tokens from the inclusion set.
+- **Safe threshold for beneficiaries** (Multisig legacies only) — how many beneficiaries must sign as the new Safe's threshold after activation.
+- **Contingent layers** (Premium) — add, remove, or resize the second- and third-line activation windows.
 
-[Delete a Legacy Contract created with an EOA](edit-or-delete-a-legacy-contract.md#delete-a-legacy-contract-created-with-an-eoa)
+### EOA legacy
 
-### Edit a Legacy Contract created with a Safe Wallet
+A single transaction from your wallet applies the change. No coordination needed.
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 6.29.12 PM.png" alt=""><figcaption></figcaption></figure>
+{% hint style="info" %}
+**Which edits reset the activation timer?** Approving, adjusting, or removing allowances and changing the note **do not** reset the timer. All other edits (beneficiaries, allocations, trigger window) do. If you want to explicitly reset without another edit, use the heartbeat action instead.
+{% endhint %}
 
-* After creating the legacy contract successfully, the owner can add more beneficiaries and/or adjust the time to activation.
-* If the user clicks on **Edit contract,** the system will navigate to **Edit your legacy contract** screen where the user can make edits to the legacy contract's name, beneficiaries, minimum number of signatures required, time to activation, and note to beneficiaries.
-* Approving, depositing, withdrawing tokens, and editing Note to beneficiaries will not reset the contract's time to activation. All other actions will reset the contract's time to activation.
-* Co-signers of the Safe Wallet will need to sign a transaction to finalize editing the legacy contract. Once the minimum number of signatures required in the Safe Wallet is met, the contract is updated.
+### Safe legacy
 
-### Delete a Legacy Contract created with a Safe Wallet
+Any Safe signer can submit the edit; your Safe co-signers then finalize at the Safe's threshold. The edit shows as _Needs finalizing to update_ until the threshold is met. You can finalize in our app or on [app.safe.global](https://app.safe.global).
 
-* After creating legacy contract successfully, the owner can delete legacy contract.
-* If the user clicks on **Delete contract**, the system will prompt a popup to confirm the action. After that, a minimum number of signatures from co-signers is required to finalize deleting the contract.
+## Deleting
 
-<div data-full-width="false"><figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 6.54.07 PM.png" alt=""><figcaption></figcaption></figure></div>
+Deletion is available to owners (EOA) or any Safe signer (Safe), and returns the legacy to a clean state:
 
-* After the owner edit or delete the contract and sign their first signature, the contract's status will change to **Needs finalizing to update/delete** until the number of minimum signatures required are met. Co-signers of the Safe Wallet will need to sign a transaction to finalize deleting the legacy contract.&#x20;
-* Once the minimum number of signatures required in the Safe Wallet is met, the legacy contract is deleted. The native token(s) in the contract will be transferred back to owner's Safe wallet. All approval functions of ERC-20 tokens are cancelled.
+- **Native tokens** held by the contract (rare — Transfer legacies rarely hold native tokens directly; this mostly applies to legacy contracts that pre-date the storage-token flow) are returned to the owner's wallet.
+- **ERC-20 allowances** granted to the legacy contract are revoked automatically as part of the delete flow. This is a separate `approve(legacy, 0)` per-token; the UI runs through each one.
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 7.00.38 PM.png" alt=""><figcaption></figcaption></figure>
+### EOA delete
 
-### Edit a Legacy Contract created with an EOA
+1. Click **Delete contract** on the details page.
+2. Confirm in the popup.
+3. Sign one transaction to tear down the legacy. The UI then walks through revoking approvals on any tokens you'd approved.
 
-* If the user clicks on **Edit contract,** the system will navigate to **Edit your legacy contract** screen where the user can make edits to the legacy contract's name, beneficiaries, asset allocations, time to activation, note to beneficiaries, and approve or deposit/withdraw tokens.
-* Unlike a legacy contract created with a Safe wallet, there is no finalizing needed for editing a contract created with an EOA.
+{% hint style="info" %}
+**If the revoke loop reports a warning.** You'll only see "some approvals could not be cleared" if an actual `approve(0)` transaction failed for a specific token. A legacy with zero tokens approved is deleted cleanly with no warning.
+{% endhint %}
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-edit-0x16TransferEOA-2026-01-01-18_53_35.png" alt=""><figcaption></figcaption></figure>
+{% hint style="success" %}
+**Post-delete refresh.** The home page and the "create legacy" eligibility check re-read directly from the chain after a delete, so you can create a new legacy immediately without refreshing the page.
+{% endhint %}
 
-For Legacy Contract created with an EOA, editing the contract will not reset the time to activation. User can use the option "I'm still alive" if they wish to extend the activation timeline.
+### Safe delete
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 7.32.02 PM.png" alt=""><figcaption></figcaption></figure>
+1. Click **Delete contract** on the details page.
+2. Confirm in the popup — this submits the first signature.
+3. Safe co-signers finalize at the threshold; status shows _Needs finalizing to delete_ until done.
+4. Once finalized, assets return to the Safe and approvals are revoked.
 
-### Delete a Legacy Contract created with an EOA
+## What stays the same after edits
 
-* If the user clicks on **Delete Contract**, the system will prompt a popup to confirm the action before proceeding to delete the legacy contract and return any deposited funds to the owner's wallet.&#x20;
-* Unlike a legacy contract created with a Safe wallet, there is no finalizing needed for deleting a contract created with an EOA.
-* After the contract is deleted, the native token(s) in the contract will be transferred back to owner's EOA wallet. All approval functions of ERC-20 tokens are cancelled.
+Notification settings — **watchers and email reminders** — are tied to the wallet that created the legacy, not to the legacy itself. Editing or replacing beneficiaries doesn't change who controls notifications. For Safe legacies where the creator is a specific Safe signer, only that signer can change notification settings; see [Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies).
+
+If the creator needs to effectively hand off notification settings to another Safe signer, the current workaround is: delete the legacy and recreate it, with the new signer submitting the creation transaction.
+
+## See also
+
+- [Legacy Contract Details](./legacy-contract-details.md)
+- [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-and-claim-funds.md)
+- [Manage Authorized Watchers](../premium-features/manage-authorized-watchers.md)

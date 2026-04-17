@@ -1,43 +1,82 @@
+---
+description: >-
+  Activate an inherited legacy and claim funds. Works through the 10102 app,
+  the Safe platform (for Safe legacies), or directly from any Ethereum
+  interface using the printed Legacy Claim Card.
+---
+
 # Activate a Legacy Contract and Claim Funds
 
-### **Table of Contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+When a legacy's activation window has elapsed, any of its designated beneficiaries can activate it. This page covers all three paths: via the 10102 app, via the Safe platform (for Safe legacies), and via a blockchain explorer (for any legacy, using the Legacy Claim Card).
 
-[Check contract's status & claim funds](activate-a-legacy-contract-and-claim-funds.md#check-contracts-status-and-claim-funds)
+## Preflight
 
-[Once the contract is activated](activate-a-legacy-contract-and-claim-funds.md#once-the-contract-is-activate)
+Before you can activate:
 
-[Claim funds using an explorer](activate-a-legacy-contract-and-claim-funds.md#claiming-funds-using-an-explorer)
+1. **Enough time must have passed** — the owner must have been inactive (no outgoing transactions from the owning wallet/Safe) for at least the configured trigger window.
+2. **Your wallet must be one of the configured beneficiaries** — primary, or contingent after the corresponding line has kicked in.
+3. **You need gas** — activation is a paid transaction. You pay, but the assets are distributed to _all_ beneficiaries according to the allocations, not just to you.
 
-If the legacy contract is created with a Safe wallet, the beneficiary can activate using either 10102 app or the Safe module contract.
+## Via the 10102 app
 
-If the legacy contract is created with an EOA, the beneficiary can activate using either 10102 app or a blockchain explorer, such as Etherscan.
+1. Open the app and go to **My Inherited Legacy**. Inherited legacies show up here whenever an address in them matches your connected wallet.
+2. Click the legacy to open its details.
+3. Click **Check contract's status & claim funds**.
+4. If the window has elapsed, you're prompted to sign the activation transaction. Sign and pay gas.
+5. The legacy's status moves to **Activated**.
 
-### Check Contract's Status & Claim Funds
+### For Transfer legacies
 
-Beneficiary can click **Check contract's status & claim funds**, which will prompt the system to check if enough time has passed for the contract to be activated.
+All approved ERC-20s are distributed from the owner's wallet to the listed beneficiaries according to the allocations, and any native tokens the contract holds are distributed the same way.
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 7.44.51 PM.png" alt=""><figcaption></figcaption></figure>
+{% hint style="info" %}
+**Big legacies distribute in batches.** The contract can process up to 100 transfers per activation transaction. If your inherited legacy has more than that (e.g. 4 beneficiaries × 30 tokens = 120 transfers), a **Claim Remaining Fund** button stays available on the details page until everything is distributed. Any beneficiary can press it, any number of times.
+{% endhint %}
 
-* If the required time has passed, the beneficiary will be eligible to claim funds.The contract will execute asset distribution logic to designated beneficiaries. The status of the will will become **Activated**.
-* If not enough time has passed, the system will prompt an error. The legacy contract remains not activated.
-* Any of the designated beneficiaries can make a call to activate a legacy contract. Distribution will happen to all designated beneficiaries. The beneficiary that activates the contract will pay a gas fee.
+### For Multisig legacies
 
-### Once the Contract is Activated
+Activation adds the beneficiaries as signers to the owner's Safe, with the threshold the owner configured. From that point on, the Safe is under your collective control — you can act on it in the normal Safe UI, our UI, or any other tool.
 
-* For Multisig legacy contracts, the beneficiaries will be added as new co-signers to the Safe Wallet that contains the inheritance. The minimum number of signatures required to initiate a transaction in the Safe wallet is the minimum number of required signatures specified in the contract by the owner.
-* For Transfer legacy contracts, all approved tokens in the EOA wallet and deposited native token(s) in the legacy contract will be transferred to the listed beneficiaries based on the predetermined allocations. The system can handle a maximum of 100 transactions at a time. If there are more than 100 transactions needed in the asset distribution process (eg. there are 4 beneficiaries and 25+ assets), the system will distribute assets in multiple batches. The button **Claim Remaining Fund** will be available if there are more assets to be claimed in the will contract.<br>
+## Via the Safe platform (Safe legacies only)
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 7.47.28 PM.png" alt=""><figcaption></figcaption></figure>
+Safe-backed legacies can be activated from [app.safe.global](https://app.safe.global) independently of our UI:
 
-* Once all assets are distributed, the system will show that asset distribution is complete.&#x20;
+1. Open the Safe in app.safe.global.
+2. Navigate to the Apps tab and open the 10102 Legacy app (or interact with the module directly, for advanced users).
+3. Activate from there. The module does the same work as our UI.
 
-### Claim Funds Using an Explorer
+Useful as a backup path if our UI is down, or if you already live in Safe's interface.
 
-In the current design, transfer legacy contract can be activated directly on the explorer (such as Etherscan) through the Router contract, which requires the **Legacy ID and the asset token addresses as inputs.**
+## Via a blockchain explorer (any legacy)
 
-<figure><img src="../../.gitbook/assets/6325572570664602402 (1).jpg" alt=""><figcaption></figcaption></figure>
+This is the path your Legacy Claim Card describes. You can reach it any time, with or without our UI.
 
-* Legacy ID is included in the email notifications sent to beneficiaries when the contract is ready to activate.&#x20;
-* The list of asset token addresses can be looked up via the legacy contract address, which is also provided in the email.\
-  \
-  (When beneficiaries activate the legacy through the UI, the asset list is automatically fetched from the subgraph)
+1. Open an explorer like Etherscan for the network the legacy is on.
+2. Navigate to the **Router contract** from the card — it's a **Transfer Legacy Router** (or EOA Router) for Transfer legacies.
+3. Connect your wallet (beneficiary address).
+4. On the _Contract → Write_ tab, call the activation function with the **Legacy ID** from the card as the argument.
+5. Sign and pay gas.
+
+The contract will distribute assets exactly as it would have done from the UI — the router has no knowledge of where the call originated.
+
+{% hint style="success" %}
+**You don't need a list of assets.** The router reads the approved token list from the legacy contract itself. You only need the Legacy ID.
+{% endhint %}
+
+## After activation
+
+- **Status** reads **Activated** for everyone (owner, beneficiaries, watchers).
+- **Watchers** still see the legacy under their watchlist for historical context.
+- **Owner actions** are disabled — no more edits, no more deletes. The legacy has done its job.
+- **Email notifications** (if configured) go out to impacted parties summarizing the distribution.
+
+## Troubleshooting
+
+- **"Not enough time has passed"** — your clock isn't the authoritative one. The contract checks against the owner's last outgoing transaction timestamp on-chain. Wait, or verify the owner really has been inactive for the trigger window.
+- **"You are not a beneficiary"** — the address you're connected with doesn't match a configured beneficiary for this legacy ID. Re-check the card; check the address you expect to be listed; ask the owner if you suspect a typo.
+- **"Insufficient gas"** — activation for a legacy with many tokens and beneficiaries can be expensive. If you're running low, coordinate with another beneficiary, or use the Claim Remaining Fund batching to split the cost.
+
+## See also
+
+- [Legacy Claim Card](./legacy-claim-card.md) — the printed safety net.
+- [Concepts — Activation trigger](../concepts.md#activation-trigger).
