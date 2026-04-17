@@ -1,86 +1,112 @@
+---
+description: >-
+  Creating, managing, and claiming each of the three timelock flavors:
+  Timelock, Soft Timelock, Timelocked Gift.
+---
+
 # Using Timelock
 
-User can navigate to the Timelock section of the app and choose between 3 options of timelock configurations, depending on the use case.
+Navigate to the **Timelock** tab of the app. You'll see any timelocks you've created, and any timelocked gifts others have set up with you as the recipient.
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-timelock-2026-01-01-21_17_13.png" alt=""><figcaption></figcaption></figure>
+To create a new one, click **Create timelock** and pick a flavor: Timelock, Soft Timelock, or Timelocked Gift.
 
-### **Table of Contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+## Common concepts
 
-[**Timelock**](using-timelock.md#timelock)
+These apply to all three flavors.
 
-[**Soft Timelock**](using-timelock.md#soft-timelock)
+### Approving and including assets
 
-[**Timelocked Gift**](using-timelock.md#timelocked-gift)
+A timelock holds what you explicitly approve for it. For each asset:
 
-### Timelock
+- **ERC-20 token**: approve the timelock contract as a spender, then include it. The asset moves into the contract when you finalize creation.
+- **ETH**: can't be approved directly. Use the swap action to convert ETH into a supported storage token (WETH, a liquid staking token), then approve and include that token.
 
-This feature will lock the funds until a specified date. Nobody, including the owner, will  have access to the locked funds while it is locked. After the locked period, the owner then can claim back the funds.
+{% hint style="info" %}
+**Quick setup.** Most timelock create screens offer a one-click "Lock all available ETH" (or similar) shortcut that picks a reasonable default storage token, swaps at market rate, and prepares everything for finalization. Use it when you want the default behavior; switch to manual asset-by-asset selection when you want precise control over which tokens and how much.
+{% endhint %}
 
-#### Create a Timelock
+{% hint style="warning" %}
+**Finalizing fails if your approvals don't cover the configured amounts.** If you set a timelock to lock 100 USDC but only approved 50, creation will revert with an `ERC20: transfer amount exceeds allowance` error. The UI guards against this by not letting you finalize until approvals match \u2014 but if you edit approvals in your wallet out-of-band, re-check the UI before finalizing.
+{% endhint %}
 
-Once the user selects the Timelock option and proceed to create a timelock, they will see  the following screen, where they can configure timelock's name, approve or deposit assets (native asset ETH requires deposit into the contract), and locked duration.
+### Status values
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 9.23.55 PM.png" alt=""><figcaption></figcaption></figure>
+| Status | Meaning |
+|---|---|
+| **Active** | Locked. Funds can't be moved. Progress bar shows how much of the lock has elapsed. |
+| **Unlock pending** (Soft Timelock only) | You've initiated an unlock; the waiting period is counting down. Still can't claim yet. |
+| **Ready** | Lock period has expired. You (or the recipient, for a Timelocked Gift) can claim. |
+| **Claimed** | Funds have been claimed back. Timelock is done. |
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 9.26.25 PM.png" alt=""><figcaption></figcaption></figure>
+## Timelock
 
-#### Claim Assets
+### Create
 
-Once the locked period is over, the system will inform the user via the progress bar and the status "Ready". The user can go to the timelock details page to claim back their assets.
+1. **Timelock** tab \u2192 **Create timelock** \u2192 select **Timelock**.
+2. Configure:
+   - **Name** \u2014 private label.
+   - **Duration** \u2014 how long to lock for. Supports any duration up to contract limits.
+   - **Assets to include** \u2014 pick which tokens and amounts. Use quick setup for ETH, or approve/include individual tokens.
+3. Finalize. One transaction per flavor:
+   - If any ETH needs swapping, the swap happens first.
+   - The timelock is created and assets move in.
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 9.37.40 PM.png" alt=""><figcaption></figcaption></figure>
+### Claim
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 9.38.04 PM.png" alt=""><figcaption></figcaption></figure>
+Once the lock elapses:
+
+1. Open the timelock's details page; the status will read **Ready**.
+2. Click the claim action. Sign one transaction.
+3. Assets return to your wallet.
 
 ## Soft Timelock
 
-This will lock the funds for an unlimited amount of time, and require a pre-configured waiting period after the owner initiate an unlock, safeguarding funds even if private keys are compromised.
+### Create
 
-#### Create a Soft Timelock
+Same as Timelock, except the duration field is replaced by a **waiting period**: "once unlock is initiated, how many days until funds can be claimed?"
 
-Once the user selects the Soft Timelock option and proceed to create a soft timelock, they will see the following screen, where they can configure the soft timelock's name, approve or deposit assets (native asset ETH requires deposit into the contract), and the waiting period.
+### Unlock
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-timelock-create-timelock-2026-01-01-21_30_22.png" alt=""><figcaption></figcaption></figure>
+From the timelock dashboard or the details page, click **Unlock**. Sign one transaction. The status changes to **Unlock pending** and the waiting period begins.
 
-#### Unlock a Soft Timelock
+While unlock is pending, the timelock is still protected \u2014 funds can't be claimed. This is the window during which you'd notice a compromise and take defensive action (cancelling the unlock, moving other funds, rotating keys).
 
-From a timelock dashboard, the user can unlock a soft timelock at any point by clicking the "Unlock" button.
+{% hint style="info" %}
+**Cancelling an unlock.** From the details page, you can cancel an in-progress unlock and return to the locked state. Useful if you initiated the unlock yourself and changed your mind, or if you suspect the unlock was initiated by an attacker with access to your keys \u2014 though in the attacker case, they could also just cancel your cancellation, so rotate keys in parallel.
+{% endhint %}
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 9.33.16 PM.png" alt=""><figcaption></figcaption></figure>
+### Claim
 
-The system will then initiate the unlock process, with the status of the soft timelock changed to "Unlock pending".
-
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 9.36.39 PM.png" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-detail-timelock-11-2026-01-01-21_35_17.png" alt=""><figcaption></figcaption></figure>
-
-While the unlock is pending, the user can't claim the assets in the soft timelock.
-
-#### Claim Assets
-
-Once the waiting period is over, the system will inform the user via the progress bar and the status "Ready". The user can go to the soft timelock details page to claim back their assets.
-
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 9.40.37 PM.png" alt=""><figcaption></figcaption></figure>
+Once the waiting period elapses, status reads **Ready**. Click claim, sign, done.
 
 ## Timelocked Gift
 
-Timelocked Gift allows scheduled fund delivery to another wallet - ideal for scheduled payments, trust-fund style disbursements, or planned giving.
+### Create
 
-#### Create a Timelocked Gift
+Same flow as Timelock, with two extra fields:
 
-Once the user selects the Timelocked Gift option and proceed to create a timelocked Gift, they will see the following screen, where they can configure timelocked gift's name, approve or deposit assets (native asset ETH requires deposit into the contract), and locked duration.
+- **Recipient address** \u2014 the wallet that will be able to claim when the lock expires. Must be an EOA.
+- **Name** \u2014 something meaningful to the recipient, since they'll see it in their dashboard.
 
-The timelocked gift feature is unique in that the user can designate another wallet address to be the recipient of the funds once the locked period is over.
+{% hint style="info" %}
+**The recipient is notified by the presence of the gift on their dashboard.** They'll see it under a "Gifts to me" section of the Timelock tab, starting as soon as you finalize creation. If you want the gift to be a surprise, consider sharing the information at delivery time rather than at creation time.
+{% endhint %}
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-timelock-create-timelock-2026-01-01-21_42_55.png" alt=""><figcaption></figcaption></figure>
+### Claim (by the recipient)
 
-All users will see 2 separate sections on their timelock dashboard, one for the timelocked gifts to them from another user, and the timelocks they created.
+1. The recipient opens the Timelock tab; the gift appears under **Gifts to me**.
+2. Until the lock elapses, status is **Active**. Once elapsed, status reads **Ready**.
+3. Recipient clicks claim, signs the transaction, and receives the assets directly into their wallet.
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-timelock-2026-01-01-21_51_30.png" alt=""><figcaption></figcaption></figure>
+The creator can't reverse a timelocked gift after it's created \u2014 once locked, the recipient is the only one who can claim at expiry. If the creator wants flexibility to revoke, a regular Timelock (claimable by them, then sent off later) is the right pattern instead.
 
-#### Claim Assets
+## Troubleshooting
 
-Once the locked period is over, the system will inform the recipient via the progress bar and the status "Ready" in their timelock dashboard. The user can go to the timelocked gift details page to claim the funds gifted to them.
+- **"Transfer amount exceeds allowance" on finalize.** Your approvals don't cover the amounts you've configured for the timelock. Re-approve from inside the app \u2014 the UI keeps approvals and the finalize button in sync.
+- **"Cannot claim: still locked".** The contract checks on-chain time, not your browser clock. Double-check the lock-end date on the details page.
+- **ETH didn't swap.** A swap requires routing liquidity. For very small amounts or thin-liquidity storage tokens, the swap may fail. Try a supported storage token with known liquidity (e.g. WETH) or reduce the amount.
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-detail-timelock-9-2026-01-01-21_54_13.png" alt=""><figcaption></figcaption></figure>
+## See also
 
+- [Timelock \u2014 overview of the three flavors](./README.md)
+- [Concepts \u2014 Storage token](../concepts.md#storage-token)
