@@ -1,73 +1,79 @@
-# Technical analysis
+---
+description: >-
+  The core engineering challenge behind an on-chain inheritance product — and
+  the trade-offs baked into how we solved it.
+---
 
-### Background <a href="#isoyr7fy03sd" id="isoyr7fy03sd"></a>
+# Inactivity Detection
 
-The purpose of this project is to create a smart contract to hold the assets and will terms. After the owner’s death is confirmed, then the beneficiaries can claim the assets. All of the activities must be done on-chain.
+Every inheritance flow in this product turns on one question: _has the owner been inactive long enough to trigger activation?_ Getting that question right, **on-chain**, for an arbitrary Ethereum wallet, is harder than it sounds — and the shape of our product is largely a consequence of the trade-offs we accepted.
 
-### Expected flow <a href="#eylmkxtodk0g" id="eylmkxtodk0g"></a>
+## The core problem
 
-The expected flow is:
+A smart contract executing on the EVM has very limited information about other accounts:
 
-* The owner create and send assets to the will contract
-* If the owner's wallet doesn’t have any activity during a certain period (for example 6 months or a year, etc..) → the system will determine that the owner has died, and the will is now activated.
-* After the will is activated, the beneficiaries can claim the assets.
-* Otherwise, the beneficiaries can do nothing with the will.
+- It can read state of _contract_ accounts it's given the address of.
+- It can read its own past transactions.
+- It **cannot** directly read the timestamp of the most recent outgoing transaction from an externally-owned account (EOA).
 
-### Technical limitations <a href="#mga0y489h5al" id="mga0y489h5al"></a>
+The last point is the constraint. There's no `block.getLastTxOf(wallet)` or equivalent. You can read _what_ happened to an account's storage, but an EOA has no storage — just a balance and a nonce, neither of which timestamps anything.
 
-Due to EVM and Solidity’s current design, it’s impossible to retrieve the information about the last outgoing activity of an arbitrary wallet from a smart contract. This means if the owner’s wallet doesn’t have some special implementation, the will contract has **no way to detect the last outgoing transaction** of that wallet.
+This is a deliberate EVM design choice (the state trie doesn't carry per-account metadata like last-tx-time), not an oversight. Working around it is the job of the application layer.
 
-In order to make it possible, there are some approaches:
+## Four possible approaches
 
-1. Get the owner’s last activity information from an off-chain channel (not preferred since our app is decentralized).
-2. Get the owner’s last activity information from an Oracle (technically possible, but currently there’s no decent Oracle that provides this kind of data yet).
-3. The owner’s wallet must have some customized functionality.
-4. Or we have to change the expected flow.
+When we started, four approaches were on the table:
 
-Will be elaborated in the next section.
+1. **Off-chain oracle** — have a backend service watch wallets and submit activity attestations on demand. _Rejected:_ centralizes trust on our backend, violates "plan survives us."
+2. **Decentralized oracle (pure)** — delegate to a general-purpose oracle network that already tracks wallet activity. _Rejected (for now):_ no decentralized oracle we evaluated had production-grade coverage of EOA activity data. Chainlink + Moralis gets most of the way there but it's a hybrid, not a pure oracle.
+3. **Custom wallet functionality** — require the owner to use a wallet that exposes a last-tx hook. _Partially adopted:_ this is exactly what the Safe Guard integration does for Safe users.
+4. **Restructured flow** — redesign the UX so the contract doesn't need to know the owner's last-tx timestamp at all. _Considered, rejected:_ the alternatives we sketched (mandatory check-ins, lawyer-attested activation) either shift burden to the owner or reintroduce trust in a centralized party.
 
-Since we don’t prefer to use off-chain methods, decent Oracle is not suitable, and some hybrid methods like ChainLink Function are over complex and still depend on API provider; the most suitable approaches are (3) and (4).
+We ended up with a combination of (3) for Safe owners and a hybrid of (2) and (4) for EOA owners.
 
-### Proposed new flow <a href="#h36nr8ske5m" id="h36nr8ske5m"></a>
+## The Safe path — approach 3
 
-### Owner’s wallet is EOA <a href="#sjibdcrqr083" id="sjibdcrqr083"></a>
+When the owner's wallet is a Safe (a smart-contract wallet with the plug-in points we need), we install a **Safe Guard**: a small contract Safe calls before every transaction execution. Our Guard updates `lastOutgoingTxTimestamp` on every call, storing it in its own contract state.
 
-If the owner’s wallet is EOA, the possible flow will be like:
+That's the entire trick. At activation time, our Router reads the timestamp directly from the Guard, compares it against `block.timestamp - configuredInactivityWindow`, and gates activation on the result. Fully on-chain, no oracle, no trust.
 
-* The owner create and send assets to the will contract
-* If the owner dies in real life, then the beneficiaries try to activate the will contract. There will be a notice period, for example 6 months, 1 year, etc..
-* During the notice period, if the owner is actually still alive, he can cancel the activation process.
-* After the notice period ends, if there’s no action from owner, the beneficiaries can claim the assets
+There's a subtle elegance here: the Guard works regardless of what the Safe is doing. A Safe owner's _normal_ transactions — DeFi, staking, voting, whatever — update the Guard implicitly. The owner doesn't need to remember to "check in." Normal usage _is_ the check-in.
 
-Compared to the original expected flow, the beneficiaries may have to wait longer until being able to claim assets. But our target is to keep the system decentralized though.
+This is why the Safe flow is the path we recommend for users who already have a Safe. It's cleaner, cheaper, and fully self-contained.
 
-### Owner’s wallet is smart contract <a href="#id-88n18v90zj9t" id="id-88n18v90zj9t"></a>
+## The EOA path — hybrid of 2 and 4
 
-If the owner’s wallet is a smart contract. There are some possible cases where they have customized functionality so we can keep the original expected flow.
+EOAs have no code, so there's nothing to hook. We considered making the EOA flow mandatory-heartbeat ("log in every N days or your legacy activates early") but that's a terrible UX: it confuses "I want to protect my beneficiaries" with "I need to babysit an app."
 
-* If the owner’s wallet is an AA or multi-sig wallet that has a built-in function to persist the last transaction’s timestamp (or block number) inside their contract storage. In this case the will contract can just call the function to retrieve the owner’s last activity information. (For now this kind of function is not a standard for AA/multisig wallet yet).
-* If the owner’s wallet is a Gnosis Safe wallet. We’ll develop a guard contract ([https://docs.safe.global/advanced/smart-account-guards](https://docs.safe.global/advanced/smart-account-guards)) which will persist the timestamp of the owner's last activity. If the owner’s wallet uses this guard, then the wallet can retrieve the necessary information from the guard contract.
-* If the owner’s wallet is another type of multi-sig wallet, we need to check whether it’s possible to hook into the outgoing transaction like Gnosis Safe. This depends on the particular multi-sig implementation, and requires more detailed analysis. Currently Gnosis Safe is the market leader for multi-sig wallet so I just use it as the typical use case.
+The solution we settled on is a **Chainlink Functions + Moralis hybrid** at activation time, not continuously:
 
-If the owner’s wallet is smart contract but doesn’t satisfy one of above conditions, the flow will be same as EOA’s
+- When a beneficiary attempts to activate, the Router dispatches a Chainlink Functions request.
+- The Function queries Moralis's transaction-history API for the owner's EOA.
+- Multiple Chainlink oracle nodes run the query independently and reach consensus on the result.
+- The consensus timestamp is returned on-chain; the Router's `require(...)` logic decides whether it clears the inactivity threshold.
 
-### Consideration <a href="#f5k90391kdad" id="f5k90391kdad"></a>
+The important property: **Chainlink and Moralis don't _grant_ activation — they supply a data point, and the smart contract decides**. No oracle can fabricate a "yes, activate" signal that bypasses the contract's own check. The worst an oracle can do is return a wrong timestamp; consensus across multiple nodes makes that very hard.
 
-I personally think we should use the same flow for all cases of the owner's wallet, in order to deliver the unified UX to end users. It may be difficult for the users to figure out why sometimes they have to follow this flow, sometimes the flow is different.
+### Why not apply this to Safes too?
 
-There are some other kind of flows I see the similar products have implemented:
+For uniformity, we could skip the Safe Guard entirely and use the Chainlink path for everyone. We don't, for two reasons:
 
-* Requires the owner to perform check-in to the will contract regularly. After 6 months if the owner haven’t interacted with the will contract, the system will determine the owner is dead 😅.
-* Define the lawyer’s wallet in the will contract, who can determine and execute the will (similar in the real world) - but this will be a completely different business requirement.
+- **Purity** — the Safe Guard is fully on-chain, with no external dependency. For Safe users, we can deliver the strongest guarantee (no oracle in the trust path). We'd rather let Safe users have that cleaner property than force them down to EOA parity.
+- **Cost** — every Chainlink Functions call burns LINK. For Safes, the on-chain Guard is free at activation time.
 
-The final decision is up to the product owner, but if I were the product owner, and in the context of the current project, I will use the proposed one in section “Owner’s wallet is EOA”, applied for all cases.
+## Failure modes and their consequences
 
+| Failure | Safe legacy | EOA legacy |
+|---|---|---|
+| Oracle / Moralis outage | No impact — fully on-chain | Activation blocked until oracle returns. Plan pauses, doesn't break. |
+| Owner changes signer set on Safe | Guard still tracks activity; legacy continues to work. | N/A |
+| Owner rotates EOA key | Key rotation doesn't show as "outgoing transaction" unless they move funds — so the inactivity timer _keeps counting_. Owners need to trigger an explicit heartbeat or an edit after rotation. | |
+| Guard gets disabled without a matching legacy delete | Edge case we test against. Router detects missing Guard at activation and blocks. Legacy can be cleaned up via the explicit delete flow. | N/A |
 
+The failure we care about most is the one that activates _too early_ — because it's irreversible. Every other failure mode (too late, blocked, paused) can be recovered with manual intervention. Our design explicitly prefers "pause on doubt" over "proceed with stale data."
 
-### Future release: Forwarding will with Account Abstraction <a href="#id-88n18v90zj9t" id="id-88n18v90zj9t"></a>
+## Future: account abstraction
 
-* If the owner’s wallet is an AA or multi-sig wallet that has a built-in function to keep track of the last transaction’s timestamp (or block number) inside their contract storage, the will contract can just call the function to retrieve the owner’s last activity information. (For now this kind of function is not a standard for AA/multisig wallet yet).
-* If the owner’s wallet is a Gnosis Safe wallet. We’ll develop a guard contract ([https://docs.safe.global/advanced/smart-account-guards](https://docs.safe.global/advanced/smart-account-guards)) which will keep track of the timestamp of the owner's last activity. If the owner’s wallet uses this guard, then the wallet can retrieve the necessary information from the guard contract.
-* If the owner’s wallet is another type of multi-sig wallet, we need to check whether it’s possible to hook into the outgoing transaction like Gnosis Safe. This depends on the particular multi-sig implementation, and requires more detailed analysis. Currently Gnosis Safe is the market leader for multi-sig wallet so I just use it as the typical use case.
+EIP-4337 and the broader account-abstraction push make this problem easier. An AA wallet can expose its own `lastOutgoingTxTimestamp` as naturally as a Safe does today, and eventually "every wallet is a smart wallet" collapses the EOA/Safe distinction entirely. We expect to add an AA-specific integration when AA wallets have standardized a reasonable way to expose this.
 
-If the owner’s wallet is smart contract but doesn’t satisfy one of above conditions, the flow will be same as EOA’s
+Until then, the two-path design is the best honest trade-off we've found.
