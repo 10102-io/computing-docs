@@ -1,66 +1,80 @@
+---
+description: >-
+  How email reminders are driven from on-chain state — Chainlink Automation
+  runs the cron, Chainlink Functions triggers the SMTP call, and the plan
+  keeps working even if email delivery fails.
+---
+
 # Email Reminders
 
-With a premium subscription, users can configure email notifications for themselves and all designated beneficiaries. Advanced notice periods can be customized by specifying the number of days prior to each activation event.&#x20;
+Email reminders are an opt-in Premium capability that gives owners and beneficiaries out-of-band notifications at key moments in a legacy's lifecycle. They are **additive**: the on-chain contract doesn't depend on email delivery, and the whole email layer can fail without affecting the legality or executability of a legacy.
 
-For more details, see [Premium Features - Email Reminders](../user-guide/premium-features/#email-reminders).
+For the user-facing behavior (what events trigger emails, who gets what), see [Configure Email Reminders](../user-guide/premium-features/configure-email-reminders.md). This page covers the architecture.
 
-The email notification feature is supported by the following on-chain contracts and off-chain services:
+## Components
 
-* **Router Contract**\
-  The contract responsible for creating new legacy contracts.
-* **Settings Contract**\
-  Allows the contract owner to configure settings prior to activation, including email addresses, beneficiaries, and reminder parameters.
-* **Automation Contract**\
-  Periodically checks the status of legacy contracts. Whenever a user updates their reminder settings (for example, changing email addresses, beneficiaries, or reminder timing), the updated information is recorded in this contract.
-* **Chainlink Automation (Cron Job)**\
-  An off-chain automation service provided by Chainlink that periodically invokes the Automation Contract to evaluate activation timelines and determine whether notification conditions have been met.
-* **Chainlink Functions Contract**\
-  Used to securely trigger off-chain actions, including initiating email delivery workflows to owners and beneficiaries when notification conditions are satisfied.
-* **Mailjet Email Delivery Service**\
-  Email delivery to common providers such as Gmail and Outlook relies on the **SMTP protocol**. To support this, 10102 integrates **Mailjet**, an email delivery service that provides SMTP server infrastructure for sending transactional emails.
+| Component | Role |
+|---|---|
+| Router contract | Deploys the per-legacy contracts at legacy creation. Not directly involved in reminders. |
+| `PremiumSetting` | Stores reminder configuration: email addresses, which beneficiaries to notify, advance-notice windows. |
+| `Automation` contract | Owns the `checkUpkeep` / `performUpkeep` pattern. Reads from per-legacy contracts and from `PremiumSetting` to evaluate whether a reminder is due. |
+| Chainlink Automation (cron) | Off-chain automation service that calls `checkUpkeep` on the `Automation` contract once per day. |
+| Chainlink Functions | Bridges the `Automation` contract's "please send email" signal to an off-chain HTTPS call. |
+| Mailjet | SMTP-as-a-service provider that actually puts email in recipients' inboxes. |
 
-Due to Chainlink’s decentralized, multi-node execution model, the same email request may be executed by multiple oracle nodes for redundancy and reliability. Since Mailjet does not natively deduplicate identical SMTP requests, this can occasionally result in duplicate emails being sent.
+All on-chain pieces live in the public [`computing-sc`](https://github.com/10102-io/computing-sc) repository.
 
-This behavior is a known tradeoff of decentralized oracle execution combined with traditional email infrastructure and does not affect the correctness or security of on-chain logic.
+## Workflow
 
-### Workflow
+<figure><img src="../.gitbook/assets/unknown.png" alt=""><figcaption><p>Reminder evaluation and delivery flow.</p></figcaption></figure>
 
-<figure><img src="../.gitbook/assets/unknown.png" alt=""><figcaption></figcaption></figure>
+### Step 1 — Subscription and configuration
 
-#### **Step 1: Legacy Contract Creation**
+1. The owner purchases a Premium subscription (paid in ETH, USDC, or USDT to the `PremiumRegistry` contract). The subscription is on-chain, time-bound, and scoped to the paying wallet.
+2. While Premium is active, the owner configures reminders via `PremiumSetting.setReminderConfigs(...)` — specifying email recipients, which beneficiaries to notify, and the advance-notice window (e.g. "14 days before activation").
+3. `PremiumSetting` stores this configuration on-chain. A Chainlink Automation cron job is registered against the `Automation` contract, scheduled to run daily.
 
-When a user creates a legacy contract, the **Router Contract** deploys and initializes the following components:
+### Step 2 — Daily evaluation
 
-* **Legacy Contract**\
-  Stores the core legacy logic, including beneficiaries and activation parameters.
-* **Automation Contract**\
-  Stores notification-related configuration and activation metadata used for monitoring trigger conditions.
-* **Chainlink Automation Cron Job**\
-  A scheduled job created via Chainlink Automation, configured to run once per day.
+Once per day, the Chainlink Automation cron fires:
 
-#### **Step 2: Trigger Condition Check**
+1. Chainlink Automation calls `Automation.checkUpkeep(bytes)`.
+2. `checkUpkeep` reads from each registered legacy:
+   - Beneficiary addresses and last-activity timestamp from the per-legacy contract.
+   - Activation trigger (inactivity window) from the per-legacy contract.
+   - Email recipients and advance-notice windows from `PremiumSetting`.
+3. For each legacy, `checkUpkeep` computes: _is the current time within any configured reminder window for any configured event?_ Reminder events include "approaching activation," "activation timeline reset," "activation eligible," and "claim successful."
+4. `checkUpkeep` returns `(bool upkeepNeeded, bytes performData)` — with `performData` encoding which legacies and which reminder events need firing.
 
-On each scheduled run, the Chainlink Automation Cron Job performs the following steps:
+### Step 3 — Reminder dispatch
 
-* The Cron Job calls the `checkUpkeep` method on the **Automation Contract**.
-* The Automation Contract queries the **Legacy Contract** to retrieve:
-  * Beneficiary addresses
-  * Legacy end time / activation timestamp
-* The Automation Contract queries the **Settings Contract** to retrieve:
-  * Email recipients (owner and beneficiaries)
-  * Advance notice period (“before activation” timing)
-* Using this information, the Automation Contract evaluates whether any notification trigger conditions have been met (for example, whether the current time falls within a configured reminder window).
+1. If `upkeepNeeded == true`, Chainlink Automation calls `Automation.performUpkeep(performData)`.
+2. `performUpkeep` validates the decoded data and calls `ChainlinkFunctions.sendEmail(recipients, legacyId, eventType)` — one call per (recipient, event) tuple.
+3. Each Chainlink Functions request executes on multiple oracle nodes. Each node makes an HTTPS POST to 10102's mail service (which wraps Mailjet's SMTP).
+4. Mailjet delivers the email to the recipient's provider (Gmail, Outlook, ...).
 
-The Automation Contract then returns the result of the trigger evaluation.
+### Known trade-off: duplicates
 
-#### **Step 3: Notification Execution**
+Chainlink Functions executes on multiple nodes for reliability. Mailjet does not natively deduplicate identical SMTP requests. The consequence: **the same reminder email may arrive more than once** when the oracle consensus fans out across many nodes. This is a known limitation of combining a decentralized oracle with a centralized email-delivery API, and does not affect on-chain correctness. Deduplication keys on the mail-service side are on the roadmap to mitigate this.
 
-The Chainlink Automation Cron Job receives the evaluation result.
+## Why daily
 
-* If the result is **false**, no action is taken.
-* If the result is **true**, the Cron Job invokes the `sendEmail` method on the **Chainlink Functions Contract**.
-* Chainlink Functions then execute the off-chain workflow to send email notifications to the relevant beneficiaries and/or the owner.
+A daily cron is the sweet spot between:
 
+- **Responsiveness** — most reminder windows are measured in days (e.g. "14 days before activation"), so sub-daily precision adds cost without adding value.
+- **Chainlink subscription cost** — upkeep calls consume LINK. Running hourly would 24x the bill for marginal benefit.
+- **Email fatigue** — people tolerate "1 email per event per day" much better than "4 emails per event per day."
 
+If a reminder window is narrower than a day (e.g. "notify 1 hour before activation"), it gets rounded up to the next daily evaluation. This is an accepted limitation documented in the user guide.
 
-<br>
+## Privacy and opt-in
+
+- Email addresses are stored **on-chain** in `PremiumSetting`. Anyone with a chain reader can see them. This is a deliberate trade-off: the plan must survive 10102, which means no secret data held by 10102's backend.
+- Reminders are strictly opt-in per recipient. An owner cannot secretly enroll a beneficiary's email; the flow requires the owner to input the address explicitly.
+- 10102 never asks a beneficiary to sign anything to "enable reminders." If a recipient ever gets an email claiming they need to sign or connect a wallet to continue receiving reminders, it's not us.
+
+## What happens when email breaks
+
+If the email layer is entirely broken (Chainlink Functions down, Mailjet down, our mail service down), the only consequence is that reminder emails don't send. The legacy itself continues to work exactly as specified on-chain. A beneficiary whose reminder never arrives can still activate on time via the app or via Etherscan — using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md) — because the on-chain state has all the information needed.
+
+This is the "plan survives us" principle in action: email reminders are a _better experience_, never a _requirement_.

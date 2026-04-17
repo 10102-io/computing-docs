@@ -1,55 +1,101 @@
+---
+description: >-
+  How Transfer legacies work when the owner is a plain EOA (MetaMask, Ledger,
+  Trezor, …) with no Safe involvement, and how CREATE2 makes the setup flow
+  feel less alarming.
+---
+
 # Legacy Contracts Created with EOAs
 
-An **externally owned account (EOA)** is an account controlled by a cryptographic keypair and is most commonly referred to as a wallet. A key pair consists of a public key (a.k.a public address) and a private key. For **Transfer Legacy** contracts, the user has an option to create a will using their own Ethereum address.
+An **externally owned account (EOA)** is an Ethereum account controlled by a single private key — the wallet most people have in their browser or hardware device. EOAs have no on-chain code, which makes them elegant but creates one genuine constraint for inheritance: **there is no built-in way for a smart contract to read an EOA's last outgoing transaction timestamp**. The 10102 EOA flow is shaped around that constraint.
 
-### Table of Contents
+This page describes the pure-EOA **Transfer legacy** path. Multisig legacies are Safe-only; Safe-backed Transfer legacies are covered in [Legacy Contracts Created with Safe SDK](legacy-contracts-created-with-safe-sdk.md).
 
-[Create a Legacy Contract](legacy-contracts-created-with-eoas.md#create-a-legacy-contract)
+## Contract roles
 
-[Edit a Legacy Contract](legacy-contracts-created-with-eoas.md#edit-a-legacy-contract)
+| Contract | Purpose |
+|---|---|
+| `TransferEOALegacyRouter` | Creates, edits, deletes, and activates EOA-owner Transfer legacies. |
+| `LegacyDeployer` | CREATE2 factory. Deploys per-user legacy contracts to a deterministic address. |
+| Per-legacy `TransferEOALegacyContract` | Stores beneficiaries, allocations, approved asset list, activation trigger, last-activity timestamp. |
 
-[Delete a Legacy Contract](legacy-contracts-created-with-eoas.md#delete-a-legacy-contract)
+Routers are upgradeable behind proxies; per-legacy contracts are minimal (storage + a few entry points) and not upgradeable.
 
-[Reset Time to Activation](legacy-contracts-created-with-eoas.md#reset-time-to-activation)
+## CREATE2 for a better first-time experience
 
-[Activate a Legacy Contract](legacy-contracts-created-with-eoas.md#activate-a-legacy-contract)
+The first time a user creates a legacy, their per-legacy contract does not yet exist on-chain. A naive flow would require the user to (1) deploy the contract, then (2) approve it as a spender for each ERC-20 they want to include. The second step, targeting a freshly-deployed contract, tends to trigger wallet "suspicious transaction" warnings — the approval target has no on-chain history, which is a legitimate heuristic against scams but bad UX for legitimate tooling.
 
-### Create a Legacy Contract <a href="#create-a-legacy-contract" id="create-a-legacy-contract"></a>
+10102 uses `CREATE2` to make the legacy contract's address predictable _before_ deployment. The address is derived from the deployer, a salt (the owner's EOA), and the initcode hash. We explicitly preserve the same initcode across users so that the address derivation is stable and auditable. This lets us:
 
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXeETOc5ziQJ4Fzy6bA-oiCRYY1KympP8ScX07WfKYfloZDOn-vAlou3BchgaFiohEnbC3Hsfr1XymcX6lfBEqqbsiZ3LQIzc-tiS8BeZyCnGhZdQvwlWfnTdDvJnuJGSvQzQf8hiQ?key=odBWC6NT8SMxbDV561Yp6OAP" alt=""><figcaption></figcaption></figure>
+- Deploy the contract and approve it in two separate transactions without the approval target looking "unknown" to wallets that track our contract family.
+- Show users the legacy address at step 1 and have it match what actually gets deployed.
+- Let beneficiaries verify the legacy address on Etherscan against a known pattern.
 
-* When the user create a new legacy contract, beneficiaries and allocations are required. Once created, the contract will initialize the timestamp of the last outgoing transaction of the owner's wallet.
-* The owner is required to approve the legacy contract the permission to transfer token from the owner's wallet to beneficiaries when the contract is activated.
-* The owner is required to deposit ETH the native asset into the legacy contract, which will transfer ETH from the owner's wallet to the legacy contract. When the legacy contract is activated, the contract will transfer the ETH to beneficiaries.
-* The Router Contract emits a event and Subgraph listens and creates a legacy contract entity.
+## Creating an EOA legacy
 
-### Edit a Legacy Contract <a href="#edit-a-legacy-contract" id="edit-a-legacy-contract"></a>
+The flow is intentionally split into two explicit signer actions, because a single atomic flow is not possible without EIP-5792 `wallet_sendCalls` support (something we're tracking for a future release).
 
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXd2EVqoqAU1dAZqGzpd8xivOBBev8X4hpShpTYRWcsB3p8WPHNI2KrfHiOKUQm5lw8FNL46vLFy4XTV3grS2Jbfz4hQ5hARi8lfuUmBlIHDadkxQVTribdtS7TLn7jNBCLLE6pK?key=odBWC6NT8SMxbDV561Yp6OAP" alt=""><figcaption></figcaption></figure>
+### Step 1 — Deploy the legacy contract
 
-* When the owner edits a legacy contract, the new information is updated in the legacy contract, and the timestamp of the last outgoing transaction in the contract's owner's wallet is reset.
-* When the owner edits the legacy contract to approve more tokens, the new tokens and/or new amount is updated in the legacy contract. This action alone will not reset the timestamp of the owner's wallet.
-* When the owner deposits or withdraws ETH in or from the contract, the amount is updated, and the timestamp of the last outgoing transaction in the legacy contract owner's wallet is reset.
-* The Router Contract emits a updated event and Subgraph listens and updates the legacy contract with new information.
+1. The user configures beneficiaries, allocations, activation trigger (inactivity window in days), and name/note in the UI.
+2. The user submits `TransferEOALegacyRouter.createLegacy(...)` with those parameters.
+3. The Router calls `LegacyDeployer.deploy(...)` with a deterministic salt. The CREATE2 deploy produces the per-legacy contract at a predictable address.
+4. The Router emits `LegacyCreated`. The subgraph creates the legacy entity.
+5. The per-legacy contract initializes `lastActivityTimestamp` to the creation block.
 
-### Delete a Legacy Contract <a href="#delete-a-legacy-contract" id="delete-a-legacy-contract"></a>
+### Step 2 — Include assets
 
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXeCdvNTQfU2ukuB2bgHMHFz4L3hlMqWgaOPEoYrgIUHx4CJEn2KuSkPaPwgaZY0kssd3vTg9CUfYOozUrOkeNTYbmodTEpGE_ypumHVyu_nSJ9gc-DW9KpWWxJl52d-EUiYHUf6zw?key=odBWC6NT8SMxbDV561Yp6OAP" alt=""><figcaption></figcaption></figure>
+A legacy contract holds _rules_, not custody — with one small exception for ETH. For each asset the owner wants included:
 
-* When the owner deletes an existing legacy contract, the Router Contract emits a new event and Subgraph listens and updates the legacy contract' status to deleted.&#x20;
-* The amount of previously deposited ETH in the contract will be transferred back to the owner's wallet.
+- **ERC-20** — the owner submits an `approve(legacyContract, amount)` to the token contract. The subgraph indexes the approval against the legacy. On activation, the Router / per-legacy contract uses `transferFrom` to move tokens from the owner's EOA to beneficiary addresses — _only the pre-approved amount, only on activation_.
+- **ETH** — ETH cannot be approved like an ERC-20. The owner swaps ETH for a supported storage token (WETH, a liquid staking token) via the in-app Uniswap integration, then approves the storage token as above. This keeps the contract's permission surface uniform across assets.
 
-### Reset Time to Activation
+The owner can add or remove assets at any time before activation. Removing an asset means approving 0, or deleting and recreating the legacy.
 
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXe2UwX4gwqN1YDfAD1iz7eHljWyzef2Zlv_X8zzPrGBTEfohmnPPhpkPNtc0LLlpsnvcVVG-cBI9o8XwCsHKMn2w24NmdR_Or8A7RsXHU4R4bp_M_VJ_8koPQQP33pJtfbuTs1plQ?key=odBWC6NT8SMxbDV561Yp6OAP" alt=""><figcaption></figcaption></figure>
+## Heartbeat (reset activation timer)
 
-* When the legacy contract owner clicks the button "I'm still alive",  the system resets the timestamp of the last outgoing transaction.
-* Router Contract emits a new event and Subgraph listens and updates the last timestamp of the contract owner's wallet.<br>
+Because the EOA has no on-chain code to hook into, the per-legacy contract tracks its own `lastActivityTimestamp`. Two things reset it:
 
-### Activate a Legacy Contract <a href="#activate-a-legacy-contract" id="activate-a-legacy-contract"></a>
+- **Explicit heartbeat** — the owner clicks `I'm still alive` in the UI, which submits a tiny transaction to the Router. Cheap, unambiguous, on-chain.
+- **Edit** — any edit to the legacy (beneficiaries, allocations, trigger, name) resets the timestamp as a side effect, because the edit is itself an outgoing transaction from the owner's EOA.
 
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdmcx2YL5YevNcScZiDkaZD__kBTtHikw8tyfA01VWYawWVZ0HaWaFUYU88B4eoyc1PiY7M6meF8GN1Y5KMBNXZOOiOolzYTBHct4-zsauYlPk9L49hlINg9du6mARaXeQgFKe8eQ?key=odBWC6NT8SMxbDV561Yp6OAP" alt=""><figcaption></figcaption></figure>
+_Not_ a heartbeat: arbitrary transactions from the owner's EOA that don't touch the legacy. The per-legacy contract has no way to see those. This is the trade-off of the EOA path — the [Chainlink/Moralis hybrid](indexing-and-activity-tracking.md) fills in the gap at activation time.
 
-* When a beneficiary checks a legacy contract's status, a function checks whether the legacy contract can be activated. If not enough time (as specified by the legacy contract) has passed since the last outgoing transaction, the legacy contract can’t be activated. When the time requirement is met, the legacy contract can be activated by one of the beneficiaries.
-* Once the legacy contract is activated, the amount of ETH deposited in the legacy contract and the amount of tokens approved will be transferred to the designated beneficiaries's wallets.
-* Router Contract emits a new event and Subgraph listens and updates the legacy contract's status to activated.
+## Editing
+
+Edits are single-EOA transactions, not multi-sig, so they're instant:
+
+- Any field can change — name, beneficiaries, allocations, activation trigger, asset list.
+- The Router emits an `LegacyUpdated` event; the subgraph refreshes the entity.
+- `lastActivityTimestamp` is reset as a side effect of the outgoing transaction.
+
+There's no notion of "co-signers need to approve the edit" — the whole point of an EOA legacy is that the owner has sole authority.
+
+## Deleting
+
+`TransferEOALegacyRouter.deleteLegacy(...)` does three things atomically at the protocol level, with an optional revoke loop at the UI level:
+
+1. Marks the legacy as deleted in the Router + per-legacy contract. The subgraph updates the entity status.
+2. Returns any ETH held _inside_ the per-legacy contract (there's a small amount of dust possible from storage-token mechanics) to the owner.
+3. The UI then walks the owner through a sequence of `approve(legacyContract, 0)` calls — one per previously-approved token — to revoke spender permissions. This is best-effort; a partial success still leaves the legacy deleted.
+
+Empty legacies (no tokens ever approved) skip the revoke loop entirely. The revoke loop is strictly a "for your protection" cleanup; the deleted legacy contract can no longer call `transferFrom` anyway, but dangling approvals are a general hygiene problem worth fixing.
+
+## Activation
+
+Activation is a single transaction any beneficiary can submit:
+
+1. Beneficiary calls `TransferEOALegacyRouter.activate(legacyId)` from an address matching one of the configured beneficiaries (primary, or a contingent whose window has elapsed).
+2. The Router checks the activation trigger by consulting the [Chainlink Functions + Moralis hybrid](indexing-and-activity-tracking.md) — because the per-legacy contract's `lastActivityTimestamp` only sees activity _on the legacy_, not general wallet activity, the Router additionally verifies the owner's EOA has had no outgoing transactions for the configured window using an off-chain activity check bridged back on-chain via Chainlink.
+3. If the check passes, the Router iterates the allocations and issues `transferFrom(owner, beneficiary_i, amount_i)` for each (asset, beneficiary) pair.
+4. The Router emits an `Activated` event; the subgraph marks the legacy activated.
+
+Batches over 100 transfers are executed in chunks, with the remaining distribution callable via a `Claim Remaining Fund` follow-up — see the user guide for the beneficiary-side flow.
+
+## When the activity oracle is unavailable
+
+If Chainlink or Moralis are down, activation is not possible for EOA legacies — the Router refuses to move assets without a current activity verdict. This is a deliberate safety property: we'd rather a legitimate claim be delayed than risk activating with stale activity data. Safe-owned legacies don't have this dependency because their Safe Guard already holds fresh activity on-chain.
+
+## Why split EOA and Safe paths at the contract level
+
+The two flows share 80% of their semantics, but the 20% that differs — how activity is tracked, who can authorize edits, how activation executes — is different enough that conflating them would force both paths to carry the other's complexity. Two thin routers with clear contracts are easier to audit and easier to upgrade in isolation.

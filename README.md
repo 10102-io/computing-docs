@@ -1,27 +1,50 @@
+---
+description: >-
+  A decentralized framework for digital inheritance — give your crypto a
+  survivable plan, without trusting a centralized custodian.
+---
+
 # Introduction
 
-As digital value increasingly dominates the landscape through cryptocurrencies like Bitcoin and Ethereum, the concept of protection and security is being reimagined in the new world of digitally decentralized value.
+Crypto security has matured. Smart contracts get audited, wallets get hardware-hardened, users get more discerning. Inheritance planning for crypto has not kept up. Most "solutions" still rely on centralized custodians, legal instruments designed for fiat assets, or a scrap of paper shoved in a safe that nobody remembers where.
 
-Within crypto, security has become indispensable, with smart contracts undergoing rigorous audits and users becoming increasingly discerning. However, digital inheritance still lags behind. Commonly referred to as "Estate planning" in the traditional world, inheritance outlines what should happen in various life scenarios, including death and other major events. But a comprehensive framework to achieve this in the decentralized crypto world has yet to emerge.
+**10102 Digital Inheritance** is a small, auditable set of Ethereum smart contracts — plus a thin app on top — that lets you define the rules for how your on-chain assets pass on, and executes them automatically when those rules are met. No custody. No subscription required for the core flows. No middleman the plan depends on.
 
-It is worth highlighting the difference between a centralized provider such as Google or Facebook, which can carry out some planning and delegation via centralized servers, and a decentralized infrastructure such as Ethereum, which follows only the rules of its smart contracts.
+## What it does
 
-As we transition to a fully digital era, we need a native process to accommodate digital value transmission, leveraging the powerful properties of decentralized systems - immutability, transparency, and trustless automation. At the  best of our ability, we want to create a framework that can not only last forever, but also carry people's digital legacy over many generations.
+- **Transfer legacy** — split specific assets across named Ethereum addresses when you've been inactive for a configurable window. Works with any EOA wallet (MetaMask, Ledger, Trezor, Rainbow, Coinbase Wallet, WalletConnect-compatible mobile wallets) _or_ with a Safe.
+- **Multisig legacy** — hand over control of an existing Safe to your beneficiaries by adding them as co-signers when the inactivity window elapses. The Safe itself, and everything it holds or governs, _is_ the inheritance.
+- **Timelock** — a time-based security layer for your own funds: lock assets until a specific date (protecting against coercion, wrench attacks, or your own impulses). Three flavors: Timelock, Soft Timelock, Timelocked Gift.
+- **Premium layer** — optional contingent beneficiaries (fallback layers), authorized watchers (read-only oversight accounts), and email reminders. All additive; the core flows work without them.
 
-The goal of 10102's Digital Inheritance is to establish a flexible, decentralized framework for automated digital value transmissions. This framework supports both basic and advanced functions, catering to diverse needs. Our decentralized application enables beneficiaries to access valuable crypto inheritances based on predetermined conditions. Built on Ethereum, the most robust smart contract platform with extensive developer community and advanced wallet infrastructure, our solution leverages battle-tested security to provide seamless digital inheritance management.
+## The design principle: your plan survives us
 
-### Web3 Connect options
+Every feature in this app is operable directly from the Ethereum contracts — without our UI, without our servers, without our company. That's not an afterthought; it's the point.
 
-The following types of connections are supported:\
-Metamask, Wallet Connect, Ledger, Trezor, Rainbow, MagicEden and Coinbase Wallet.
+- **Contracts are verified on Etherscan**. Anyone can call them from any Ethereum interface.
+- **Code and audits are public**. See [github.com/10102-io/computing-sc](https://github.com/10102-io/computing-sc) and [github.com/10102-labs/audits](https://github.com/10102-labs/audits).
+- **The Legacy Claim Card is printable**. Every legacy produces a one-pager documenting the contract address, legacy ID, and activation instructions — enough for a beneficiary to claim via Etherscan even decades from now. See [Legacy Claim Card](user-guide/legacy/legacy-claim-card.md).
+- **Upgrades are Safe-controlled, not founder-controlled**. The `DefaultProxyAdmin` for all upgradeable contracts is owned by a multisig.
 
-### ENS all around compatibility
+If our website goes down tomorrow, your legacy still works. That's the entire bet.
 
-Ethereum addresses are displayed by their assigned ENS if applicable, in all areas of the dApp.
+## Built on Ethereum, with the ecosystem
 
-### Testnet and Mainnet
+- **Ethereum** — the settlement layer. Mainnet + Sepolia for testing.
+- **Safe** — wallet infrastructure for all multisig-based flows (Safe Guard + Safe Module patterns).
+- **The Graph** — subgraphs index legacy contracts, token balances, and activity, so the UI stays fast without trusting any single RPC.
+- **Chainlink** — Functions + Automation drive the hybrid on-chain/off-chain activation check and the daily email reminder cron.
 
-Use can switch between main or test networks (e.g Sepolia) within the dApp. The testnet is designed for users to test the concept before connecting their real wallets, with duration configured in minutes.
+## Wallet support
 
+Any wallet that speaks a standard Ethereum connector works: **MetaMask**, **WalletConnect** (covering most mobile wallets), **Coinbase Wallet** (extension, mobile, and passkey-based smart wallets), **Ledger** + **Trezor** (direct or via Ledger Live / Trezor Suite), **Rainbow**, and others. ENS names render everywhere addresses do.
 
+## Mainnet and Sepolia
 
+You can switch networks inside the app. **Sepolia** is the public testnet: identical flow, free test ETH, activation windows configurable in minutes instead of days so you can exercise the whole cycle in a short session. **Mainnet** is production — real assets, real value, real consequences.
+
+## Where to go next
+
+- New users → start with the [User Guide](user-guide/README.md), in particular [Concepts](user-guide/concepts.md) for the vocabulary.
+- Technical readers → [Architecture](architecture/README.md) explains the contracts, the subgraph layer, and the email infrastructure.
+- Engineers / contributors → [Design & Engineering Notes](dev/README.md) covers the "why" behind the harder design decisions.
