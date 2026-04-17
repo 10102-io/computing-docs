@@ -1,7 +1,7 @@
 ---
 description: >-
   Legacy contracts hold the rules for how, when, and to whom your assets pass.
-  Two shapes \u2014 Transfer and Multisig \u2014 for different inheritance styles.
+  Two shapes — Transfer and Multisig — for different inheritance styles.
 ---
 
 # Legacy

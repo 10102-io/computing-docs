@@ -1,6 +1,6 @@
 ---
 description: >-
-  Optional, time-bound capabilities on top of the free legacy features \u2014
+  Optional, time-bound capabilities on top of the free legacy features —
   contingent beneficiaries, authorized watchers, and email reminders.
 ---
 

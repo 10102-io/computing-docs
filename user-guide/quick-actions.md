@@ -1,7 +1,7 @@
 ---
 description: >-
   Opinionated shortcuts on the home page that pre-fill a legacy or timelock for
-  a specific goal. All of them drop into the standard flows \u2014 you can tweak
+  a specific goal. All of them drop into the standard flows — you can tweak
   anything before signing.
 ---
 

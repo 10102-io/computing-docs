@@ -1,7 +1,7 @@
 ---
 description: >-
   Connect and disconnect wallets. We support every common Ethereum wallet via
-  standard connectors \u2014 WalletConnect, Ledger, Trezor, MetaMask, and more.
+  standard connectors — WalletConnect, Ledger, Trezor, MetaMask, and more.
 ---
 
 # Authentication
@@ -12,13 +12,13 @@ description: >-
 
 Any wallet that speaks one of the standard Ethereum connector protocols works. That includes, but isn't limited to:
 
-- **MetaMask** \u2014 browser extension or mobile app.
-- **WalletConnect** \u2014 protocol covering most mobile wallets (Rainbow, Trust Wallet, 1inch Wallet, imToken, …).
-- **Coinbase Wallet** \u2014 extension, mobile, and smart wallets (passkeys).
-- **Hardware wallets** \u2014 Ledger and Trezor, either directly over USB or through their respective bridge apps (Ledger Live, Trezor Suite).
-- **Rainbow** \u2014 extension and mobile.
+- **MetaMask** — browser extension or mobile app.
+- **WalletConnect** — protocol covering most mobile wallets (Rainbow, Trust Wallet, 1inch Wallet, imToken, …).
+- **Coinbase Wallet** — extension, mobile, and smart wallets (passkeys).
+- **Hardware wallets** — Ledger and Trezor, either directly over USB or through their respective bridge apps (Ledger Live, Trezor Suite).
+- **Rainbow** — extension and mobile.
 
-If your wallet exposes a standard provider, it'll show up in the Connect modal automatically. The app treats every connector identically once connected \u2014 there's no special case for any brand.
+If your wallet exposes a standard provider, it'll show up in the Connect modal automatically. The app treats every connector identically once connected — there's no special case for any brand.
 
 ## Connect
 
@@ -31,14 +31,14 @@ If your wallet exposes a standard provider, it'll show up in the Connect modal a
 4. Back in 10102, you'll see your wallet address (and any ENS name it resolves to) at the top right.
 
 {% hint style="info" %}
-**Don't have a wallet installed?** The Connect modal links out to each wallet's official install page. We never redirect through third-party download sites \u2014 only to the wallet vendors themselves.
+**Don't have a wallet installed?** The Connect modal links out to each wallet's official install page. We never redirect through third-party download sites — only to the wallet vendors themselves.
 {% endhint %}
 
 ## Switch wallets
 
 Click your wallet address in the top right, then **Disconnect**. Reconnect with a different wallet via the standard flow.
 
-Some wallets (MetaMask, most extensions) also let you switch accounts inside the wallet itself without disconnecting \u2014 the app picks up the change automatically.
+Some wallets (MetaMask, most extensions) also let you switch accounts inside the wallet itself without disconnecting — the app picks up the change automatically.
 
 ## Disconnect
 
@@ -47,18 +47,18 @@ Click your wallet address in the top right, then **Disconnect**. You'll be retur
 ## Networks
 
 - **Mainnet** (Ethereum mainnet) is the canonical deployment.
-- **Sepolia** testnet is available for kicking the tires without real funds \u2014 useful for trying a flow end-to-end (creation, activation, claim) with throwaway ETH.
+- **Sepolia** testnet is available for kicking the tires without real funds — useful for trying a flow end-to-end (creation, activation, claim) with throwaway ETH.
 
-Switch networks in your wallet; the app follows. All feature parity between mainnet and Sepolia \u2014 everything you can do on one, you can do on the other.
+Switch networks in your wallet; the app follows. All feature parity between mainnet and Sepolia — everything you can do on one, you can do on the other.
 
 ## Signing vs. sending
 
 Two different things happen with your wallet while you use the app:
 
-- **Signing a message** \u2014 a pure cryptographic signature; doesn't send a transaction, doesn't cost gas, doesn't touch the blockchain. Used rarely, mostly for opt-in features that need to prove you control an address.
-- **Sending a transaction** \u2014 a real Ethereum transaction that costs gas and changes on-chain state. Used for creating/editing/deleting legacies and timelocks, approvals, activations, and claims.
+- **Signing a message** — a pure cryptographic signature; doesn't send a transaction, doesn't cost gas, doesn't touch the blockchain. Used rarely, mostly for opt-in features that need to prove you control an address.
+- **Sending a transaction** — a real Ethereum transaction that costs gas and changes on-chain state. Used for creating/editing/deleting legacies and timelocks, approvals, activations, and claims.
 
-Your wallet clearly distinguishes the two in its prompts. If you're ever uncertain about a wallet prompt, the details page of whatever you're working on will describe the transaction you're expected to sign next \u2014 compare it against what your wallet shows.
+Your wallet clearly distinguishes the two in its prompts. If you're ever uncertain about a wallet prompt, the details page of whatever you're working on will describe the transaction you're expected to sign next — compare it against what your wallet shows.
 
 ## See also
 

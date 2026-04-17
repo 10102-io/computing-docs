@@ -26,7 +26,7 @@ A timelock holds what you explicitly approve for it. For each asset:
 {% endhint %}
 
 {% hint style="warning" %}
-**Finalizing fails if your approvals don't cover the configured amounts.** If you set a timelock to lock 100 USDC but only approved 50, creation will revert with an `ERC20: transfer amount exceeds allowance` error. The UI guards against this by not letting you finalize until approvals match \u2014 but if you edit approvals in your wallet out-of-band, re-check the UI before finalizing.
+**Finalizing fails if your approvals don't cover the configured amounts.** If you set a timelock to lock 100 USDC but only approved 50, creation will revert with an `ERC20: transfer amount exceeds allowance` error. The UI guards against this by not letting you finalize until approvals match — but if you edit approvals in your wallet out-of-band, re-check the UI before finalizing.
 {% endhint %}
 
 ### Status values
@@ -42,11 +42,11 @@ A timelock holds what you explicitly approve for it. For each asset:
 
 ### Create
 
-1. **Timelock** tab \u2192 **Create timelock** \u2192 select **Timelock**.
+1. **Timelock** tab → **Create timelock** → select **Timelock**.
 2. Configure:
-   - **Name** \u2014 private label.
-   - **Duration** \u2014 how long to lock for. Supports any duration up to contract limits.
-   - **Assets to include** \u2014 pick which tokens and amounts. Use quick setup for ETH, or approve/include individual tokens.
+   - **Name** — private label.
+   - **Duration** — how long to lock for. Supports any duration up to contract limits.
+   - **Assets to include** — pick which tokens and amounts. Use quick setup for ETH, or approve/include individual tokens.
 3. Finalize. One transaction per flavor:
    - If any ETH needs swapping, the swap happens first.
    - The timelock is created and assets move in.
@@ -69,10 +69,10 @@ Same as Timelock, except the duration field is replaced by a **waiting period**:
 
 From the timelock dashboard or the details page, click **Unlock**. Sign one transaction. The status changes to **Unlock pending** and the waiting period begins.
 
-While unlock is pending, the timelock is still protected \u2014 funds can't be claimed. This is the window during which you'd notice a compromise and take defensive action (cancelling the unlock, moving other funds, rotating keys).
+While unlock is pending, the timelock is still protected — funds can't be claimed. This is the window during which you'd notice a compromise and take defensive action (cancelling the unlock, moving other funds, rotating keys).
 
 {% hint style="info" %}
-**Cancelling an unlock.** From the details page, you can cancel an in-progress unlock and return to the locked state. Useful if you initiated the unlock yourself and changed your mind, or if you suspect the unlock was initiated by an attacker with access to your keys \u2014 though in the attacker case, they could also just cancel your cancellation, so rotate keys in parallel.
+**Cancelling an unlock.** From the details page, you can cancel an in-progress unlock and return to the locked state. Useful if you initiated the unlock yourself and changed your mind, or if you suspect the unlock was initiated by an attacker with access to your keys — though in the attacker case, they could also just cancel your cancellation, so rotate keys in parallel.
 {% endhint %}
 
 ### Claim
@@ -85,8 +85,8 @@ Once the waiting period elapses, status reads **Ready**. Click claim, sign, done
 
 Same flow as Timelock, with two extra fields:
 
-- **Recipient address** \u2014 the wallet that will be able to claim when the lock expires. Must be an EOA.
-- **Name** \u2014 something meaningful to the recipient, since they'll see it in their dashboard.
+- **Recipient address** — the wallet that will be able to claim when the lock expires. Must be an EOA.
+- **Name** — something meaningful to the recipient, since they'll see it in their dashboard.
 
 {% hint style="info" %}
 **The recipient is notified by the presence of the gift on their dashboard.** They'll see it under a "Gifts to me" section of the Timelock tab, starting as soon as you finalize creation. If you want the gift to be a surprise, consider sharing the information at delivery time rather than at creation time.
@@ -98,15 +98,15 @@ Same flow as Timelock, with two extra fields:
 2. Until the lock elapses, status is **Active**. Once elapsed, status reads **Ready**.
 3. Recipient clicks claim, signs the transaction, and receives the assets directly into their wallet.
 
-The creator can't reverse a timelocked gift after it's created \u2014 once locked, the recipient is the only one who can claim at expiry. If the creator wants flexibility to revoke, a regular Timelock (claimable by them, then sent off later) is the right pattern instead.
+The creator can't reverse a timelocked gift after it's created — once locked, the recipient is the only one who can claim at expiry. If the creator wants flexibility to revoke, a regular Timelock (claimable by them, then sent off later) is the right pattern instead.
 
 ## Troubleshooting
 
-- **"Transfer amount exceeds allowance" on finalize.** Your approvals don't cover the amounts you've configured for the timelock. Re-approve from inside the app \u2014 the UI keeps approvals and the finalize button in sync.
+- **"Transfer amount exceeds allowance" on finalize.** Your approvals don't cover the amounts you've configured for the timelock. Re-approve from inside the app — the UI keeps approvals and the finalize button in sync.
 - **"Cannot claim: still locked".** The contract checks on-chain time, not your browser clock. Double-check the lock-end date on the details page.
 - **ETH didn't swap.** A swap requires routing liquidity. For very small amounts or thin-liquidity storage tokens, the swap may fail. Try a supported storage token with known liquidity (e.g. WETH) or reduce the amount.
 
 ## See also
 
-- [Timelock \u2014 overview of the three flavors](./README.md)
-- [Concepts \u2014 Storage token](../concepts.md#storage-token)
+- [Timelock — overview of the three flavors](./README.md)
+- [Concepts — Storage token](../concepts.md#storage-token)

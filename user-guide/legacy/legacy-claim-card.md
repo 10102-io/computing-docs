@@ -1,7 +1,7 @@
 ---
 description: >-
   A printable one-page summary that gives your beneficiaries everything they
-  need to claim \u2014 even if our UI or website ever goes away.
+  need to claim — even if our UI or website ever goes away.
 ---
 
 # Legacy Claim Card
