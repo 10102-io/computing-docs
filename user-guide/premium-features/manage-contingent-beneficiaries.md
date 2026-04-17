@@ -1,37 +1,82 @@
+---
+description: >-
+  Fallback beneficiary layers that activate only if the primary beneficiaries
+  don't claim within a configurable window. Premium only.
+---
+
 # Manage Contingent Beneficiaries
 
-By default, users may designate up to **10 primary beneficiaries** per legacy contract. Primary beneficiaries can always claim the funds, and only **one** designated beneficiary needs to initiate the claim for all beneficiaries to receive access according to the predefined allocation.
+Contingent beneficiaries are the answer to _"what if my primary beneficiaries can't claim?"_. Keys get lost. People become unreachable. People pass. The contingent layers are the safety net.
 
-As part of the Premium package, users can configure up to two layers of contingent beneficiaries. One additional beneficiary in the form of an EOA is allowed per additional line of activation.
+Premium users can configure up to **two** additional layers on top of their primary beneficiaries:
 
-### Configure Second-line and Third-line Activation
+- **Second-line** — one designated address, activates after a configurable window following the primary activation.
+- **Third-line** — one designated address, activates after a further configurable window following the second-line.
 
-The user can optionally configure the second-line and third-line activation when creating a new transfer legacy contract. Additional activation layers can also be added or modified later by editing the legacy contract, provided the contract has not yet reached its activation point.
+{% hint style="info" %}
+**Only one contingent beneficiary per layer, and only EOA addresses.** Contingent beneficiaries are intentionally simple: a single address per fallback layer. If you need multi-party fallback logic, that's a case for a Multisig legacy at the primary level.
+{% endhint %}
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-config-transfer-2026-01-01-17_58_14.png" alt=""><figcaption></figcaption></figure>
+## When does each layer become eligible
 
-#### **Second-Line Activation**
+Each layer has its own activation window — measured from the moment the _previous_ layer became eligible, not from the original trigger:
 
-User can optionally designate one beneficiary for the second-line activation. The second-line activation takes effect only after a predetermined time window has elapsed without a successful claim from the primary beneficiaries. This time window is fully configurable by the contract owner.
+1. **Primary activation** — the legacy's main trigger elapses; primary beneficiaries can claim.
+2. After primaries' window, **second-line** can claim (if configured).
+3. After second-line's window, **third-line** can claim (if configured).
 
-Once the second-line activation is active, **both primary beneficiaries and second-line beneficiaries are eligible to claim the funds**, with asset distribution following the rules of the corresponding layer.
+At any given time, multiple lines can be simultaneously eligible. The first address to actually claim "wins" the whole remainder — see below.
 
-* Primary beneficiaries remain eligible to claim the funds **as long as they do so before the second-line beneficiary takes action**. In this case, asset distribution follows the original allocation among the primary beneficiaries.
-* If a second-line beneficiary successfully claims the funds, they become the **sole beneficiary** of the funds in the legacy contract.
-* Once an eligible beneficiary successfully claims the funds, no other beneficiaries may claim thereafter.
+## Who actually gets the funds
 
-#### **Third-Line Activation**
+- **Before second-line is eligible**: only primaries can claim, splitting according to the primary allocations.
+- **Between second-line eligible and someone claiming**: primaries can _still_ claim with the primary allocations. If a primary moves first, second-line is irrelevant.
+- **If the second-line claims**: they become the **sole beneficiary** and receive everything remaining. No primary can claim afterwards.
+- **Same logic applies between second-line and third-line.**
 
-User can optionally designate one beneficiary for the third-line activation. The third-line activation takes effect only after a predetermined time window has elapsed following the second-line activation period, provided no claim has been made by either the primary or second-line beneficiaries. This time window is also fully configurable by the contract owner.
+The model is first-to-act-wins among currently eligible parties. This keeps the contract simple and avoids coordinated-distribution failure modes.
 
-Once the third-line activation is active, **primary beneficiaries and second-line beneficiaries remain eligible to claim the funds**, with asset distribution following the rules of the corresponding layer, as outlined above.&#x20;
+{% hint style="success" %}
+**Why one person and not a split for contingents?** Because the fallbacks are typically a different _kind_ of person — an estate lawyer, a specialized recovery service, a single trusted proxy — and splitting their allocation doesn't match how those roles work in practice. If you want a split fallback, your primary layer is the right place to configure it.
+{% endhint %}
 
-If a third-line beneficiary successfully claims the funds, they become the sole beneficiary of the funds in the legacy contract.
+## How contingent beneficiaries see the legacy
 
-Second-line and third-line beneficiaries are, by default, designated as **watchers** with **limited visibility** on the contract. Once their respective activation stage takes effect, they become eligible beneficiaries and can view the full visibility and claim the legacy contract accordingly.
+Until their line activates, contingent beneficiaries are treated as **watchers with limited visibility** — they see the legacy under **My Watchlist**, not **My Inherited Legacy**. The UI explicitly shows whether they're viewing as a watcher or as an imminent contingent beneficiary.
 
-* Before their line of activation takes effect, second-line and third-line beneficiaries can see the contract under "My Watchlist".
-* The system will inform whether the user is seeing the contract as a watcher or as a contingent beneficiary.
-* Once their respective line of activation kicks in, the second-line and third-line beneficiaries can see the contract under "My Inherited Legacy"
+Once their line is eligible, the legacy moves to **My Inherited Legacy** and they get full-visibility beneficiary access.
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 8.19.30 PM.png" alt=""><figcaption></figcaption></figure>
+{% hint style="info" %}
+**You can change a contingent beneficiary's visibility.** The defaults are conservative (limited), but the owner can switch a contingent to full visibility from the watcher settings. Useful when the contingent is an estate lawyer who needs to see addresses to coordinate off-chain planning.
+{% endhint %}
+
+## Configuring
+
+Contingent layers can be configured:
+
+- **At creation** — during the configure step of a Transfer legacy.
+- **Via edit** — at any time before the primary trigger has activated.
+
+For each layer you set:
+
+- The contingent's Ethereum address (EOA only).
+- The window (in days) that must pass after the previous layer became eligible.
+
+## Removing
+
+- **Second-line and third-line beneficiaries** can't be removed from the watcher list directly; they're removed by editing the legacy itself.
+- Removing a line of contingent activation also removes that beneficiary's watcher entry.
+
+## Real-world example
+
+> Alice sets up a Transfer legacy:
+> - **Primaries**: her kids Bob and Charlie, 50% each, 180-day activation trigger.
+> - **Second-line**: her estate lawyer Daria, 90-day window after primary.
+> - **Third-line**: a professional recovery service, 180-day window after second-line.
+>
+> Alice goes silent. 180 days pass — Bob and Charlie can claim. 90 more days pass with no claim — Daria becomes eligible. If Bob finally checks his email and claims at that moment, the original 50/50 split to Bob and Charlie still happens. If Daria claims first, she gets everything (she's supposed to professionally recover and distribute off-chain).
+
+## See also
+
+- [Manage Authorized Watchers](./manage-authorized-watchers.md)
+- [Activate a Legacy Contract and Claim Funds](../legacy/activate-a-legacy-contract-and-claim-funds.md)
