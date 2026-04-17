@@ -1,29 +1,53 @@
+---
+description: >-
+  Legacy contracts hold the rules for how, when, and to whom your assets pass.
+  Two shapes \u2014 Transfer and Multisig \u2014 for different inheritance styles.
+---
+
 # Legacy
 
-### Table of Contents
+A **legacy contract** is a small, purpose-built Ethereum contract that sits between you and your beneficiaries. It doesn't take custody of your assets; it just holds the rules — who, how much, and under what condition — and executes them when the condition is met.
 
-[Multisig Legacy](./#multisig-legacy)
+There are two shapes to choose from.
 
-[Transfer Legacy](./#transfer-legacy)
+## Transfer Legacy
 
-### Multisig Legacy
+Designed for **asset-level inheritance**: "when I've been inactive for X days, beneficiary A gets 40% of these tokens, B gets 60%".
 
-The **Multisig Legacy** type use Safe wallet infrastructure, leveraging the battle-tested security of the popular estalished platform. Once activated, an inheritance will provides pre-designated beneficiaries with full wallet permission by adding the beneficiaries as co-signers to a multisig Safe wallet, leveraging the battle-tested security of an established wallet infrastructure.&#x20;
+- Works with an **EOA** (MetaMask, Ledger, Trezor, Rainbow, Coinbase Wallet…) or a **Safe**.
+- Beneficiaries don't need to work together or sign anything jointly — any one of them can activate once the window has elapsed, and distribution happens according to the pre-set allocations.
+- You retain custody until activation. The contract only has the ERC-20 allowances you've explicitly approved.
+- Up to 10 primary beneficiaries, each with a percentage allocation summing to 100%.
+- Premium users can add up to two additional contingent layers — see [Contingent Beneficiaries](../premium-features/manage-contingent-beneficiaries.md).
 
-Beneficiaries will become co-owners of the Safe wallet, and can take complete control of the account. They claim the Safe wallet’s staked assets from other platform/protocol (the assets are not stored directly inside the wallet) and other potential non-assets properties, like the reputation, bonus points/rewards, airdrop, etc.
+When to pick it: you want precise control over what passes to whom, and you don't need your beneficiaries to collectively continue running a Safe.
 
-The owner of the legacy can create, edit or delete a contract through both 10102's Digital Inheritance application, as well as through their Safe account. Similarly, beneficiaries can activate a legacy contract through both the 10102 app and the Safe platform.
+## Multisig Legacy
 
-### Transfer Legacy
+Designed for **wallet-level inheritance**: your **Safe** _is_ the inheritance, and your beneficiaries become its co-signers on activation.
 
-The **Transfer Legacy** type will let the owner predetermine allocations of specific assets, which will be sent to each beneficiary's wallet once the contract is activated. This option doesn't require beneficiaries to work together as co-signers as is the case with Multisig Legacy.&#x20;
+- Requires an existing Safe. Create one at [app.safe.global](https://app.safe.global) first if you don't have one.
+- On activation, beneficiaries are added as signers to your Safe. They then control the entire Safe — including anything it holds, stakes, governs, or is credited with (reputation, airdrop eligibility, governance positions, off-chain privileges tied to the address, etc.).
+- The activation threshold for the new signers is configurable (e.g. 2-of-3 beneficiaries required to act on the Safe).
+- Every on-chain change follows your Safe's existing signature threshold. You're not bypassing your Safe's security model, you're building _on top of_ it.
+- Allocations aren't applicable here — the Safe passes as a unit.
 
-* The original owner's wallet can either be a multisig wallet such as Safe, or an Ethereum Externally-Owned Account (EOA) such as a Ledger, Trezor, or Metamask account.
-* The Transfer Legacy has the same trigger setting using time elapsed since last outgoing transaction as Multisig Legacy.
-* Asset allocation: the owner can specify which assets and the % allocation for each listed beneficiary.
-* Beneficiaries are added in the form of individual Ethereum addresses. Once activated, the contract will send allocated assets to each beneficiary's Ethereum address.
-* The owner can create a legacy contract and approve or deposit assets to the legacy contract (via 10102's Digital Inheritance app).
-* At any time before the legacy contract is activated by a beneficiary, the owner can reset the time to activation of the legacy contract by clicking the "I'm still alive" button and pay the gas fee.
-* Once the required time to activation has elapsed, the beneficiaries can activate the legacy contract. Activating the contract will incur a gas fee for the beneficiary who initiate the action. The pre-allocated assets will be sent to each beneficiary according to the contract instructions.
-* If there are more than 100 transactions (eg. 4+ beneficiaries with 25+ assets for each), the system will send assets in an increment of 100 transactions or less at a time. An option to "Claim remaining fund" will appear until all the allocated assets have been claimed. Anyone of the listed beneficiaries can claim the assets, and the tokens will be sent to all listed beneficiaries.
-* Before the legacy contract is activated, the owner can reset its time to activation at any time by clicking the "I'm still alive" button and pay a gas fee.
+When to pick it: your Safe is your long-term vault, you want beneficiaries to inherit the whole thing (positions and all), not just cherry-picked assets.
+
+## Transfer vs. Multisig — at a glance
+
+| | Transfer | Multisig |
+|---|---|---|
+| Wallet type | EOA or Safe | Safe only |
+| What passes | Specified ERC-20s + storage tokens | The entire Safe wallet |
+| Granularity | Per-asset, per-beneficiary percentages | The wallet is one unit |
+| Requires beneficiaries to coordinate? | No — any one activates | Yes, once they're co-signers |
+| Custody before activation | Owner's wallet | Owner's Safe |
+
+## What's next
+
+- [Create a Legacy Contract](./create-a-legacy-contract.md) — the full creation flow.
+- [Legacy Contract Details](./legacy-contract-details.md) — reading and operating a legacy after it's live.
+- [Edit or Delete a Legacy Contract](./edit-or-delete-a-legacy-contract.md) — changing the rules or tearing it down.
+- [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-and-claim-funds.md) — the beneficiary's side.
+- [Legacy Claim Card](./legacy-claim-card.md) — the printable safety net.

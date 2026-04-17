@@ -1,56 +1,48 @@
 ---
 description: >-
-  The following features are available to premium users, offering advanced
-  controls to optionally configure access recovery, along with email reminders
-  and additional management tools.
+  Optional, time-bound capabilities on top of the free legacy features \u2014
+  contingent beneficiaries, authorized watchers, and email reminders.
 ---
 
 # Premium Features
 
-## Premium Subscription
+Premium unlocks three families of capabilities that complement the free legacy flow. The free tier is deliberately complete on its own: you can create, edit, activate, and claim legacies without ever subscribing. Premium is for owners who want additional recovery layers, oversight, or notifications.
 
-10102 premium packages use a time-bound access model, with payment made upfront, similar to ENS name registrations. Pricing is based on the selected access duration and is recorded on-chain. Users may pay in ETH, USDC, or USDT.&#x20;
+## Premium subscription
 
-The premium subscription is entirely optional and unlocks access to the advanced features listed below. Free users can still create legacy contracts and timelocks, and designated beneficiaries can claim funds once a contract is activated, regardless of whether the owner has purchased a premium package.
+- **Model**: time-bound access, paid upfront, like an ENS name registration. You pick a duration, pay, and your Premium features are active for that window.
+- **Accepted tokens**: ETH, USDC, or USDT.
+- **On-chain record**: the subscription is recorded on-chain against your address.
+- **Per-wallet**: subscriptions are scoped to the wallet that paid. If you manage multiple wallets, each needs its own subscription.
 
-## Additional Contingent Beneficiary Layers
+## What Premium unlocks
 
-To ensure assets are never lost, premium users can configure up to two additional contingent layers of access recovery. These layers activate sequentially **only** if primary beneficiaries fail to claim or access the assets within a pre-configured time window after the initial trigger. This optional mechanism provides a secure fallback, ensuring assets remain recoverable even if primary beneficiaries are unable to claim the funds with their wallets.
+### Additional contingent beneficiary layers
 
-#### **Example of A Multi-Stage Recovery Scheme:**
+Up to two additional fallback layers — a second-line and a third-line beneficiary — that become eligible to claim after configurable time windows if the primary beneficiaries don't act. Designed to handle the case where an intended beneficiary can't claim (lost keys, unreachable, deceased). See [Manage Contingent Beneficiaries](./manage-contingent-beneficiaries.md).
 
-* **Stage 1:** Designated beneficiaries, such as immediate family members
-* **Stage 2:** A trusted proxy, such as an estate lawyer, who steps in when beneficiaries cannot claim the funds themselves. They do **not** inherit the assets personally, but rather act as a professional intermediary to recover assets for the primary beneficiaries.
-* **Stage 3:** If family members and trusted professionals can’t recover the assets, a specialized recovery entity can step in to ensure nothing is permanently lost.
+### Authorized watchers
 
-This approach guarantees that assets can always be recovered by an authorized party.
+Read-only accounts you authorize to view your legacies under **My Watchlist**. Useful for:
 
-### **Authorized Watchers**
+- Coordinating with an estate lawyer, where the lawyer needs to reference the plan without having access to your assets.
+- Running a family dashboard, where one person keeps an eye on multiple setups.
+- Pairing an off-chain will with an on-chain plan — the watcher sees enough to attest that the plan exists, without you exposing your wallet address.
 
-Premium users can optionally designate **Authorized Watchers** for their legacy contracts. Watchers can view assigned contracts under **“My Watchlist”** in their 10102 dashboard. Watchers are strictly **view-only** and cannot edit, delete, or alter contracts in any way.
+Watchers have two visibility modes: **limited** (privacy-preserving; addresses are replaced with a unique identifier) or **full** (addresses visible). See [Manage Authorized Watchers](./manage-authorized-watchers.md).
 
-#### **Real-World Use Cases**
+### Email reminders
 
-The Authorized Watcher feature provides transparency and coordination without compromising custody, privacy, or control, supporting a variety of practical scenarios, including:
+Opt-in email notifications for the owner and for each beneficiary, at configurable lead times before activation events. Sent for upcoming activations, timeline resets, actual activation, and successful claims. See [Configure Email Reminders](./configure-email-reminders.md).
 
-* **Consolidated Contract Oversight**\
-  View and monitor multiple legacy contracts across different wallets in a single, unified dashboard.
-*   **Professional Estate Coordination**\
-    To facilitate coordination between a digital inheritance plan and off-chain estate planning, it is often necessary to reference specific details so that a trust or legal structure can clearly describe the owner’s intent to follow the plan defined by the 10102 Digital Inheritance smart contracts.
+## Creator-only note for Safe legacies
 
-    In such cases, a specific Ethereum account may be authorized to connect and view limited information about the relevant legacy plans. This allows an estate lawyer or advisor to access the **unique account identifier** and the list of **designated beneficiaries**, without exposing the owner’s public wallet addresses.
+For Safe-backed legacies, watchers and email reminders are managed by the **wallet that created the legacy** (the specific Safe signer who submitted the creation transaction), not by the Safe as a whole. Other Safe signers can still manage on-chain settings (beneficiaries, trigger) at the Safe's threshold, but they'll see a "Notification settings managed by 0x…abcd" badge in the watchers/reminders UIs.
 
-## Email Reminders
+If the creator needs to hand off notification control — for example, if they're leaving the Safe — the current workaround is to delete and recreate the legacy with the new signer as the submitter. See [Concepts — Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies).
 
-With a premium subscription, users can configure email notifications for themselves and all designated beneficiaries. Advanced notice periods can be customized by specifying the number of days prior to each activation event.
+## See also
 
-\
-\
-<br>
-
-
-
-
-
-\
-<br>
+- [Manage Contingent Beneficiaries](./manage-contingent-beneficiaries.md)
+- [Manage Authorized Watchers](./manage-authorized-watchers.md)
+- [Configure Email Reminders](./configure-email-reminders.md)

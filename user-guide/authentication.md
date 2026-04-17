@@ -1,120 +1,66 @@
+---
+description: >-
+  Connect and disconnect wallets. We support every common Ethereum wallet via
+  standard connectors \u2014 WalletConnect, Ledger, Trezor, MetaMask, and more.
+---
+
 # Authentication
 
-### **Table of Contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+10102 Digital Inheritance never takes custody of your funds and never asks you to create a 10102-specific account. Your wallet _is_ your identity. Connecting a wallet is a read-only signature handshake; signing in does not move anything.
 
-[Metamask](authentication.md#with-metamask)
+## Supported wallets
 
-[WalletConnect](authentication.md#with-walletconnect)
+Any wallet that speaks one of the standard Ethereum connector protocols works. That includes, but isn't limited to:
 
-[Ledger](authentication.md#with-ledger)
+- **MetaMask** \u2014 browser extension or mobile app.
+- **WalletConnect** \u2014 protocol covering most mobile wallets (Rainbow, Trust Wallet, 1inch Wallet, imToken, …).
+- **Coinbase Wallet** \u2014 extension, mobile, and smart wallets (passkeys).
+- **Hardware wallets** \u2014 Ledger and Trezor, either directly over USB or through their respective bridge apps (Ledger Live, Trezor Suite).
+- **Rainbow** \u2014 extension and mobile.
 
-[Trezor](authentication.md#with-trezor)
+If your wallet exposes a standard provider, it'll show up in the Connect modal automatically. The app treats every connector identically once connected \u2014 there's no special case for any brand.
 
-[Coinbase Wallet](authentication.md#with-coinbase-wallet)
+## Connect
 
-[Rainbow](authentication.md#with-rainbow)
+1. Click **Connect Wallet** at the top right of the app.
+2. Choose your wallet from the modal.
+3. Complete the connection flow in your wallet's UI:
+   - Extensions open a popup asking for approval.
+   - Mobile wallets show a QR code; scan it in the wallet app.
+   - Hardware wallets may require you to unlock the device and open the Ethereum app.
+4. Back in 10102, you'll see your wallet address (and any ENS name it resolves to) at the top right.
 
-[Disconnect Wallet](authentication.md#ovwrfi22xsry)
+{% hint style="info" %}
+**Don't have a wallet installed?** The Connect modal links out to each wallet's official install page. We never redirect through third-party download sites \u2014 only to the wallet vendors themselves.
+{% endhint %}
 
-### **Connect Wallet** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+## Switch wallets
 
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-16 at 2.20.44 PM.png" alt=""><figcaption></figcaption></figure>
+Click your wallet address in the top right, then **Disconnect**. Reconnect with a different wallet via the standard flow.
 
-User click Connect Wallet to open the Pop-up:
+Some wallets (MetaMask, most extensions) also let you switch accounts inside the wallet itself without disconnecting \u2014 the app picks up the change automatically.
 
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-16 at 2.22.41 PM.png" alt="" width="252"><figcaption></figcaption></figure>
+## Disconnect
 
-#### **With Metamask**
+Click your wallet address in the top right, then **Disconnect**. You'll be returned to the Connect screen. No data is persisted client-side across a disconnect, other than standard browser storage (theme, UI preferences).
 
-* If user doesn't have Metamask installed, the following pop-up will display:
+## Networks
 
-![](../.gitbook/assets/2.png)
+- **Mainnet** (Ethereum mainnet) is the canonical deployment.
+- **Sepolia** testnet is available for kicking the tires without real funds \u2014 useful for trying a flow end-to-end (creation, activation, claim) with throwaway ETH.
 
-![](../.gitbook/assets/3.png)
+Switch networks in your wallet; the app follows. All feature parity between mainnet and Sepolia \u2014 everything you can do on one, you can do on the other.
 
-* User can use a smartphone to scan this QR and connect with the application via Metamask mobile app.
-*   If user click to **Get** button, the system will show the following pop-up:<br>
+## Signing vs. sending
 
-    <figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdExNH-dgraY5KBuSHsoGvabo4nsdkUfucmW2fx1lL_WNT-696y5DWV8Tap1mIU6ueZkLvdLxuO2FZC8qz1iyl8t63o_f5ZLqW4kqtr6gPGHbyiVGRNgFDTrqiCn27H9gVedn2ad-AvFLBI5NZmxDA3H0to?key=oRY7UDjlY8HFRVTJFFE-MA" alt="" width="375"><figcaption></figcaption></figure>
-* If user click **Add to Chrome** button, the system will navigate to [https://metamask.io/download/](https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn)   and display the following:<br>
+Two different things happen with your wallet while you use the app:
 
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdnXmjCIKC4xLATgBfiduc7iyQoTqPRqBzHyIUyaDQC00hNmbEP6Cfg6fpq-eqTlo8PKK-abdu7me2Urso9wWjXuBz3tkraFlPhbXcQjRui8dPWS2Ej_YHBISSFtkMXHD7O9q5IUu_tl5A7uq2q8kVCvidh?key=oRY7UDjlY8HFRVTJFFE-MA" alt="" width="375"><figcaption></figcaption></figure>
+- **Signing a message** \u2014 a pure cryptographic signature; doesn't send a transaction, doesn't cost gas, doesn't touch the blockchain. Used rarely, mostly for opt-in features that need to prove you control an address.
+- **Sending a transaction** \u2014 a real Ethereum transaction that costs gas and changes on-chain state. Used for creating/editing/deleting legacies and timelocks, approvals, activations, and claims.
 
-* If user click **Get the app**, the following screen will display:
+Your wallet clearly distinguishes the two in its prompts. If you're ever uncertain about a wallet prompt, the details page of whatever you're working on will describe the transaction you're expected to sign next \u2014 compare it against what your wallet shows.
 
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXerUMbkEWLA9uxQNS2PLvU9m0G89lMbxpIEGIjAjkIBGOXFAu_irww4j1TKm6803I0rjxykKYD6MydeHoOEkVCR5-ctWToVy9CEpgzuRw_x1Wnbqg81YjB2RiyB0j5hBuKJRwDa7y3qVLbKpsqslxSHRa5I?key=oRY7UDjlY8HFRVTJFFE-MA" alt="" width="375"><figcaption></figcaption></figure>
+## See also
 
-* If users have had Metamask installed, the system will open Metamask extension to sign in:&#x20;
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 11.08.54 AM.png" alt=""><figcaption></figcaption></figure>
-
-#### **With WalletConnect**
-
-* If user clicks on **Wallet Connect,** a QR code will be shown to connect with Wallet connect
-
-<figure><img src="../.gitbook/assets/10.png" alt="" width="563"><figcaption></figcaption></figure>
-
-#### **With Ledger**&#x20;
-
-If user clicks on **Ledger,** a QR code will be shown to connect with Ledger<br>
-
-<figure><img src="../.gitbook/assets/9.png" alt="" width="563"><figcaption></figcaption></figure>
-
-Upon clicking **Get,** Ledger live extension will be open for the user to choose a wallet to connect to the application.<br>
-
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXcXN5G11iG4KS7BrUmHzpDPR6YAfsy6RV8JYOmvO8SFsZxlB8jOu_4qhQdMp0xZCcWOTlV5QDEtVOPGO__0ijshqW57JrY7qbmRHX_rBKXv64lYcFNk6x39dUb6G7iXdVJ6Q-M8LtunPUfQQpkneRFc03Q0?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXd20FyQxVoPLj2qIcWpZzlg7grsPkOMV4LOckrEkGn1oGT4pbg_kqM4WgYP1mB9c65LL7v617EtSZRTuaPaEW7bawbBdsJUbndQi7xAbsnH6ndosrPniVth7pyf_g3XN9bZHpmjYEiBMqpziW2ILls9d0rv?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
-
-#### **With Trezor**&#x20;
-
-*   If user clicks on **Trezor,** the following pop-up will appear and allow the user to connect to their Trezor device:<br>
-
-    <figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdR17rNshrtKzFvHtsrtcjDJVc8rJoBt47vKu0JIi-w9enK2YIJrW9Q1dGg5NGZ8hDknhz8geuqGn_IhYn0gDF0rAYDzKRIRmMUnMp-OGLCHKF6_orjaLrsnyhWYdcRLC2thGFRZNJC0h-M506ZL9pYPdcR?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXedwvUm7a2vysb1oaoGdIEjPwxELbVJE6MNH3U7E_N2_nxuwB9P4-AM2lTFxGbvV5534ee6pG9o7Rj_0q_GccuFVSe1-XLUJTldtPhk7PHMxbWCftYQ3TSy0QBld55TSs3N7t3A7-5-X3hyMKy45P2O68Zf?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXeFgs1H3lajir04GWiSJ_KuIGU4NUXEgFBU2JAM-rJfT4lGrCVjpMIUO9b0UOIKWwFEnXNpCRxXZYDO9zrV6JjrxNCF_pkHjsw5R9X9IymjqItw7_EMXv-3FGyYl581mYGTawjvrBCDRyRl8aSUetkB_Dmz?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdLISvCiA3_OoN5jh_fHF28G6HVYkHKOKVB7sb8L7KF4CQzkRudSloWCX553VORMc_QXTjXaC7uL5hfkMvF5nMheP7SVFYL2_0vMdeL6BX3WUHuPve7o5dNvaFUr9Sw6xruwGkxUYh0y6JqOTJU2CgZCC68?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
-
-<figure><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdv4dP5IMkS8-uehnMXhRB3Iqde0ZqoHSo-ahraYhibjbQPs8ksHOVcZfWVSYlgNIvN1k412JcUG07tzcafr_lic_fJkLyZfO7ji7TJIzxopbCTM7fl2nJnMMe8MWAVPBfpNaX7dmJybOKis7YWWgbtfXpJ?key=oRY7UDjlY8HFRVTJFFE-MA" alt=""><figcaption></figcaption></figure>
-
-#### **With CoinBase Wallet**
-
-<figure><img src="../.gitbook/assets/18.png" alt=""><figcaption></figcaption></figure>
-
-* Open CoinBase wallet extension and sign to connect wallet
-
-#### **With Rainbow**&#x20;
-
-* If user doesn't have Rainbow installed, the following pop-up will be displayed:
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 5.57.59 AM.png" alt="" width="246"><figcaption></figcaption></figure>
-
-* User can use a smartphone to scan this QR and connect with the application via Metamask mobile app.
-* If user click to button, the system will show the following pop-up:
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 5.58.41 AM.png" alt="" width="248"><figcaption></figcaption></figure>
-
-If the user clicks on **Add to Chrome** button, the system will navigate to [https://rainbow.me/](https://rainbow.me/)&#x20;
-
-If the user clicks on **Get the app**, the system will display the following QR code:<br>
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 9.43.31 AM.png" alt="" width="254"><figcaption></figcaption></figure>
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 9.43.55 AM.png" alt="" width="245"><figcaption></figcaption></figure>
-
-If the user has Rainbow installed, the system will open the extension to sign in:
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 11.06.05 AM.png" alt=""><figcaption></figcaption></figure>
-
-### **Disconnect Wallet** <a href="#ovwrfi22xsry" id="ovwrfi22xsry"></a>
-
-To logout, click the wallet address drop down on the top right, then click Disconnect
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-17 at 5.54.57 AM.png" alt="" width="370"><figcaption></figcaption></figure>
-
-User will be redirected to the Connect Wallet screen
-
-<figure><img src="../.gitbook/assets/Screen Shot 2024-12-16 at 2.20.28 PM.png" alt=""><figcaption></figcaption></figure>
+- [Concepts](./concepts.md)
+- [Create a Legacy Contract](./legacy/create-a-legacy-contract.md)

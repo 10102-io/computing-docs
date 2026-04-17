@@ -1,27 +1,44 @@
+---
+description: >-
+  How to use 10102 Digital Inheritance, from connecting your wallet to creating
+  legacies, timelocks, and managing them over time.
+---
+
 # User Guide
 
-This manual guide document provides comprehensive information to assist users make the most of 10102's Digital Inheritance system.
+This guide covers every user-facing flow in the app. Pages are ordered roughly the way a new user would encounter them \u2014 start at the top if this is your first visit, or jump to whatever section matches what you're trying to do.
 
-10102's Digital Inheritance is a system that uses the Ethereum network, allowing users to create many different digital inheritance contracts.
+Unfamiliar with the vocabulary? Skim [Concepts](./concepts.md) first.
 
-### Table of Contents
+## Sections
 
-[Authentication](authentication.md)
+### Getting started
 
-[Legacy](legacy/)
+- [Authentication](./authentication.md) \u2014 connecting and disconnecting a wallet.
+- [Concepts](./concepts.md) \u2014 short glossary of the terms used throughout this guide.
+- [Quick Actions](./quick-actions.md) \u2014 shortcuts from the home page that pre-fill common setups.
 
-* [Create a Legacy Contract](legacy/create-a-legacy-contract.md)
-* [Legacy Contract Details](legacy/legacy-contract-details.md)
-* [Edit or Delete a Legacy Contract](legacy/edit-or-delete-a-legacy-contract.md)
-* [Activate a Legacy Contract and Claim Funds](legacy/activate-a-legacy-contract-and-claim-funds.md)
+### Legacy
 
-[Premium Features](premium-features/)
+- [Legacy](./legacy/README.md) \u2014 overview: Transfer vs. Multisig legacies.
+- [Create a Legacy Contract](./legacy/create-a-legacy-contract.md).
+- [Legacy Contract Details](./legacy/legacy-contract-details.md).
+- [Edit or Delete a Legacy Contract](./legacy/edit-or-delete-a-legacy-contract.md).
+- [Activate a Legacy Contract and Claim Funds](./legacy/activate-a-legacy-contract-and-claim-funds.md) \u2014 the beneficiary's side.
+- [Legacy Claim Card](./legacy/legacy-claim-card.md) \u2014 the printable safety net.
 
-* [Manage Contingent Beneficiaries](premium-features/manage-contingent-beneficiaries.md)
-* [Manage Authorized Watchers](premium-features/manage-authorized-watchers.md)
-* [Configure Email Reminders](premium-features/configure-email-reminders.md)
+### Premium features
 
-[Timelock](timelock/)
+- [Premium Features](./premium-features/README.md) \u2014 subscription model and what it unlocks.
+- [Manage Contingent Beneficiaries](./premium-features/manage-contingent-beneficiaries.md).
+- [Manage Authorized Watchers](./premium-features/manage-authorized-watchers.md).
+- [Configure Email Reminders](./premium-features/configure-email-reminders.md).
 
+### Timelock
 
+- [Timelock](./timelock/README.md) \u2014 overview: Timelock, Soft Timelock, Timelocked Gift.
+- [Using Timelock](./timelock/using-timelock.md) \u2014 create, unlock, and claim for all three flavors.
 
+## A note on philosophy
+
+10102 is deliberately built so that your plan survives us. Every feature in this guide can be operated directly from the Ethereum contracts, without our UI \u2014 which is why [Legacy Claim Card](./legacy/legacy-claim-card.md) exists, and why [Architecture](../architecture/README.md) is published alongside the user guide. If something about our UI is confusing or our servers are down, the plan doesn't stop working. That's the point.
