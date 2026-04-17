@@ -1,83 +1,114 @@
+---
+description: >-
+  Set up a legacy contract so your assets can pass to your beneficiaries on your
+  terms, without a middleman.
+---
+
 # Create a Legacy Contract
 
-### **Table of Contents** <a href="#cy3oh4wk17z3" id="cy3oh4wk17z3"></a>
+A legacy contract holds the rules for how, when, and to whom your assets pass. This page walks through creating one end-to-end.
 
-[Create a Multisign Legacy Contract with Safe Wallet](create-a-legacy-contract.md#create-a-multisig-legacy-contract-with-safe-wallet)
+{% hint style="info" %}
+**New to the terminology?** See [Concepts](../concepts.md) for short definitions of _legacy type_, _storage token_, _activation trigger_, and _claim card_.
+{% endhint %}
 
-[Create a Transfer Legacy Contract with Safe Wallet](create-a-legacy-contract.md#create-a-transfer-legacy-contract-with-safe-wallet)
+## Pick a type
 
-[Create a Transfer Legacy Contract with an Externally-Owned Account (EOA)](create-a-legacy-contract.md#creating-a-transfer-legacy-contract-with-eoa)
+You have two choices at `Create a legacy`:
 
-### Create a Multisig Legacy Contract **with Safe Wallet** <a href="#create-a-multisig-legacy-contract-with-safe-wallet" id="create-a-multisig-legacy-contract-with-safe-wallet"></a>
+- **Transfer legacy** — splits your assets between named Ethereum addresses when activated. Your wallet can be an EOA (MetaMask, Ledger, Trezor, …) _or_ a Safe.
+- **Multisig legacy** — hands over control of your existing **Safe** to your beneficiaries by adding them as co-signers once activated.
 
-See also [Multisig Legacy](./)
+Still unsure? Start with Transfer legacy — it's the most common case and doesn't require a Safe. You can always create a Multisig legacy later.
 
-* User clicks on “Create a Contract”&#x20;
-* User chooses Multisig Legacy
-* The system will navigate to the Check your Safe wallet screen
+{% hint style="success" %}
+If you started from a **Quick action** on the home page, we've pre-filled the type and some settings for you. The rest of this page still applies. See [Quick Actions](../quick-actions.md) for the full list.
+{% endhint %}
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 5.49.10 PM.png" alt=""><figcaption></figcaption></figure>
+## Create a Transfer legacy — connected wallet (EOA)
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 5.42.29 PM.png" alt=""><figcaption></figcaption></figure>
+This is the fastest path: your own wallet stays in full control; the legacy contract only gets permission to move assets once activated.
 
-If the user doesn't have a Safe account, the system instructs the user to create one at [Safe{Wallet} – Welcome](https://app.safe.global/).<br>
+### Step 1 — Deploy the contract
 
-<figure><img src="../../.gitbook/assets/21 (1).png" alt=""><figcaption></figcaption></figure>
+Fill in:
 
-If user puts in a Safe address, the system will enable the **Next step** option to navigate to **Configure your Legacy Contract** screen, where the contract's name, beneficiaries, time to activation and notes can be inputed.
+- **Name** — private label, visible only to you and the beneficiaries you invite.
+- **Beneficiaries** — up to 10 addresses. If you list only one, we auto-allocate 100%.
+- **Allocations** — percentages must sum to 100%.
+- **Activation trigger** — inactivity period (time since your last outgoing transaction) before beneficiaries can claim. Days, not months.
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 5.46.28 PM.png" alt=""><figcaption></figcaption></figure>
+Click **Deploy**. Your wallet will prompt a single transaction to create the contract via our `LegacyDeployer` using `CREATE2`, meaning the final contract address is deterministic — you'll see it before you sign.
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-config-multisig-2026-01-01-17_46_53.png" alt=""><figcaption></figcaption></figure>
+{{screenshot: configure-legacy-eoa-step1}}
 
-### **Create a Transfer Legacy Contract with Safe Wallet** <a href="#create-a-transfer-legacy-contract-with-safe-wallet" id="create-a-transfer-legacy-contract-with-safe-wallet"></a>
+### Step 2 — Approve the assets
 
-See also [Transfer Legacy](/broken/pages/ihnCcEU1uVbGe5DrwEhI)
+After deployment, the details page opens. Nothing has been moved yet; your wallet still holds everything. To decide what gets distributed on activation, you approve the legacy contract as a spender.
 
-* There are 2 options for user to choose from, creating a Transfer Legacy contract with an EOA or a Safe wallet.
-* User clicks on **Create a Contract,** chooses **Transfer Legacy**, and selects to use a Safe account.&#x20;
+For each ERC-20 token: use the **include** action on the token row. Your wallet prompts a standard `approve(legacyAddress, amount)` — normal ERC-20 semantics, no unusual permissions.
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 5.48.30 PM.png" alt=""><figcaption></figcaption></figure>
+For ETH: ETH can't be approved directly because it isn't an ERC-20. Use the **add ETH** action to swap it to a **supported storage token** (WETH or a liquid staking token) through a built-in swap route, then approve the resulting token. This is a two-wallet-prompt flow; both prompts are expected.
 
-The system will perform the same check that the address is a Safe wallet, similar to **Multisig Legacy,** and navigate the user to the **Configure Your Legacy Contract** screen, where contract's name, beneficiaries, assets, asset allocations, time to activation and notes can be inputed.
+{% hint style="warning" %}
+**Why does my wallet warn me about the second transaction?** Some wallets (MetaMask, Rabby, Rainbow, …) flag the swap's approval step as "possibly suspicious" because the legacy contract is new to the wallet — there's no prior transaction history with it. That's expected for a brand-new contract. You can verify the spender address matches the legacy address shown at the top of the details page. The warning goes away once the contract has some history with your wallet.
+{% endhint %}
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-config-transfer-2026-01-01-17_50_54.png" alt=""><figcaption></figcaption></figure>
+{% hint style="info" %}
+**Partial approvals are fine.** You control the allowance amount. To include only 50% of your USDC, approve only 50%. Your beneficiaries can only ever claim what's approved; the rest stays spendable by you as usual.
+{% endhint %}
 
-* Alternatively, the legacy owner can create a Safe wallet in [https://app.safe.global](https://app.safe.global/). The legacy is set as a legacy contract using Safe Proxy.
-* After setting the legacy contract in Safe Proxy, the will owner can set guard in [https://app.safe.global](https://app.safe.global/) or in the Digital Inheritance's site. The system uses Set Guard Function of SafeGuard.
-* The legacy owner can set module in [https://app.safe.global](https://app.safe.global/) or in the Digital Inheritance's site using Set Module function.
-* After setting guard and module, the legacy owner can configure will details including asset, beneficiaries and time to activation since last outgoing transaction.
-* Co-signers of the Safe Wallet will need to sign a transaction to finalize creating the legacy contract. Once the minimum number of signatures required in the Safe Wallet is met, the legacy contract is created.
+### Step 3 — Print a Legacy Claim Card (optional but recommended)
 
-### **Creating a Transfer Legacy Contract with an Externally-Owned Account (EOA)** <a href="#creating-a-transfer-legacy-contract-with-eoa" id="creating-a-transfer-legacy-contract-with-eoa"></a>
+The app generates a one-page printable card with the minimum information your beneficiaries need to claim — even if our UI is ever unavailable. See [Legacy Claim Card](./legacy-claim-card.md).
 
-* There are 2 options for user to choose from, creating a Transfer Legacy contract with an EOA or a Safe wallet.
-* User clicks on **Create a Contract,** chooses **Transfer Legacy,** and selects to use current connected wallet.
+## Create a Transfer legacy — Safe wallet
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 5.52.03 PM.png" alt=""><figcaption></figcaption></figure>
+Same logical flow as the EOA path, with one difference: every on-chain change (deploy, approvals, edits) is a Safe transaction that your other signers must approve according to your Safe's threshold.
 
-When the user clicks Create a contract, the system will navigate to the **Configure Your Legacy Contract** screen, where contract's name, beneficiaries, assets, asset allocations, time to activation and notes can be inputed.
+1. Choose **Use a Safe account** when prompted.
+2. Enter the Safe address. We verify it's a Safe contract on the current network.
+3. Configure the contract as above. Submit.
+4. Your Safe co-signers sign in their usual flow (10102 app or `app.safe.global`). Once the Safe threshold is met, the transaction executes and the legacy is live.
+5. Approve assets the same way — each approval is a Safe transaction.
 
-By default, users may designate up to **10 primary beneficiaries** per legacy contract.&#x20;
+{% hint style="info" %}
+**Notification settings (watchers, email reminders) are tied to the wallet that _submitted_ the creation transaction.** Other Safe signers can sign on-chain edits later, but only the original submitter can manage notifications. See [Manage Authorized Watchers](../premium-features/manage-authorized-watchers.md) for details.
+{% endhint %}
 
-**Configure assets allocations**
+## Create a Multisig legacy
 
-* In order to ensure that beneficiaries can receive the assets, the owner will have to:
-  * Approve ERC-20 tokens in order for the contract to have the permission to transfer assets to beneficiaries' wallets when the will is activated. All ERC-20 tokens in the EOA wallet can still be spent normally.
-  * Transfer Native tokens (ETH) to the legacy contract. Owner can deposit only a portion of their ETH. The contract will hold custody of the deposited ETH. The owner can always edit the legacy contract and withdraw the deposited ETH from the will contract.&#x20;
+Multisig legacy _is_ your Safe — beneficiaries become co-signers on activation, inheriting the wallet and any positions it holds elsewhere (staking, governance, NFTs, etc.).
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 7.19.20 PM.png" alt=""><figcaption></figcaption></figure>
+1. Click **Create a legacy**, choose **Multisig legacy**.
+2. Enter your Safe address. We verify it.
+3. Configure:
+   - Contract name, beneficiaries (addresses), activation trigger.
+   - No asset allocation here — beneficiaries inherit the Safe itself.
+4. Your Safe signers approve the creation transaction (installs our Safe module and guard).
 
-* Asset allocation details for beneficiaries:
-  * User can specify the percentage of each beneficiary, as long as the total is 100%.\
-    Example: There are four beneficiaries: A, B, C, D. The owner can specify that A will receive 20% of the assets, B 10%, C 30%, and D 40%. The allocation will apply to the deposited Ether and approved ERC-20 tokens from the EOA wallet.
+{{screenshot: configure-multisig-check-safe}}
 
-<figure><img src="../../.gitbook/assets/Screen Shot 2026-01-01 at 7.21.34 PM.png" alt=""><figcaption></figcaption></figure>
+{% hint style="warning" %}
+The Safe must still be in active use — Multisig legacy relies on your Safe's last outgoing transaction as a liveness signal. If you don't transact from the Safe at least once per activation window, beneficiaries can activate. Use the heartbeat action on the details page to reset the timer if you don't have another transaction to send.
+{% endhint %}
 
-#### Premium Feature: Additional Contingent Beneficiary Layers
+## Premium: Additional contingent beneficiaries
 
-As part of the Premium package, the user can optionally configure up to two additional layers of access recovery.
+If you subscribe to Premium, you can configure up to two additional contingent layers — fallbacks if a primary beneficiary can't claim (lost keys, deceased, etc.). See [Manage Contingent Beneficiaries](../premium-features/manage-contingent-beneficiaries.md).
 
-See [Premium Features - Additional Contingent Beneficiary Layers](../premium-features/#additional-contingent-beneficiary-layers)
+## Common questions
 
-<figure><img src="../../.gitbook/assets/screencapture-app-10102-io-config-transfer-2026-01-01-17_58_14.png" alt=""><figcaption></figcaption></figure>
+**Can I add ETH directly to the legacy?** Not for Transfer legacies — ETH must be swapped to a storage token first. This is by design: the legacy contract uses ERC-20 allowances, which ETH doesn't have.
+
+**What happens if I move my approved tokens?** Your allowance stays, but beneficiaries can only claim what's actually in your wallet on activation. The approval is a promise, not a lock.
+
+**Can I change the beneficiaries later?** Yes — see [Edit or Delete a Legacy Contract](./edit-or-delete-a-legacy-contract.md).
+
+**Does the contract hold custody of my assets?** No (Transfer legacy with EOA or Safe). You keep custody until activation. The contract only has permission to move what you've approved.
+
+## What's next
+
+- [Legacy Contract Details](./legacy-contract-details.md) — what the details view shows, and how to interpret it.
+- [Edit or Delete a Legacy Contract](./edit-or-delete-a-legacy-contract.md) — updating allocations, revoking approvals, or tearing everything down.
+- [Manage Contingent Beneficiaries](../premium-features/manage-contingent-beneficiaries.md) — Premium fallback layers.
