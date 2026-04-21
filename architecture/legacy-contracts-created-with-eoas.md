@@ -15,21 +15,30 @@ This page describes the pure-EOA **Transfer legacy** path. Multisig legacies are
 
 | Contract | Purpose |
 |---|---|
-| `TransferEOALegacyRouter` | Creates, edits, deletes, and activates EOA-owner Transfer legacies. |
-| `LegacyDeployer` | CREATE2 factory. Deploys per-user legacy contracts to a deterministic address. |
-| Per-legacy `TransferEOALegacyContract` | Stores beneficiaries, allocations, approved asset list, activation trigger, last-activity timestamp. |
+| `TransferEOALegacyRouter` | Creates, edits, deletes, and activates EOA-owner Transfer legacies. Holds the address of the shared `TransferEOALegacy` implementation used by all clones. |
+| `LegacyDeployer` | CREATE2 factory. Deploys per-user legacy contracts to a deterministic address. For EOA legacies this deploys an EIP-1167 minimal proxy (~45 bytes of on-chain code) that delegates to the shared implementation. |
+| Shared `TransferEOALegacy` implementation | The actual contract logic. One deployment per network; every EOA legacy clone delegates to it. |
+| Per-legacy clone | A thin EIP-1167 proxy at a CREATE2-predictable address. Stores beneficiaries, allocations, approved asset list, activation trigger, and last-activity timestamp in its own storage; executes shared code via `DELEGATECALL`. |
 
-Routers are upgradeable behind proxies; per-legacy contracts are minimal (storage + a few entry points) and not upgradeable.
+Routers are upgradeable behind transparent proxies. Per-legacy clones are _not_ independently upgradeable — each is a fixed, minimal forwarder to whatever implementation the router points at. The router's `_codeAdmin` (a multisig on mainnet) can point new clones at a new shared implementation; existing clones follow the pointer as well, so any implementation swap is a protocol-wide upgrade and not a per-user operation.
 
 ## CREATE2 for a better first-time experience
 
 The first time a user creates a legacy, their per-legacy contract does not yet exist on-chain. A naive flow would require the user to (1) deploy the contract, then (2) approve it as a spender for each ERC-20 they want to include. The second step, targeting a freshly-deployed contract, tends to trigger wallet "suspicious transaction" warnings — the approval target has no on-chain history, which is a legitimate heuristic against scams but bad UX for legitimate tooling.
 
-10102 uses `CREATE2` to make the legacy contract's address predictable _before_ deployment. The address is derived from the deployer, a salt (the owner's EOA), and the initcode hash. We explicitly preserve the same initcode across users so that the address derivation is stable and auditable. This lets us:
+10102 uses `CREATE2` to make the legacy contract's address predictable _before_ deployment. The address is derived from the deployer, a salt (the owner's EOA), and the initcode hash. Because every EOA legacy clone uses the same EIP-1167 initcode (parameterised only by the shared implementation address), the hash is stable across users and the address derivation is deterministic and auditable. This lets us:
 
 - Deploy the contract and approve it in two separate transactions without the approval target looking "unknown" to wallets that track our contract family.
 - Show users the legacy address at step 1 and have it match what actually gets deployed.
-- Let beneficiaries verify the legacy address on Etherscan against a known pattern.
+- Let beneficiaries verify the legacy address on Etherscan against a known pattern (every EOA legacy is a 45-byte EIP-1167 clone pointing at the published shared implementation address — easy to recognise once you've seen one).
+
+## Why clones — the EIP-1167 refactor
+
+Before the clone refactor, each EOA legacy was a full `TransferEOALegacy` deployment: ~6M gas per create, multiple dollars of mainnet fees at typical gas prices. Because every instance's code was byte-identical, paying to redeploy the same bytecode per user was pure waste.
+
+Switching to EIP-1167 keeps the per-user storage isolation — each clone has its own state slots — while dropping the on-chain code to the ~45-byte forwarder stub. `createLegacy` now costs roughly 1.05M gas on mainnet, an 80%+ reduction. The mainnet cutover happened with Legacy #23 (the first clone-based creation); everything before that remains as an independently-deployed contract and continues to function normally.
+
+The trade-off is that "bug in one user's legacy can't corrupt another's" now means _in storage_ — the executable code is shared. In practice the shared implementation is a small, audited contract that does not touch the router's storage and has no mechanism to reach sibling clones, so the isolation guarantee we actually care about (one user's state is untouched by another's activity) is preserved. The `_codeAdmin`-controlled pointer gives us the ability to patch the shared logic if needed, with the honest caveat that any such patch applies to every existing clone at once.
 
 ## Creating an EOA legacy
 

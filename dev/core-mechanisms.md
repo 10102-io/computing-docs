@@ -18,7 +18,7 @@ When the app does generate a new key — for a beneficiary who doesn't have an E
 
 Every piece of state that matters long-term (a legacy, a timelock, a premium subscription) lives in a smart contract on Ethereum, not in our backend. Three traits shape how they're designed:
 
-- **Per-user contracts.** Each legacy or timelock gets its own contract instance, deployed deterministically via `CREATE2` (see below). This keeps state isolated — a bug in one user's legacy can't corrupt another's — and lets the contract address itself be printed on the Legacy Claim Card as a stable reference.
+- **Per-user contracts.** Each legacy or timelock gets its own contract instance, deployed deterministically via `CREATE2` (see below) at a predictable address. Per-user _storage_ is always isolated — one user's activity can't reach another's slots. For EOA transfer legacies, the on-chain code is shared across users via an [EIP-1167 minimal proxy](https://eips.ethereum.org/EIPS/eip-1167): each clone is a ~45-byte forwarder pointing at one audited `TransferEOALegacy` implementation per network. Multisig and timelock flows still deploy full per-instance contracts; the EOA path adopted clones to cut creation gas by ~80% on a high-volume flow.
 - **Upgradeable routers.** The code that _creates_ legacies (the routers) sits behind a transparent proxy whose admin is a Safe multisig. We can patch bugs and ship improvements, but cannot silently change the rules of an existing legacy because per-legacy state is in the per-legacy contract, not in the upgradeable router.
 - **Verified.** Every deployment is verified on Etherscan. Addresses and ABIs are published in `contract-addresses.json` of the `computing-sc` repo.
 
@@ -42,9 +42,9 @@ Routers are the "front door" to each flow:
 
 Each router owns the _deploy-or-update_ logic for its flow. Per-legacy (or per-timelock) contracts are minimal — they hold state, emit events, and are callable by the router. This split lets us:
 
-- Upgrade a router to fix bugs or add features without touching the per-instance contracts.
+- Upgrade a router to fix bugs or add features without touching existing per-instance contracts.
 - Audit each flow in relative isolation.
-- Keep per-instance gas cost low (less code per deploy).
+- Keep per-instance gas cost low — the EOA transfer flow uses EIP-1167 clones that cost ~1.05M gas per create on mainnet (down from ~6M pre-refactor), and the other flows keep their per-instance bytecode deliberately small.
 
 ## Heartbeat and activity tracking
 

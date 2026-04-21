@@ -6,7 +6,7 @@ description: >-
 
 # Architecture
 
-10102 Digital Inheritance is deliberately layered so that the **on-chain layer is self-sufficient**, and the **off-chain layer is strictly additive**. If the off-chain services disappeared tomorrow, every existing legacy and timelock would still function — you'd lose email reminders and the pretty UI, but you'd keep the plan.
+10102 Computing Legacy is deliberately layered so that the **on-chain layer is self-sufficient**, and the **off-chain layer is strictly additive**. If the off-chain services disappeared tomorrow, every existing legacy and timelock would still function — you'd lose email reminders and the pretty UI, but you'd keep the plan.
 
 ## The layers
 

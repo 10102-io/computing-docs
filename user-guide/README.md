@@ -1,6 +1,6 @@
 ---
 description: >-
-  How to use 10102 Digital Inheritance, from connecting your wallet to creating
+  How to use 10102 Computing Legacy, from connecting your wallet to creating
   legacies, timelocks, and managing them over time.
 ---
 

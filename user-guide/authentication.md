@@ -6,7 +6,7 @@ description: >-
 
 # Authentication
 
-10102 Digital Inheritance never takes custody of your funds and never asks you to create a 10102-specific account. Your wallet _is_ your identity. Connecting a wallet is a read-only signature handshake; signing in does not move anything.
+10102 Computing Legacy never takes custody of your funds and never asks you to create a 10102-specific account. Your wallet _is_ your identity. Connecting a wallet is a read-only signature handshake; signing in does not move anything.
 
 ## Supported wallets
 

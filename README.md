@@ -8,7 +8,7 @@ description: >-
 
 Crypto security has matured. Smart contracts get audited, wallets get hardware-hardened, users get more discerning. Inheritance planning for crypto has not kept up. Most "solutions" still rely on centralized custodians, legal instruments designed for fiat assets, or a scrap of paper shoved in a safe that nobody remembers where.
 
-**10102 Digital Inheritance** is a small, auditable set of Ethereum smart contracts — plus a thin app on top — that lets you define the rules for how your on-chain assets pass on, and executes them automatically when those rules are met. No custody. No subscription required for the core flows. No middleman the plan depends on.
+**10102 Computing Legacy** is a small, auditable set of Ethereum smart contracts — plus a thin app on top — that lets you define the rules for how your on-chain assets pass on, and executes them automatically when those rules are met. No custody. No subscription required for the core flows. No middleman the plan depends on.
 
 ## What it does
 
