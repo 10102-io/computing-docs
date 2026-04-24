@@ -51,6 +51,8 @@ Click your wallet address in the top right, then **Disconnect**. You'll be retur
 
 Switch networks in your wallet; the app follows. All feature parity between mainnet and Sepolia — everything you can do on one, you can do on the other.
 
+If the default Ethereum node providers are slow for you, or you'd rather the app read chain state through your own endpoint, see [Bring your own RPC](./bring-your-own-rpc.md).
+
 ## Signing vs. sending
 
 Two different things happen with your wallet while you use the app:

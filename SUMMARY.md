@@ -5,6 +5,7 @@
   * [Authentication](user-guide/authentication.md)
   * [Concepts](user-guide/concepts.md)
   * [Quick Actions](user-guide/quick-actions.md)
+  * [Bring your own RPC](user-guide/bring-your-own-rpc.md)
   * [Legacy](user-guide/legacy/README.md)
     * [Create a Legacy Contract](user-guide/legacy/create-a-legacy-contract.md)
     * [Legacy Contract Details](user-guide/legacy/legacy-contract-details.md)
