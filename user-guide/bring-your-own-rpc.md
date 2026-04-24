@@ -66,6 +66,18 @@ Either:
 
 - Or clear your browser's site data for the app domain. Both remove the persisted override; the app will fall back to the default providers on the next load.
 
+## Automatic eviction on repeated failure
+
+If the override endpoint fails several requests in a row at the network level (DNS failure, timeout, connection refused, HTTP error), the app evicts it automatically and falls back to the defaults for the rest of the session. You'll see a one-line warning in the console like:
+
+```
+[rpc] chain 1: user-override evicted after 5 consecutive failures (was: https://…). Falling back to the default providers.
+```
+
+Eviction is triggered strictly by **transport-level** failures. A working node that responds with a valid JSON-RPC error (for example, the node saying "that method is not supported") does **not** count toward eviction — because that means the node itself is healthy. Any successful request resets the counter, so an endpoint that's generally fine but occasionally slow won't get evicted by coincidence.
+
+Once evicted, the app won't auto-reinstate the same endpoint. You can reconfigure one by supplying a fresh `?ds-rpc-<chainId>=` query parameter.
+
 ## Verifying the override is active
 
 Open the browser's developer console (usually **F12** → Console tab). When an override is in effect, you'll see a line like:
@@ -88,6 +100,10 @@ After reloads (without the query parameter), the same log appears but mentions i
 
 {% hint style="warning" %}
 **Trust the endpoint you point at.** An RPC provider can, in principle, serve inaccurate reads or link requests to your IP address. Use endpoints operated by parties you're comfortable relying on. The app only accepts `http://` and `https://` URLs; other schemes (like `javascript:` or `data:`) are rejected so the override can't be used to run code.
+{% endhint %}
+
+{% hint style="warning" %}
+**If your endpoint embeds an API key, restrict it at the provider.** RPC keys you paste into the query parameter end up in the browser request (and transiently in your history, screenshots, and any link you share). This is the same exposure model every web dapp has — the fix isn't to hide the key but to lock it down at the provider. Alchemy, Infura, QuickNode all support per-key "allowed origins" restrictions; enable that so even a leaked key is useless from any domain other than yours, and ideally disable `eth_sendRawTransaction` on read-only keys. Because the app persists your override after the first paste, you only need to put the URL in the query string once, which limits the exposure window.
 {% endhint %}
 
 {% hint style="info" %}
