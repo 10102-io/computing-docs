@@ -10,7 +10,7 @@ description: >-
 
 How your assets pass to your beneficiaries. Two shapes:
 
-- **Transfer legacy** — distributes specific assets to specific addresses when activated, proportional to allocations you set. Works with EOA or Safe wallets.
+- **Transfer legacy** — distributes specific assets to specific addresses when activated, proportional to allocations you set. Created from your connected EOA wallet.
 - **Multisig legacy** — hands over your existing Safe by adding your beneficiaries as co-signers on activation. The Safe itself (and everything it holds, stakes, or governs) is the inheritance.
 
 ## Activation trigger

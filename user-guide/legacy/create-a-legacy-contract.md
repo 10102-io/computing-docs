@@ -16,7 +16,7 @@ A legacy contract holds the rules for how, when, and to whom your assets pass. T
 
 You have two choices at `Create a legacy`:
 
-- **Transfer legacy** — splits your assets between named Ethereum addresses when activated. Your wallet can be an EOA (MetaMask, Ledger, Trezor, …) _or_ a Safe.
+- **Transfer legacy** — splits your assets between named Ethereum addresses when activated. Created from your connected EOA wallet (MetaMask, Ledger, Trezor, …).
 - **Multisig legacy** — hands over control of your existing **Safe** to your beneficiaries by adding them as co-signers once activated.
 
 Still unsure? Start with Transfer legacy — it's the most common case and doesn't require a Safe. You can always create a Multisig legacy later.
@@ -25,9 +25,9 @@ Still unsure? Start with Transfer legacy — it's the most common case and doesn
 If you started from a **Quick action** on the home page, we've pre-filled the type and some settings for you. The rest of this page still applies. See [Quick Actions](../quick-actions.md) for the full list.
 {% endhint %}
 
-## Create a Transfer legacy — connected wallet (EOA)
+## Create a Transfer legacy
 
-This is the fastest path: your own wallet stays in full control; the legacy contract only gets permission to move assets once activated.
+Created from your connected EOA wallet — your wallet stays in full control; the legacy contract only gets permission to move assets once activated.
 
 ### Step 1 — Deploy the contract
 
@@ -62,20 +62,6 @@ For ETH: ETH can't be approved directly because it isn't an ERC-20. Use the **ad
 
 The app generates a one-page printable card with the minimum information your beneficiaries need to claim — even if our UI is ever unavailable. See [Legacy Claim Card](./legacy-claim-card.md).
 
-## Create a Transfer legacy — Safe wallet
-
-Same logical flow as the EOA path, with one difference: every on-chain change (deploy, approvals, edits) is a Safe transaction that your other signers must approve according to your Safe's threshold.
-
-1. Choose **Use a Safe account** when prompted.
-2. Enter the Safe address. We verify it's a Safe contract on the current network.
-3. Configure the contract as above. Submit.
-4. Your Safe co-signers sign in their usual flow (10102 app or `app.safe.global`). Once the Safe threshold is met, the transaction executes and the legacy is live.
-5. Approve assets the same way — each approval is a Safe transaction.
-
-{% hint style="info" %}
-**Notification settings (watchers, email reminders) are tied to the wallet that _submitted_ the creation transaction.** Other Safe signers can sign on-chain edits later, but only the original submitter can manage notifications. See [Manage Authorized Watchers](../premium-features/manage-authorized-watchers.md) for details.
-{% endhint %}
-
 ## Create a Multisig legacy
 
 Multisig legacy _is_ your Safe — beneficiaries become co-signers on activation, inheriting the wallet and any positions it holds elsewhere (staking, governance, NFTs, etc.).
@@ -105,7 +91,7 @@ If you subscribe to Premium, you can configure up to two additional contingent l
 
 **Can I change the beneficiaries later?** Yes — see [Edit or Delete a Legacy Contract](./edit-or-delete-a-legacy-contract.md).
 
-**Does the contract hold custody of my assets?** No (Transfer legacy with EOA or Safe). You keep custody until activation. The contract only has permission to move what you've approved.
+**Does the contract hold custody of my assets?** No, for Transfer legacy. You keep custody until activation. The contract only has permission to move what you've approved.
 
 ## What's next
 

@@ -12,7 +12,7 @@ Crypto security has matured. Smart contracts get audited, wallets get hardware-h
 
 ## What it does
 
-- **Transfer legacy** — split specific assets across named Ethereum addresses when you've been inactive for a configurable window. Works with any EOA wallet (MetaMask, Ledger, Trezor, Rainbow, Coinbase Wallet, WalletConnect-compatible mobile wallets) _or_ with a Safe.
+- **Transfer legacy** — split specific assets across named Ethereum addresses when you've been inactive for a configurable window. Created from your connected EOA wallet (MetaMask, Ledger, Trezor, Rainbow, Coinbase Wallet, WalletConnect-compatible mobile wallets).
 - **Multisig legacy** — hand over control of an existing Safe to your beneficiaries by adding them as co-signers when the inactivity window elapses. The Safe itself, and everything it holds or governs, _is_ the inheritance.
 - **Timelock** — a time-based security layer for your own funds: lock assets until a specific date (protecting against coercion, wrench attacks, or your own impulses). Three flavors: Timelock, Soft Timelock, Timelocked Gift.
 - **Premium layer** — optional contingent beneficiaries (fallback layers), authorized watchers (read-only oversight accounts), and email reminders. All additive; the core flows work without them.
