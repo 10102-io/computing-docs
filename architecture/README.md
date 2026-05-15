@@ -24,13 +24,13 @@ Full address list, for every deployed contract and network, lives in `contract-a
 
 ### 2. Indexing: The Graph
 
-Multiple subgraphs per chain provide fast, reliable read access to data that would be painful to query from raw RPC:
+A single subgraph per chain provides fast, reliable read access to the parts of the system that would be painful to query from raw RPC:
 
-- **Legacy/timelock subgraph** — indexes creation, edits, deletions, activations, reminder configurations.
-- **Token balance subgraph** — indexes ERC-20 / ERC-721 / ERC-1155 balances for wallets interacting with the app.
-- **ETH totals subgraph** — periodically aggregates native ETH held under legacy contracts and system-wide totals.
+- **Legacy/timelock/reminders subgraph** — indexes every event emitted by the routers and 10102-enabled Safes: creations, edits, deletions, activations, reminder configurations. The UI reads the bulk of its state from here.
 
-The UI prefers subgraph reads but falls back to direct on-chain reads (via viem) for post-mutation freshness, so stale subgraph data never blocks a newly-valid action.
+Everything else is direct on-chain. Token balances for the "your assets" pickers during legacy creation are fetched via viem against the canonical `TokenWhitelist` contract plus per-token ERC-20 `balanceOf` (`src/services/web3-assets-service.ts`). System-wide aggregates (total value locked across all legacies, timelocks and 10102-enabled Safes) are computed by the admin panel via `Multicall3` plus ERC-20 `balanceOf` / `allowance` walks against the entity set returned by the subgraph — see the `computing-admin` repository for the implementation.
+
+The UI prefers subgraph reads for the indexed data but falls back to direct on-chain reads (via viem) for post-mutation freshness, so stale subgraph data never blocks a newly-valid action.
 
 ### 3. Off-chain services
 

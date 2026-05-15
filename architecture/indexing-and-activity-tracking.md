@@ -16,11 +16,16 @@ Both layers are strictly additive: the on-chain contracts are authoritative, and
 
 ## Subgraphs on The Graph
 
-We maintain multiple subgraphs per chain, each with a narrow responsibility. Splitting them keeps indexing time bounded and makes it easy to redeploy one without disturbing the others.
+We maintain a single subgraph per chain:
 
 - **Legacy + timelock + reminders subgraph** — indexes every event emitted by the routers: `LegacyCreated`, `LegacyUpdated`, `LegacyDeleted`, `Activated`, `TimelockCreated`, `ReminderConfigured`, plus the Safe's own `ChangeGuard` / `EnableModule` / `AddedOwner` / `ChangedThreshold` for 10102-enabled Safes. The UI reads the bulk of its state from here.
-- **Token balance subgraph** — indexes ERC-20, ERC-721, and ERC-1155 balances for wallets interacting with the app. Used to populate the "your assets" pickers during legacy creation.
-- **ETH totals subgraph** — periodically aggregates native ETH held under each legacy contract and system-wide totals. Separated because ETH balances require a different indexing strategy than event-sourced state.
+
+Earlier versions also ran a separate "token balance" subgraph for the "your assets" pickers during legacy creation, and an "ETH totals" subgraph for system-wide aggregate metrics. Both were retired in v2026.05.15 once the equivalent reads were moved on-chain:
+
+- Token balances are now fetched via viem against the canonical `TokenWhitelist` contract plus per-token ERC-20 `balanceOf` (`src/services/web3-assets-service.ts` in `computing`).
+- System-wide TVL is computed by the admin panel, which walks the legacy/timelock subgraph for the entity set and then reads balances directly via `Multicall3.getEthBalance` plus per-token ERC-20 `balanceOf` / `allowance`.
+
+The remaining subgraph stays narrow, indexing time stays bounded, and freshness-critical reads bypass it entirely.
 
 ### Mainnet and Sepolia
 
