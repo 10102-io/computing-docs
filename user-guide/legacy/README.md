@@ -1,7 +1,7 @@
 ---
 description: >-
   Legacy contracts hold the rules for how, when, and to whom your assets pass.
-  Two shapes — Transfer and Multisig — for different inheritance styles.
+  Two shapes — Transfer and Multisig — for different legacy styles.
 ---
 
 # Legacy
@@ -12,7 +12,7 @@ There are two shapes to choose from.
 
 ## Transfer Legacy
 
-Designed for **asset-level inheritance**: "when I've been inactive for X days, beneficiary A gets 40% of these tokens, B gets 60%".
+Designed for **asset-level transfer**: "when I've been inactive for X days, beneficiary A gets 40% of these tokens, B gets 60%".
 
 - Works with an **EOA** (MetaMask, Ledger, Trezor, Rainbow, Coinbase Wallet…) or a **Safe**.
 - Beneficiaries don't need to work together or sign anything jointly — any one of them can activate once the window has elapsed, and distribution happens according to the pre-set allocations.
@@ -24,7 +24,7 @@ When to pick it: you want precise control over what passes to whom, and you don'
 
 ## Multisig Legacy
 
-Designed for **wallet-level inheritance**: your **Safe** _is_ the inheritance, and your beneficiaries become its co-signers on activation.
+Designed for **wallet-level transfer**: your **Safe** _is_ the legacy, and your beneficiaries become its co-signers on activation.
 
 - Requires an existing Safe. Create one at [app.safe.global](https://app.safe.global) first if you don't have one.
 - On activation, beneficiaries are added as signers to your Safe. They then control the entire Safe — including anything it holds, stakes, governs, or is credited with (reputation, airdrop eligibility, governance positions, off-chain privileges tied to the address, etc.).
@@ -32,7 +32,7 @@ Designed for **wallet-level inheritance**: your **Safe** _is_ the inheritance, a
 - Every on-chain change follows your Safe's existing signature threshold. You're not bypassing your Safe's security model, you're building _on top of_ it.
 - Allocations aren't applicable here — the Safe passes as a unit.
 
-When to pick it: your Safe is your long-term vault, you want beneficiaries to inherit the whole thing (positions and all), not just cherry-picked assets.
+When to pick it: your Safe is your long-term vault, you want beneficiaries to take over the whole thing (positions and all), not just cherry-picked assets.
 
 ## Transfer vs. Multisig — at a glance
 

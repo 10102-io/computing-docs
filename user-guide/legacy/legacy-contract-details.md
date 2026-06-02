@@ -6,7 +6,7 @@ description: >-
 
 # Legacy Contract Details
 
-After creating a legacy, clicking it from the home page opens its details view. This is also where beneficiaries land when they open an inherited legacy.
+After creating a legacy, clicking it from the home page opens its details view. This is also where beneficiaries land when they open a legacy left to them.
 
 ## Sections of the details page
 
@@ -64,12 +64,12 @@ The configured addresses, their allocations (for Transfer legacies), and — for
 - No finalizing step: on-chain changes happen as soon as you sign. Simpler flow, less coordination.
 - Any outgoing transaction from your wallet already counts as a heartbeat. The dedicated action is a convenience when you haven't transacted in a while.
 
-## The beneficiary's view (Inherited Legacy)
+## The beneficiary's view (Legacies for Me)
 
-Beneficiaries see an inherited legacy on the home page under **My Inherited Legacy**, starting with status **Not activated**. The details page shows:
+Beneficiaries see a legacy left to them on the home page under **Legacies for Me**, starting with status **Not activated**. The details page shows:
 
 - **When they can activate** — based on the owner's last outgoing transaction and the activation trigger.
-- **What they'd receive** — their allocation and the current list of approved assets (Transfer) or the Safe they'll inherit (Multisig).
+- **What they'd receive** — their allocation and the current list of approved assets (Transfer) or the Safe they'll take over (Multisig).
 - **Activation button** — enabled once the window has elapsed. Any designated beneficiary can trigger it; distribution happens to _all_ beneficiaries according to the allocations, not just the one who activated.
 
 See [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-and-claim-funds.md) for the beneficiary flow.
@@ -77,7 +77,7 @@ See [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-an
 ## Watcher and contingent-beneficiary views
 
 - A **watcher** sees the legacy under **My Watchlist** with either full or limited visibility, depending on what the owner configured. See [Manage Authorized Watchers](../premium-features/manage-authorized-watchers.md).
-- A **contingent beneficiary** sees the legacy under **My Watchlist** until their line activates, then it moves to **My Inherited Legacy**.
+- A **contingent beneficiary** sees the legacy under **My Watchlist** until their line activates, then it moves to **Legacies for Me**.
 
 ## See also
 

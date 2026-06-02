@@ -18,7 +18,7 @@ Solidity contracts on Ethereum. Deployed behind upgradeable proxies owned by a S
 - **Timelock router** — `TimeLockRouter`.
 - **Per-user legacy contracts** — deployed deterministically via `LegacyDeployer` using `CREATE2`, so the address is predictable before deployment.
 - **Safe integration** — a Safe Guard tracks last-activity timestamps; a Safe Module executes activation (adding owners or transferring assets).
-- **Premium contracts** — `PremiumSetting` stores watcher/reminder configuration; `PremiumRegistry` records subscriptions.
+- **Premium contracts** — `PremiumSetting` stores watcher/reminder configuration (addresses only — reminder emails live off-chain); `PremiumRegistry` records subscriptions; `PremiumReminderView` is a standalone read-only contract the reminder service polls for due reminder windows.
 
 Full address list, for every deployed contract and network, lives in `contract-addresses.json` of the `computing-sc` repository.
 
@@ -26,7 +26,7 @@ Full address list, for every deployed contract and network, lives in `contract-a
 
 A single subgraph per chain provides fast, reliable read access to the parts of the system that would be painful to query from raw RPC:
 
-- **Legacy/timelock/reminders subgraph** — indexes every event emitted by the routers and 10102-enabled Safes: creations, edits, deletions, activations, reminder configurations. The UI reads the bulk of its state from here.
+- **Legacy/timelock/reminders subgraph** — indexes every event emitted by the routers and 10102-enabled Safes: creations, edits, deletions, activations, reminder configurations, and the PII-free `LegacyEmailNotifyRequested` notify events (as `NotifyRequested`) that the off-chain reminder worker consumes. The UI reads the bulk of its state from here.
 
 Everything else is direct on-chain. Token balances for the "your assets" pickers during legacy creation are fetched via viem against the canonical `TokenWhitelist` contract plus per-token ERC-20 `balanceOf` (`src/services/web3-assets-service.ts`). System-wide aggregates (total value locked across all legacies, timelocks and 10102-enabled Safes) are computed by the admin panel via `Multicall3` plus ERC-20 `balanceOf` / `allowance` walks against the entity set returned by the subgraph — see the `computing-admin` repository for the implementation.
 
@@ -37,8 +37,8 @@ The UI prefers subgraph reads for the indexed data but falls back to direct on-c
 Strictly additive layers that improve UX but can fail without breaking the plan:
 
 - **Chainlink Functions** — bridges Moralis API data into on-chain activation checks for EOA legacies (where the EVM can't natively read a wallet's last-tx timestamp).
-- **Chainlink Automation** — daily cron job that drives the email reminder evaluation.
-- **Mailjet** — SMTP delivery for reminder emails.
+- **Reminder worker** — an off-chain service (Railway + Postgres) that drives email reminder evaluation and delivery. It reads PII-free notify events from the subgraph plus a read-only on-chain "due" view (`PremiumReminderView`), keeps recipient emails encrypted off-chain, and sends through the mail service. This **replaces the retired Chainlink Automation cron and Chainlink Functions email path** (decommissioned on mainnet 2026-06-02).
+- **Mailjet** — SMTP delivery for reminder emails, behind the 10102 mail proxy the worker posts to.
 - **Public RPC providers + Etherscan** — fallback read paths the UI can switch to.
 
 ## Section index
@@ -47,7 +47,7 @@ Strictly additive layers that improve UX but can fail without breaking the plan:
 - [Legacy Contracts Created with EOAs](legacy-contracts-created-with-eoas.md) — how pure-EOA Transfer legacies work, including the approval model and CREATE2 deployment.
 - [New Account Generation for Beneficiaries](new-account-generation-for-beneficiaries.md) — client-side keypair generation for beneficiaries without an Ethereum address.
 - [Indexing & Activity Tracking](indexing-and-activity-tracking.md) — how The Graph and the hybrid Chainlink/Moralis path feed the app.
-- [Email Reminders](email-reminders.md) — the Chainlink Automation + Mailjet workflow for out-of-band notifications.
+- [Email Reminders](email-reminders.md) — the off-chain encrypted reminder-worker that sends out-of-band notifications (replacing the retired Chainlink path).
 
 ## A note on upgradeability
 

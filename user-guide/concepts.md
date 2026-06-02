@@ -1,7 +1,7 @@
 ---
 description: >-
-  Short definitions of the vocabulary that shows up throughout 10102 Digital
-  Inheritance. Skim this first; come back when a term doesn't click.
+  Short definitions of the vocabulary that shows up throughout 10102 Computing
+  Legacy. Skim this first; come back when a term doesn't click.
 ---
 
 # Concepts
@@ -11,7 +11,7 @@ description: >-
 How your assets pass to your beneficiaries. Two shapes:
 
 - **Transfer legacy** — distributes specific assets to specific addresses when activated, proportional to allocations you set. Created from your connected EOA wallet.
-- **Multisig legacy** — hands over your existing Safe by adding your beneficiaries as co-signers on activation. The Safe itself (and everything it holds, stakes, or governs) is the inheritance.
+- **Multisig legacy** — hands over your existing Safe by adding your beneficiaries as co-signers on activation. The Safe itself (and everything it holds, stakes, or governs) is the legacy.
 
 ## Activation trigger
 

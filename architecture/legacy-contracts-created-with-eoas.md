@@ -7,7 +7,7 @@ description: >-
 
 # Legacy Contracts Created with EOAs
 
-An **externally owned account (EOA)** is an Ethereum account controlled by a single private key — the wallet most people have in their browser or hardware device. EOAs have no on-chain code, which makes them elegant but creates one genuine constraint for inheritance: **there is no built-in way for a smart contract to read an EOA's last outgoing transaction timestamp**. The 10102 EOA flow is shaped around that constraint.
+An **externally owned account (EOA)** is an Ethereum account controlled by a single private key — the wallet most people have in their browser or hardware device. EOAs have no on-chain code, which makes them elegant but creates one genuine constraint for legacy plans: **there is no built-in way for a smart contract to read an EOA's last outgoing transaction timestamp**. The 10102 EOA flow is shaped around that constraint.
 
 This page describes the pure-EOA **Transfer legacy** path. Multisig legacies are Safe-only; Safe-backed Transfer legacies are covered in [Legacy Contracts Created with Safe SDK](legacy-contracts-created-with-safe-sdk.md).
 
@@ -68,7 +68,7 @@ Because the EOA has no on-chain code to hook into, the per-legacy contract track
 - **Explicit heartbeat** — the owner clicks `I'm still alive` in the UI, which submits a tiny transaction to the Router. Cheap, unambiguous, on-chain.
 - **Edit** — any edit to the legacy (beneficiaries, allocations, trigger, name) resets the timestamp as a side effect, because the edit is itself an outgoing transaction from the owner's EOA.
 
-_Not_ a heartbeat: arbitrary transactions from the owner's EOA that don't touch the legacy. The per-legacy contract has no way to see those. This is the trade-off of the EOA path — the [Chainlink/Moralis hybrid](indexing-and-activity-tracking.md) fills in the gap at activation time.
+_Not_ a heartbeat: arbitrary transactions from the owner's EOA that don't touch the legacy. The per-legacy contract has no way to see those, and there is **no oracle that fills the gap** — activity tracking is exactly "interactions with this legacy," nothing more. This is the deliberate trade-off of the EOA path: a fully on-chain inactivity timer with no external dependency, in exchange for the owner having to check in if they aren't otherwise editing the legacy. See [Indexing & Activity Tracking](indexing-and-activity-tracking.md) for how this compares to the Safe path.
 
 ## Editing
 
@@ -94,16 +94,16 @@ Empty legacies (no tokens ever approved) skip the revoke loop entirely. The revo
 
 Activation is a single transaction any beneficiary can submit:
 
-1. Beneficiary calls `TransferEOALegacyRouter.activate(legacyId)` from an address matching one of the configured beneficiaries (primary, or a contingent whose window has elapsed).
-2. The Router checks the activation trigger by consulting the [Chainlink Functions + Moralis hybrid](indexing-and-activity-tracking.md) — because the per-legacy contract's `lastActivityTimestamp` only sees activity _on the legacy_, not general wallet activity, the Router additionally verifies the owner's EOA has had no outgoing transactions for the configured window using an off-chain activity check bridged back on-chain via Chainlink.
+1. Beneficiary calls `TransferEOALegacyRouter.activeLegacy(legacyId, ...)` from an address matching one of the configured beneficiaries (primary, or a contingent whose window has elapsed).
+2. The per-legacy contract evaluates the activation trigger entirely on-chain — `_lastTimestamp + lackOfOutgoingTxRange <= block.timestamp` — with no external call. There is no oracle and no off-chain activity lookup: the only "activity" the contract considers is the owner's interactions with this legacy (see [Heartbeat](#heartbeat-reset-activation-timer) above). If the owner hasn't touched the legacy for the configured window, the claim is allowed; otherwise it reverts.
 3. If the check passes, the Router iterates the allocations and issues `transferFrom(owner, beneficiary_i, amount_i)` for each (asset, beneficiary) pair.
 4. The Router emits an `Activated` event; the subgraph marks the legacy activated.
 
 Batches over 100 transfers are executed in chunks, with the remaining distribution callable via a `Claim Remaining Fund` follow-up — see the user guide for the beneficiary-side flow.
 
-## When the activity oracle is unavailable
+## No external dependency at activation
 
-If Chainlink or Moralis are down, activation is not possible for EOA legacies — the Router refuses to move assets without a current activity verdict. This is a deliberate safety property: we'd rather a legitimate claim be delayed than risk activating with stale activity data. Safe-owned legacies don't have this dependency because their Safe Guard already holds fresh activity on-chain.
+EOA activation has no off-chain dependency: the eligibility decision is a single on-chain comparison inside the per-legacy contract, so it works even if our app, backend, or indexer are entirely down. The flip side is that the inactivity timer is only ever reset by the owner's own interactions with the legacy — there is no oracle watching the owner's broader wallet activity. An owner who is active elsewhere but never touches the legacy will still see the timer count down, which is why the [heartbeat](#heartbeat-reset-activation-timer) exists. Safe-owned legacies get a softer version of this: their Safe Guard records activity on every Safe transaction, so normal wallet use keeps the legacy fresh automatically.
 
 ## Why split EOA and Safe paths at the contract level
 

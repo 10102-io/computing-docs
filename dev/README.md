@@ -1,7 +1,7 @@
 ---
 description: >-
-  The "why" behind the harder engineering decisions in 10102 Digital
-  Inheritance — useful for auditors, integrators, and future maintainers.
+  The "why" behind the harder engineering decisions in 10102 Computing
+  Legacy — useful for auditors, integrators, and future maintainers.
 ---
 
 # Design & Engineering Notes
@@ -21,10 +21,10 @@ We deliberately kept this section small. There are thousands of small decisions 
 A few opinions we fall back on when we're not sure which way to go:
 
 - **Plan survives us.** Every feature must have a path to activation that doesn't require our UI, servers, or company. This is the single most important principle. It shows up as the Legacy Claim Card, as verified contracts on Etherscan, as public source code and audits, as multisig-controlled upgradeability.
-- **On-chain authoritative, off-chain additive.** Anything our backend or any third-party service (Chainlink, Moralis, Mailjet) contributes must be verifiable against on-chain state, and its absence must degrade UX but not correctness.
+- **On-chain authoritative, off-chain additive.** Anything our backend or any third-party service (e.g. Mailjet for the off-chain reminder worker) contributes must be verifiable against on-chain state, and its absence must degrade UX but not correctness. Activation itself takes no off-chain input — there is no activity oracle in the trust path.
 - **Two thin routers beat one fat one.** The EOA and Safe legacy flows share ~80% of their semantics, but the 20% that differs is different enough that conflating them makes both paths carry each other's complexity. The same applies to the three timelock flavors (Timelock / Soft / Gift) being distinct code paths.
 - **Explicit is better than clever.** The EOA legacy flow is two separate transactions (deploy, then approve) instead of one wallet-magic bundle, because the explicit version is easier to audit and easier for users to reason about. We're tracking EIP-5792 `wallet_sendCalls` to get the magic _back_ without losing the audibility.
-- **Fail closed on activation.** If the activity oracle is unavailable, we refuse to activate an EOA legacy — a delayed real claim is recoverable, a premature activation is not.
+- **Fail closed on activation.** We bias every uncertain case toward _not_ activating early — a delayed real claim is recoverable (the owner heartbeats, the beneficiary retries once the window elapses), a premature disbursement is not. For EOAs this is why the inactivity timer only resets on the owner's own legacy interactions rather than on a best-effort guess about their wider wallet activity.
 
 ## What's _not_ here
 

@@ -24,7 +24,7 @@ Two legacy flavors live on this path:
 | `TransferLegacyRouter` | Creates and updates Safe-owner Transfer legacies. |
 | Per-legacy `MultisigLegacyContract` | Stores beneficiaries, activation trigger, name/note for a single Multisig legacy. |
 | Per-legacy `TransferLegacyContract` | Stores beneficiaries, allocations, asset list, activation trigger for a single Safe-owner Transfer legacy. |
-| `SafeGuard` | Installed on the owner's Safe. Persists `lastOutgoingTxTimestamp` on every Safe execution. |
+| `SafeGuard` | Installed on the owner's Safe. Persists `lastTimestampTxs` on every Safe execution. |
 | `SafeLegacyModule` | Installed on the owner's Safe. Empowered to execute the activation on behalf of the Safe at threshold-bypass. |
 
 All of these live in the public [`computing-sc`](https://github.com/10102-io/computing-sc) repository; addresses are in `contract-addresses.json`.
@@ -51,11 +51,11 @@ Once the bundle executes:
 
 - The Safe emits `ChangeGuard` and `EnableModule` events. The subgraph indexes them and marks the Safe as 10102-enabled.
 - The Router emits a `LegacyCreated` event (exact name varies by router; see the ABIs). The subgraph creates a legacy entity with the Safe address as creator, the beneficiaries, allocations / threshold, and activation trigger.
-- `SafeGuard` initializes `lastOutgoingTxTimestamp` to the creation block timestamp.
+- `SafeGuard` initializes `lastTimestampTxs` to the creation block timestamp.
 
 ## Activity tracking (the happy path)
 
-Every time the Safe executes _any_ outgoing transaction — not just 10102 ones — the Safe's execution hooks call `SafeGuard.checkTransaction(...)`, which updates `lastOutgoingTxTimestamp`. This is the entire "heartbeat" mechanism for Safe-owned legacies: no explicit check-in button needed, because normal Safe usage _is_ the check-in. The UI also exposes an explicit `I'm still alive` action for owners who want a deliberate heartbeat.
+Every time the Safe executes _any_ outgoing transaction — not just 10102 ones — the Safe's execution hooks call `SafeGuard.checkTransaction(...)`, which updates `lastTimestampTxs`. This is the entire "heartbeat" mechanism for Safe-owned legacies: no explicit check-in button needed, because normal Safe usage _is_ the check-in. The UI also exposes an explicit `I'm still alive` action for owners who want a deliberate heartbeat.
 
 Because the Guard lives _inside_ the Safe, activity detection for Safe-owned legacies is fully on-chain and doesn't depend on Chainlink/Moralis oracles — unlike pure-EOA legacies. See [Indexing & Activity Tracking](indexing-and-activity-tracking.md) for the EOA story.
 
@@ -65,7 +65,7 @@ Any Safe owner can initiate an edit (beneficiary changes, allocation changes, na
 
 - The per-legacy contract's state is updated.
 - The Router emits an `LegacyUpdated` event (name varies); the subgraph updates the entity.
-- `SafeGuard.lastOutgoingTxTimestamp` is updated by the underlying Safe execution — edits implicitly reset the inactivity timer.
+- `SafeGuard.lastTimestampTxs` is updated by the underlying Safe execution — edits implicitly reset the inactivity timer.
 
 One asymmetry worth naming: **off-chain notification settings (watchers, email reminders) are managed by `PremiumSetting`, which gates those edits on the original creator EOA, not the Safe at threshold.** So any Safe owner can edit beneficiaries and activation triggers, but only the single EOA who submitted the original creation transaction can edit watchers or reminder configuration. This is tracked as a known asymmetry to resolve via a future `PremiumSetting` upgrade.
 
@@ -86,7 +86,7 @@ Users can also tear down manually via Safe's Transaction Builder at [app.safe.gl
 When a beneficiary attempts to activate a legacy (via the app, via Safe, or via Etherscan using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md)), the Router checks:
 
 1. The caller is one of the configured beneficiaries (primary, or contingent after their window elapses).
-2. `block.timestamp - SafeGuard.lastOutgoingTxTimestamp >= configuredInactivityWindow`.
+2. `block.timestamp - SafeGuard.lastTimestampTxs >= configuredInactivityWindow`.
 
 If both checks pass, the Router invokes the `SafeLegacyModule` to execute the activation action on behalf of the Safe — bypassing the normal threshold, because the Module is pre-authorized for this one specific action and nothing else.
 

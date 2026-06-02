@@ -42,9 +42,9 @@ The model is first-to-act-wins among currently eligible parties. This keeps the 
 
 ## How contingent beneficiaries see the legacy
 
-Until their line activates, contingent beneficiaries are treated as **watchers with limited visibility** — they see the legacy under **My Watchlist**, not **My Inherited Legacy**. The UI explicitly shows whether they're viewing as a watcher or as an imminent contingent beneficiary.
+Until their line activates, contingent beneficiaries are treated as **watchers with limited visibility** — they see the legacy under **My Watchlist**, not **Legacies for Me**. The UI explicitly shows whether they're viewing as a watcher or as an imminent contingent beneficiary.
 
-Once their line is eligible, the legacy moves to **My Inherited Legacy** and they get full-visibility beneficiary access.
+Once their line is eligible, the legacy moves to **Legacies for Me** and they get full-visibility beneficiary access.
 
 {% hint style="info" %}
 **You can change a contingent beneficiary's visibility.** The defaults are conservative (limited), but the owner can switch a contingent to full visibility from the watcher settings. Useful when the contingent is an estate lawyer who needs to see addresses to coordinate off-chain planning.

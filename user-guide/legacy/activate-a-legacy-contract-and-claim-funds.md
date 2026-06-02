@@ -1,6 +1,6 @@
 ---
 description: >-
-  Activate an inherited legacy and claim funds. Works through the 10102 app,
+  Activate a legacy left to you and claim funds. Works through the 10102 app,
   the Safe platform (for Safe legacies), or directly from any Ethereum
   interface using the printed Legacy Claim Card.
 ---
@@ -19,7 +19,7 @@ Before you can activate:
 
 ## Via the 10102 app
 
-1. Open the app and go to **My Inherited Legacy**. Inherited legacies show up here whenever an address in them matches your connected wallet.
+1. Open the app and go to **Legacies for Me**. Legacies left to you show up here whenever an address in them matches your connected wallet.
 2. Click the legacy to open its details.
 3. Click **Check contract's status & claim funds**.
 4. If the window has elapsed, you're prompted to sign the activation transaction. Sign and pay gas.
@@ -30,7 +30,7 @@ Before you can activate:
 All approved ERC-20s are distributed from the owner's wallet to the listed beneficiaries according to the allocations, and any native tokens the contract holds are distributed the same way.
 
 {% hint style="info" %}
-**Big legacies distribute in batches.** The contract can process up to 100 transfers per activation transaction. If your inherited legacy has more than that (e.g. 4 beneficiaries × 30 tokens = 120 transfers), a **Claim Remaining Fund** button stays available on the details page until everything is distributed. Any beneficiary can press it, any number of times.
+**Big legacies distribute in batches.** The contract can process up to 100 transfers per activation transaction. If the legacy you're claiming has more than that (e.g. 4 beneficiaries × 30 tokens = 120 transfers), a **Claim Remaining Fund** button stays available on the details page until everything is distributed. Any beneficiary can press it, any number of times.
 {% endhint %}
 
 ### For Multisig legacies

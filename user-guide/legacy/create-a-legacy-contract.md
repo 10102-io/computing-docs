@@ -64,13 +64,13 @@ The app generates a one-page printable card with the minimum information your be
 
 ## Create a Multisig legacy
 
-Multisig legacy _is_ your Safe — beneficiaries become co-signers on activation, inheriting the wallet and any positions it holds elsewhere (staking, governance, NFTs, etc.).
+Multisig legacy _is_ your Safe — beneficiaries become co-signers on activation, taking over the wallet and any positions it holds elsewhere (staking, governance, NFTs, etc.).
 
 1. Click **Create a legacy**, choose **Multisig legacy**.
 2. Enter your Safe address. We verify it.
 3. Configure:
    - Contract name, beneficiaries (addresses), activation trigger.
-   - No asset allocation here — beneficiaries inherit the Safe itself.
+   - No asset allocation here — beneficiaries take over the Safe itself.
 4. Your Safe signers approve the creation transaction (installs our Safe module and guard).
 
 {{screenshot: configure-multisig-check-safe}}

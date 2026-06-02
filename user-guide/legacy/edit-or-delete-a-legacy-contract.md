@@ -17,7 +17,7 @@ Once a legacy is **Live**, the owner (or, for Safe legacies, any Safe signer) ca
 - **Beneficiaries** — add, remove, or replace up to 10 primary addresses.
 - **Allocations** — any percentages, as long as they sum to 100%. Single-beneficiary legacies auto-allocate 100%.
 - **Activation trigger** — the inactivity window (days).
-- **Note to beneficiaries** — an on-chain message they'll see in the inherited view.
+- **Note to beneficiaries** — an on-chain message they'll see in the beneficiary view.
 - **Approvals** — include new ERC-20s, adjust existing allowances, or remove tokens from the inclusion set.
 - **Safe threshold for beneficiaries** (Multisig legacies only) — how many beneficiaries must sign as the new Safe's threshold after activation.
 - **Contingent layers** (Premium) — add, remove, or resize the second- and third-line activation windows.

@@ -1,8 +1,7 @@
 ---
 description: >-
-  Subgraphs on The Graph keep the UI fast; Chainlink Functions + Moralis fill
-  in the one thing the EVM can't tell us — an EOA's last outgoing transaction
-  timestamp.
+  Subgraphs on The Graph keep the UI fast; activity tracking is a fully
+  on-chain inactivity timer, different for Safe and EOA owners.
 ---
 
 # Indexing & Activity Tracking
@@ -10,9 +9,11 @@ description: >-
 Two distinct problems sit under one banner here:
 
 1. **Indexing** — reading structured data out of on-chain events quickly. Solved with [The Graph](https://thegraph.com).
-2. **Activity tracking** — knowing when an EOA last sent a transaction. Solved with a [Chainlink](https://chain.link) + [Moralis](https://moralis.com) hybrid, because the EVM can't answer this natively.
+2. **Activity tracking** — knowing whether an owner has been inactive long enough to trigger activation. Solved entirely on-chain, with no oracle: a Safe Guard for Safe owners, and a per-legacy inactivity timer for EOA owners.
 
-Both layers are strictly additive: the on-chain contracts are authoritative, and the UI falls back to direct RPC reads when the indexed layer is stale or unavailable.
+The indexing layer is strictly additive: the on-chain contracts are authoritative, and the UI falls back to direct RPC reads when the indexed layer is stale or unavailable. The activation decision never depends on it.
+
+> **Retired:** earlier drafts of this product described EOA activity tracking as a "Chainlink Functions + Moralis hybrid" that bridged an off-chain check of the owner's wider wallet activity back on-chain. That mechanism is **not in use** (the Chainlink Automation/Functions integration was retired and its subscriptions cancelled on mainnet and Sepolia). EOA activation relies solely on the on-chain inactivity timer described below.
 
 ## Subgraphs on The Graph
 
@@ -42,34 +43,41 @@ The app handles this in two places:
 
 The net result: subgraphs give us speed, and on-chain reads give us correctness when speed isn't enough.
 
-## Activity tracking for EOAs
+## Activity tracking
 
-This is the hard problem.
+Solidity cannot directly read "the timestamp of `wallet.address`'s most recent outgoing transaction." The EVM doesn't expose it. So instead of trying to observe an owner's _general_ wallet activity, both legacy paths track an activity timestamp that the contracts can update natively — the difference is only in _what_ counts as activity.
 
-Solidity cannot directly read "the timestamp of `wallet.address`'s most recent outgoing transaction." The EVM doesn't expose it. A smart-contract wallet _can_ track it internally (see the [Safe Guard integration](legacy-contracts-created-with-safe-sdk.md)), but a plain EOA has no on-chain code to hook into.
+### Safe owners — the Safe Guard
 
-For EOA-owned legacies, this is solved with a bridged off-chain check:
+A smart-contract wallet can track activity internally. When the owner is a Safe, we install a **Safe Guard** (see the [Safe Guard integration](legacy-contracts-created-with-safe-sdk.md)) that records the timestamp of every Safe transaction. Any normal Safe activity — DeFi, staking, voting — implicitly keeps the legacy fresh, with no deliberate check-in. At activation time the Router reads that timestamp directly from the Guard and compares it against the configured inactivity window. Fully on-chain, no oracle.
 
-1. A beneficiary attempts to activate the legacy via `TransferEOALegacyRouter.activate(legacyId)`.
-2. The Router invokes a **Chainlink Function**, passing the owner's EOA and the configured inactivity window.
-3. The Chainlink Function — executed by multiple independent oracle nodes for redundancy — calls a **Moralis API** endpoint to retrieve the owner's transaction history.
-4. The Function identifies the timestamp of the most recent outgoing transaction and returns it to the Router on-chain.
-5. The Router compares the timestamp against `block.timestamp - configuredInactivityWindow`. If the owner has been inactive for long enough, the activation proceeds. If not, it reverts.
+### EOA owners — a per-legacy inactivity timer
+
+A plain EOA has no on-chain code to hook into, so an EOA legacy tracks activity on the only surface it controls: **itself**. Each EOA legacy stores a `_lastTimestamp` (last-activity timestamp) and a `lackOfOutgoingTxRange` (the configured inactivity window). The eligibility check is a single on-chain comparison with no external call:
+
+```solidity
+// TransferEOALegacy._checkActiveLegacy()
+if (_lastTimestamp + lackOfOutgoingTxRange > block.timestamp) {
+  return false; // still considered active — activation not allowed
+}
+return true;     // inactive long enough — eligible
+```
+
+`_lastTimestamp` is reset to `block.timestamp` by any owner interaction with the legacy: creation, edits (beneficiaries / allocations / trigger / name), withdrawals, the auto-swap / unswap helpers, receiving ETH directly from the owner, or the explicit `activeAlive` ("I'm still alive") heartbeat. A beneficiary then activates permissionlessly via `TransferEOALegacyRouter.activeLegacy(legacyId, ...)`, and the contract itself decides whether the window has elapsed.
+
+The deliberate limitation: arbitrary transactions the owner makes _elsewhere_ are invisible to the per-legacy contract. There is **no oracle and no off-chain lookup** bridging that information in. An EOA owner who is active on-chain but never touches their legacy will still see the timer count down — which is exactly why the heartbeat exists.
 
 ### Trust and verification
 
-- **Chainlink's multi-node model** means no single oracle can lie unilaterally about the owner's activity. The result is only accepted if consensus is reached.
-- **Moralis is a read-only dependency.** It can only read historical blockchain data that anyone with an RPC can read — it can't forge a transaction or hide one. In the worst case (Moralis returns wrong data), Chainlink's consensus threshold catches it because not all nodes would get the same wrong answer.
-- **The smart contract remains authoritative.** Chainlink doesn't _grant_ activation; it supplies a timestamp, and the contract's `require(...)` logic decides whether that timestamp clears the threshold. There is no "Chainlink says activate" flow that skips the on-chain check.
+- **The contract is authoritative and self-contained.** Both paths reduce activation to an on-chain timestamp comparison. Nothing off-chain can fabricate a "yes, activate" signal or block a legitimate activation.
+- **No external party in the trust path.** There is no oracle network, no third-party activity API, and no backend attestation involved in deciding whether a legacy may activate.
 
 ### Failure modes
 
-If Chainlink or Moralis are unavailable, activation for EOA legacies simply can't complete. The Router's Chainlink callback times out or the function fails, and the transaction reverts. This is the correct safety posture: **we never want to activate with stale or missing activity data**, because the consequence of a false-positive activation (premature disbursement) is much worse than the consequence of delay.
-
-Safe-owned legacies are unaffected by this — their activity tracking is fully on-chain in the Safe Guard, so they don't depend on any oracle for activation.
+Because activation is purely on-chain, an outage of our app, backend, or the subgraph has **no effect on the ability to activate** — a beneficiary can call the router directly. The realistic EOA failure mode runs the other way: the owner forgets to check in and the timer elapses while they're still alive. That is recoverable (they heartbeat or edit to reset it), whereas a premature disbursement would not be — so the design intentionally only ever resets the timer on the owner's own deliberate, on-chain interactions.
 
 ## What this means operationally
 
-- The UI will surface a clear error if a beneficiary tries to activate and the activity oracle is unavailable. The plan isn't broken; it's waiting.
-- We run the Chainlink subscription ourselves and top it up well ahead of runway. Subscription exhaustion would look identical to oracle downtime from the user's perspective.
-- Moving more of this on-chain is on the roadmap — EIP-4337 paymasters and on-chain activity oracles are the most promising directions. Until those are mature, the hybrid path is the honest trade-off for an EOA flow that doesn't require custody.
+- Activation never waits on us. There is no activity oracle to be "down," and no subscription that can run dry and block a claim.
+- The off-chain pieces that _do_ exist around the legacy — the [reminder worker](email-reminders.md) and the subgraph — are reminder/indexing conveniences only. If they degrade, owners may miss a nudge or the UI may lag, but correctness and the ability to claim are unaffected.
+- Moving toward "every wallet is a smart wallet" (EIP-4337 account abstraction) would let EOA owners get the same passive, broad activity tracking Safe owners enjoy today; we expect to add an AA-specific integration once such wallets standardize a way to expose it.

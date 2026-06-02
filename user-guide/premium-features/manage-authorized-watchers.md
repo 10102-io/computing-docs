@@ -65,7 +65,7 @@ Watchers cannot act. No edit. No delete. No activation. They can only read.
 Second-line and third-line contingent beneficiaries are, by default, added as watchers with **limited visibility**. The owner can change their visibility at any time (e.g. upgrade an estate-lawyer contingent to full visibility).
 
 - Contingents can't be removed from the watcher list directly — they're removed by editing the legacy itself (removing them from the contingent configuration).
-- When their line activates, they move from **My Watchlist** to **My Inherited Legacy** with full-visibility beneficiary access.
+- When their line activates, they move from **My Watchlist** to **Legacies for Me** with full-visibility beneficiary access.
 
 ## Real-world use cases
 

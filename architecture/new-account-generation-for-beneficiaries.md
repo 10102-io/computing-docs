@@ -32,7 +32,7 @@ At no point in this flow does 10102 — the company, the app's backend, the smar
 
 The owner is fully responsible for delivering the printed key to the beneficiary through whatever out-of-band channel they trust: sealed envelope with their estate lawyer, safe deposit box, encrypted message, physical handover. The app's job ends when the PDF is generated.
 
-This is the same trust model as a hardware-wallet seed phrase: the chain of custody is physical and human, not digital and automated. That's a feature, not a limitation — it means there's no single digital attack surface for "steal all inheritance private keys at once."
+This is the same trust model as a hardware-wallet seed phrase: the chain of custody is physical and human, not digital and automated. That's a feature, not a limitation — it means there's no single digital attack surface for "steal all legacy private keys at once."
 
 ## How the beneficiary uses it
 
@@ -46,7 +46,7 @@ See [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md) for the print
 ## Known limits
 
 - **Printed keys are hot keys.** Once printed, anyone with physical access to the card has the funds. Treat claim cards like cash.
-- **Single-key security.** Generated accounts are EOAs with a single key — if the key is lost before claim, the inheritance is unrecoverable. A beneficiary who is crypto-comfortable should ideally bring their own address instead of using the generated one.
+- **Single-key security.** Generated accounts are EOAs with a single key — if the key is lost before claim, the transferred funds are unrecoverable. A beneficiary who is crypto-comfortable should ideally bring their own address instead of using the generated one.
 - **No recovery.** There is no recovery service. The app does not store a copy. This is intentional; a custodial copy would be a honeypot.
 
 If any of these feel wrong for a given legacy, the answer is to use a real beneficiary address (e.g. a Safe they control) instead of a generated one. The generated-account path is a convenience for beneficiaries who wouldn't otherwise have an address at all, not a recommendation for high-value plans with crypto-savvy recipients.

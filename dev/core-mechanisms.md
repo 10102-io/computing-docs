@@ -50,8 +50,8 @@ Each router owns the _deploy-or-update_ logic for its flow. Per-legacy (or per-t
 
 A legacy's activation trigger is an inactivity threshold — "activate if the owner has been idle for N days." The app tracks activity in two fundamentally different ways:
 
-- **Safe owners** have a [Safe Guard](../architecture/legacy-contracts-created-with-safe-sdk.md) installed that captures `lastOutgoingTxTimestamp` on every Safe transaction. Activity tracking is passive and fully on-chain.
-- **EOA owners** use a per-legacy counter that resets on heartbeat / edit events, plus a [Chainlink + Moralis hybrid](../architecture/indexing-and-activity-tracking.md) at activation time to verify the EOA hasn't transacted elsewhere.
+- **Safe owners** have a [Safe Guard](../architecture/legacy-contracts-created-with-safe-sdk.md) installed (the `SafeGuard` contract) that stamps `lastTimestampTxs = block.timestamp` on every Safe transaction. Activity tracking is passive and fully on-chain.
+- **EOA owners** use a per-legacy on-chain inactivity timer that resets on heartbeat / edit / withdraw / swap events. Activation is a single on-chain comparison against that timer — no oracle, no off-chain activity lookup. Activity that doesn't touch the legacy is invisible to it, so EOA owners are expected to check in. See [Indexing & Activity Tracking](../architecture/indexing-and-activity-tracking.md).
 
 Both paths surface an explicit "I'm still alive" button in the UI for owners who want a deliberate heartbeat. The button is cheap (~21k gas for EOAs) and unambiguous.
 
@@ -65,7 +65,7 @@ Premium is a time-bound subscription sold for ETH, USDC, or USDT, recorded on-ch
 
 - **Contingent beneficiaries** — fallback layers that activate if primaries don't claim within a configurable window.
 - **Authorized watchers** — read-only accounts that can view a legacy but never edit or activate.
-- **Email reminders** — opt-in notifications at key lifecycle events, powered by Chainlink Automation + Mailjet (see [Email Reminders](../architecture/email-reminders.md)).
+- **Email reminders** — opt-in notifications at key lifecycle events, powered by an off-chain reminder worker that keeps recipient emails encrypted off-chain (replacing the retired Chainlink Automation cron + Chainlink Functions email path; see [Email Reminders](../architecture/email-reminders.md)).
 
 Premium is deliberately orthogonal to the core flows: every legacy works without it, and losing Premium (letting the subscription lapse) doesn't break existing legacies — it just freezes configuration changes on the Premium-gated surfaces until renewal.
 

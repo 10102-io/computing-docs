@@ -21,7 +21,7 @@ Quick Actions only pre-fill settings. They don't change what gets deployed on-ch
 
 Pre-fills a **Transfer legacy** with your connected wallet as the owner and a single beneficiary at 100% allocation. Takes you to the configure screen to add the beneficiary's address and pick which assets to include.
 
-Use when: you want a straightforward one-person inheritance without thinking about allocations.
+Use when: you want a straightforward one-person legacy without thinking about allocations.
 
 ### Split my assets among several people
 

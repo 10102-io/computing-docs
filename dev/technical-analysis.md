@@ -1,12 +1,12 @@
 ---
 description: >-
-  The core engineering challenge behind an on-chain inheritance product — and
+  The core engineering challenge behind an on-chain legacy product — and
   the trade-offs baked into how we solved it.
 ---
 
 # Inactivity Detection
 
-Every inheritance flow in this product turns on one question: _has the owner been inactive long enough to trigger activation?_ Getting that question right, **on-chain**, for an arbitrary Ethereum wallet, is harder than it sounds — and the shape of our product is largely a consequence of the trade-offs we accepted.
+Every legacy flow in this product turns on one question: _has the owner been inactive long enough to trigger activation?_ Getting that question right, **on-chain**, for an arbitrary Ethereum wallet, is harder than it sounds — and the shape of our product is largely a consequence of the trade-offs we accepted.
 
 ## The core problem
 
@@ -25,55 +25,60 @@ This is a deliberate EVM design choice (the state trie doesn't carry per-account
 When we started, four approaches were on the table:
 
 1. **Off-chain oracle** — have a backend service watch wallets and submit activity attestations on demand. _Rejected:_ centralizes trust on our backend, violates "plan survives us."
-2. **Decentralized oracle (pure)** — delegate to a general-purpose oracle network that already tracks wallet activity. _Rejected (for now):_ no decentralized oracle we evaluated had production-grade coverage of EOA activity data. Chainlink + Moralis gets most of the way there but it's a hybrid, not a pure oracle.
+2. **Decentralized oracle** — delegate to a general-purpose oracle network that already tracks wallet activity. _Rejected:_ no decentralized oracle we evaluated had production-grade coverage of EOA activity data, and bridging a third-party activity verdict back on-chain at activation time adds an external dependency (and a recurring cost) to the one moment that matters most. We'd rather not put an oracle in the activation trust path.
 3. **Custom wallet functionality** — require the owner to use a wallet that exposes a last-tx hook. _Partially adopted:_ this is exactly what the Safe Guard integration does for Safe users.
-4. **Restructured flow** — redesign the UX so the contract doesn't need to know the owner's last-tx timestamp at all. _Considered, rejected:_ the alternatives we sketched (mandatory check-ins, lawyer-attested activation) either shift burden to the owner or reintroduce trust in a centralized party.
+4. **Restructured flow** — redesign the UX so the contract doesn't need to know the owner's _general_ last-tx timestamp at all, and instead tracks activity that the contract _can_ see natively. _Adopted for EOAs:_ each EOA legacy keeps an on-chain inactivity timer scoped to the legacy itself, reset by any interaction with it (edits, withdrawals, swaps) or an explicit "I'm still alive" heartbeat.
 
-We ended up with a combination of (3) for Safe owners and a hybrid of (2) and (4) for EOA owners.
+We ended up with (3) for Safe owners and (4) for EOA owners.
 
 ## The Safe path — approach 3
 
-When the owner's wallet is a Safe (a smart-contract wallet with the plug-in points we need), we install a **Safe Guard**: a small contract Safe calls before every transaction execution. Our Guard updates `lastOutgoingTxTimestamp` on every call, storing it in its own contract state.
+When the owner's wallet is a Safe (a smart-contract wallet with the plug-in points we need), we install a **Safe Guard**: a small contract (`SafeGuard`) that Safe calls before every transaction execution via the Guard interface's `checkTransaction` hook. Our Guard stamps `lastTimestampTxs = block.timestamp` on every such call, storing it in its own contract state.
 
-That's the entire trick. At activation time, our Router reads the timestamp directly from the Guard, compares it against `block.timestamp - configuredInactivityWindow`, and gates activation on the result. Fully on-chain, no oracle, no trust.
+That's the entire trick. At activation time, the per-legacy contract's on-chain check reads that timestamp directly from the Guard (`getLastTimestampTxs()`) and gates activation on `lastTimestampTxs + inactivityWindow <= block.timestamp`. Fully on-chain, no oracle, no trust.
 
 There's a subtle elegance here: the Guard works regardless of what the Safe is doing. A Safe owner's _normal_ transactions — DeFi, staking, voting, whatever — update the Guard implicitly. The owner doesn't need to remember to "check in." Normal usage _is_ the check-in.
 
 This is why the Safe flow is the path we recommend for users who already have a Safe. It's cleaner, cheaper, and fully self-contained.
 
-## The EOA path — hybrid of 2 and 4
+## The EOA path — an on-chain inactivity timer
 
-EOAs have no code, so there's nothing to hook. We considered making the EOA flow mandatory-heartbeat ("log in every N days or your legacy activates early") but that's a terrible UX: it confuses "I want to protect my beneficiaries" with "I need to babysit an app."
+EOAs have no code, so there's nothing to hook and no way for a contract to observe what the owner does _elsewhere_ on-chain. Rather than reach for an external oracle to fill that gap, the EOA path narrows the question to something the contract _can_ answer by itself: **has the owner interacted with this legacy recently?**
 
-The solution we settled on is a **Chainlink Functions + Moralis hybrid** at activation time, not continuously:
+Each EOA legacy stores its own `_lastTimestamp` (a last-activity timestamp) and a `lackOfOutgoingTxRange` (the configured inactivity window). The check at activation time is a single on-chain comparison, with no external call:
 
-- When a beneficiary attempts to activate, the Router dispatches a Chainlink Functions request.
-- The Function queries Moralis's transaction-history API for the owner's EOA.
-- Multiple Chainlink oracle nodes run the query independently and reach consensus on the result.
-- The consensus timestamp is returned on-chain; the Router's `require(...)` logic decides whether it clears the inactivity threshold.
+```solidity
+// TransferEOALegacy._checkActiveLegacy()
+if (_lastTimestamp + lackOfOutgoingTxRange > block.timestamp) {
+  return false; // owner still considered active — activation not allowed
+}
+return true;     // inactive long enough — eligible for activation
+```
 
-The important property: **Chainlink and Moralis don't _grant_ activation — they supply a data point, and the smart contract decides**. No oracle can fabricate a "yes, activate" signal that bypasses the contract's own check. The worst an oracle can do is return a wrong timestamp; consensus across multiple nodes makes that very hard.
+`_lastTimestamp` is reset to `block.timestamp` by any owner interaction with the legacy: creating it, editing beneficiaries/allocations/trigger/name, withdrawing, the auto-swap / unswap helpers, receiving ETH directly from the owner, or the explicit `activeAlive` ("I'm still alive") heartbeat. A beneficiary can then call activation permissionlessly; the contract itself decides whether the window has elapsed.
 
-### Why not apply this to Safes too?
+This is, in effect, the check-in model — the thing teams usually reject as "babysit the app" UX. We make it tolerable two ways: **normal management of the legacy already counts** (any edit resets the timer, so an owner who is actively maintaining their plan rarely needs a bare heartbeat), and **the heartbeat is cheap and explicit** (~21k gas, one button) for owners who aren't otherwise touching it.
 
-For uniformity, we could skip the Safe Guard entirely and use the Chainlink path for everyone. We don't, for two reasons:
+The honest trade-off: an EOA owner who is busy on-chain elsewhere — but never touches their legacy — will see the timer keep counting. Arbitrary transactions from their EOA are invisible to the per-legacy contract. There is **no oracle filling that gap**; the owner is expected to check in. We accept that limitation in exchange for an activation path that is fully on-chain, free of external dependencies, and impossible for any off-chain party to spoof.
 
-- **Purity** — the Safe Guard is fully on-chain, with no external dependency. For Safe users, we can deliver the strongest guarantee (no oracle in the trust path). We'd rather let Safe users have that cleaner property than force them down to EOA parity.
-- **Cost** — every Chainlink Functions call burns LINK. For Safes, the on-chain Guard is free at activation time.
+### Why the Safe path looks different
+
+Safe owners get a strictly nicer property: the Safe Guard updates the activity timestamp on _every_ Safe transaction, so a Safe owner's normal on-chain activity (DeFi, staking, voting) implicitly keeps the legacy fresh — no deliberate check-in required. EOA owners only get credit for activity that touches the legacy. Both paths are fully on-chain at activation time; the Safe path simply observes a broader definition of "active" because the wallet itself cooperates.
 
 ## Failure modes and their consequences
 
 | Failure | Safe legacy | EOA legacy |
 |---|---|---|
-| Oracle / Moralis outage | No impact — fully on-chain | Activation blocked until oracle returns. Plan pauses, doesn't break. |
+| App / backend / indexer outage | No impact on activation — the on-chain comparison runs without any of them. | No impact on activation — same on-chain comparison, no oracle in the path. |
+| Owner active elsewhere but never touches the legacy | Guard captures the activity automatically; timer stays fresh. | Timer _keeps counting_ — only legacy interactions count. Owner must heartbeat or edit to reset it. |
 | Owner changes signer set on Safe | Guard still tracks activity; legacy continues to work. | N/A |
-| Owner rotates EOA key | Key rotation doesn't show as "outgoing transaction" unless they move funds — so the inactivity timer _keeps counting_. Owners need to trigger an explicit heartbeat or an edit after rotation. | |
+| Owner rotates EOA key | N/A | Key rotation isn't visible to the legacy at all; the inactivity timer keeps counting. Owners need an explicit heartbeat or edit after rotation. |
 | Guard gets disabled without a matching legacy delete | Edge case we test against. Router detects missing Guard at activation and blocks. Legacy can be cleaned up via the explicit delete flow. | N/A |
 
-The failure we care about most is the one that activates _too early_ — because it's irreversible. Every other failure mode (too late, blocked, paused) can be recovered with manual intervention. Our design explicitly prefers "pause on doubt" over "proceed with stale data."
+The failure we care about most is the one that activates _too early_ — because it's irreversible. For EOAs the relevant risk runs the other way: the timer can only be reset by the owner, so the realistic failure is activating _too late_ (owner forgot to check in), which is recoverable — they just heartbeat. Our design prefers a recoverable delay over an irreversible premature disbursement.
 
 ## Future: account abstraction
 
-EIP-4337 and the broader account-abstraction push make this problem easier. An AA wallet can expose its own `lastOutgoingTxTimestamp` as naturally as a Safe does today, and eventually "every wallet is a smart wallet" collapses the EOA/Safe distinction entirely. We expect to add an AA-specific integration when AA wallets have standardized a reasonable way to expose this.
+EIP-4337 and the broader account-abstraction push make this problem easier. An AA wallet can expose its own last-transaction timestamp as naturally as a Safe's Guard does today, and eventually "every wallet is a smart wallet" collapses the EOA/Safe distinction entirely. We expect to add an AA-specific integration when AA wallets have standardized a reasonable way to expose this.
 
 Until then, the two-path design is the best honest trade-off we've found.

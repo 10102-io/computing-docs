@@ -35,7 +35,7 @@ Ideas we think are promising but haven't committed to:
 Items we've explicitly decided to _not_ do now, with enough context to pick them up later:
 
 - **Migration of `DefaultProxyAdmin` to community governance.** Today the proxy admin is owned by a 10102-team Safe. Migration to a token-gated or DAO-style governance surface is on the roadmap, but gated on there being meaningful off-team participation to migrate to.
-- **Native NFT inheritance for Multisig legacies.** NFTs held by the Safe are covered automatically because the whole Safe passes. NFTs as first-class asset types in _Transfer_ legacies are intentionally not supported yet — the allocation semantics ("how do you split a single NFT across 3 beneficiaries?") don't have a clean product answer.
+- **Native NFT transfer for Multisig legacies.** NFTs held by the Safe are covered automatically because the whole Safe passes. NFTs as first-class asset types in _Transfer_ legacies are intentionally not supported yet — the allocation semantics ("how do you split a single NFT across 3 beneficiaries?") don't have a clean product answer.
 - **Multichain deployment beyond mainnet + Sepolia.** Technically straightforward but substantially increases operational surface. We'd rather do mainnet + Sepolia extremely well than ship on 5 chains with half-working cross-chain UX.
 
 A more granular list — with triggers for when each item becomes urgent — lives in the `computing-sc` repo alongside the code, so `git log` is the audit trail.
