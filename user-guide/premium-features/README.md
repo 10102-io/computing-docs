@@ -8,6 +8,19 @@ description: >-
 
 Premium unlocks three families of capabilities that complement the free legacy flow. The free tier is deliberately complete on its own: you can create, edit, activate, and claim legacies without ever subscribing. Premium is for owners who want additional recovery layers, oversight, or notifications.
 
+## The Free baseline
+
+Every user starts on the Free plan at no cost. The Free plan includes:
+
+- Unlimited Legacy contracts and Timelocks.
+- Unlimited beneficiaries.
+- Auto-generated beneficiary keys with a printable backup (the Legacy Claim Card).
+- The Guardian AI assistant, with a free allowance for everyone.
+
+On the Free plan you only ever pay Ethereum network gas. There is no subscription required for the core flows.
+
+Premium is an optional upgrade. On top of the Free baseline it adds automated email reminders before activation, a watchlist, advanced contract configurations (contingent beneficiary layers), and beneficiary notifications.
+
 ## Premium subscription
 
 - **Model**: time-bound access, paid upfront, like an ENS name registration. You pick a duration, pay, and your Premium features are active for that window.

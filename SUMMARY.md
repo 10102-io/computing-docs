@@ -24,6 +24,7 @@
   * [New Account Generation for Beneficiaries](architecture/new-account-generation-for-beneficiaries.md)
   * [Indexing & Activity Tracking](architecture/indexing-and-activity-tracking.md)
   * [Email Reminders](architecture/email-reminders.md)
+* [Agents & Builders](agents-and-builders.md)
 * [Design & Engineering Notes](dev/README.md)
   * [Inactivity Detection](dev/technical-analysis.md)
   * [Core Mechanisms](dev/core-mechanisms.md)
