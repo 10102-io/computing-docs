@@ -39,16 +39,18 @@ Any Safe signer can submit the edit; your Safe co-signers then finalize at the S
 Deletion is available to owners (EOA) or any Safe signer (Safe), and returns the legacy to a clean state:
 
 - **Native tokens** held by the contract (rare — Transfer legacies rarely hold native tokens directly; this mostly applies to legacy contracts that pre-date the storage-token flow) are returned to the owner's wallet.
-- **ERC-20 allowances** granted to the legacy contract are revoked automatically as part of the delete flow. This is a separate `approve(legacy, 0)` per-token; the UI runs through each one.
+- **Token permissions** are dealt with according to how the legacy was created:
+  - Legacies created with the current one-transaction flow use Permit2 permissions. The delete transaction itself releases them — afterwards nothing can use the permissions you signed at create. No extra prompts needed.
+  - Older legacies created with direct per-token approvals get an `approve(legacy, 0)` per token; the UI runs through each one after the delete.
 
 ### EOA delete
 
 1. Click **Delete contract** on the details page.
 2. Confirm in the popup.
-3. Sign one transaction to tear down the legacy. The UI then walks through revoking approvals on any tokens you'd approved.
+3. Sign one transaction to tear down the legacy. For older legacies with direct approvals, the UI then walks through revoking each one.
 
 {% hint style="info" %}
-**If the revoke loop reports a warning.** You'll only see "some approvals could not be cleared" if an actual `approve(0)` transaction failed for a specific token. A legacy with zero tokens approved is deleted cleanly with no warning.
+**If the revoke loop reports a warning.** This only applies to older, direct-approval legacies: you'll only see "some token permissions couldn't be cleared" if an actual `approve(0)` transaction failed for a specific token. A legacy with no live approvals is deleted cleanly with no warning. If it happens, you can revoke the remaining permissions for the contract address from your wallet.
 {% endhint %}
 
 {% hint style="success" %}

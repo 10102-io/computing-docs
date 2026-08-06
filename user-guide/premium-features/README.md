@@ -42,7 +42,7 @@ Read-only accounts you authorize to view your legacies under **My Watchlist**. U
 - Running a family dashboard, where one person keeps an eye on multiple setups.
 - Pairing an off-chain will with an on-chain plan — the watcher sees enough to attest that the plan exists, without you exposing your wallet address.
 
-Watchers have two visibility modes: **limited** (privacy-preserving; addresses are replaced with a unique identifier) or **full** (addresses visible). See [Manage Authorized Watchers](./manage-authorized-watchers.md).
+Watchers have two visibility modes: **limited** (privacy-preserving; addresses are replaced with a unique identifier) or **full** (addresses visible). A watcher who follows several legacies — say, a family advisor or estate attorney — gets a consolidated read-only **Advisor view** in the app: every contract they watch in one list, with status and check-in health at a glance. See [Manage Authorized Watchers](./manage-authorized-watchers.md).
 
 ### Email reminders
 

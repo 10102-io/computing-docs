@@ -14,11 +14,20 @@ We publish this because the "plan survives us" principle applies to development 
 
 Areas we're actively investing in over the next few release cycles:
 
-- **EIP-5792 atomic batching (`wallet_sendCalls`).** Collapsing the two-step "deploy legacy + approve tokens" flow into a single user prompt on wallets that support the spec, while keeping the explicit two-transaction fallback for wallets that don't. Biggest UX win in the EOA flow. Tracked against MetaMask, Coinbase Wallet, and Rabby rollout timelines.
-- **Permit2 integration for Transfer and Timelock flows.** Replacing per-token `approve` transactions with typed-data signatures for short-lived authorizations. Reduces the number of wallet interactions and the "suspicious approval" warnings that wallets surface for freshly-deployed contracts.
+- **Upgrade-timelock proposer hardening.** Contract upgrades already wait in a public 48-hour queue (see [Upgrade Policy](../architecture/upgrade-policy.md)); the planned next step is moving the proposer role from a single maintainer key to a multisig. Thanks to the timelock, that change will itself be publicly visible when it happens.
 - **Asymmetric-permission fix for Multisig legacies.** Today, any Safe owner can edit on-chain fields (beneficiaries, activation trigger, name/note) at Safe threshold, but only the original creator EOA can edit off-chain notification settings (watchers, email reminders). We're designing a `transferCreator` function in `PremiumSetting` to resolve the asymmetry — needs a proxy upgrade, which we're bundling with the next round of other improvements rather than shipping alone.
 - **Audit round 2.** Scheduled follow-up audit covering all router changes since the v1 audit. Reports will be published to [`github.com/10102-labs/audits`](https://github.com/10102-labs/audits) as they land.
-- **Better error messages and offline tolerance.** Ongoing — the generic "something went wrong" errors are being replaced with specific, actionable messages. Includes distinguishing subgraph outages, RPC latency, Chainlink subscription exhaustion, etc.
+- **Better error messages and offline tolerance.** Ongoing — the generic "something went wrong" errors are being replaced with specific, actionable messages. Includes distinguishing subgraph outages, RPC latency, wallet rejections, etc.
+
+## Recently shipped
+
+Formerly on this list, now live on mainnet:
+
+- **Permit2 one-confirmation creates.** Creating a Transfer legacy or timelock is now a single confirmation: one signed Permit2 batch replaces the per-token `approve` transactions, and tokens stay in the owner's wallet until claim. This also delivered the single-prompt create flow we previously tracked under EIP-5792 batching.
+- **EIP-1167 minimal-proxy clones for EOA legacies.** New EOA legacies deploy as ~45-byte clones of one audited implementation per network, cutting creation gas by 80%+. Existing legacies are unaffected.
+- **EOA activity auto-renew.** Opt-in Premium feature: an attestor observes the owner's public wallet activity and renews the inactivity timer for them, with every safety bound on-chain. See [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md).
+- **Timelocked upgrades.** `DefaultProxyAdmin` is now owned by an on-chain upgrade timelock: every implementation change waits in a public 48-hour queue before it can execute. See [Upgrade Policy](../architecture/upgrade-policy.md).
+- **Gas-sponsored claims.** A beneficiary with no ETH can claim by signing a free EIP-712 authorization; 10102's relayer submits the transaction and pays the gas. The app switches to this path automatically when the beneficiary's wallet can't cover the fee. See [Gas-Sponsored Intents](../architecture/gas-sponsored-intents.md).
 
 ## Under evaluation
 
@@ -34,7 +43,6 @@ Ideas we think are promising but haven't committed to:
 
 Items we've explicitly decided to _not_ do now, with enough context to pick them up later:
 
-- **Migration of `DefaultProxyAdmin` to community governance.** Today the proxy admin is owned by a 10102-team Safe. Migration to a token-gated or DAO-style governance surface is on the roadmap, but gated on there being meaningful off-team participation to migrate to.
 - **Native NFT transfer for Multisig legacies.** NFTs held by the Safe are covered automatically because the whole Safe passes. NFTs as first-class asset types in _Transfer_ legacies are intentionally not supported yet — the allocation semantics ("how do you split a single NFT across 3 beneficiaries?") don't have a clean product answer.
 - **Multichain deployment beyond mainnet + Sepolia.** Technically straightforward but substantially increases operational surface. We'd rather do mainnet + Sepolia extremely well than ship on 5 chains with half-working cross-chain UX.
 

@@ -19,9 +19,9 @@ After creating a legacy, clicking it from the home page opens its details view. 
 
 ### Activity and trigger
 
-- **Last activity** — your (or the Safe's) most recent outgoing transaction.
+- **Last activity** — the most recent activity the legacy knows about. For Safe legacies that's the Safe's last transaction (every Safe transaction counts). For EOA legacies it's your last interaction with the legacy itself — see [The owner's view](#on-an-eoa-legacy) below.
 - **Activation trigger** — the inactivity threshold you configured. The details page shows how much of the window has elapsed.
-- **Heartbeat action** — resets the trigger timer in a single transaction when you don't have another transaction to make naturally. Any outgoing transaction from your wallet (or Safe) already counts as a heartbeat; the dedicated action is for when you want a quick, explicit reset.
+- **Heartbeat action** — resets the trigger timer in a single transaction when you don't have another qualifying action to make naturally. On a Safe legacy, any Safe transaction already counts; on an EOA legacy, only interactions with the legacy count (unless you enable [auto-renew](../concepts.md#auto-renew-eoa-legacies)), so the dedicated action is the standard way to check in.
 
 ### Assets (Transfer legacies)
 
@@ -62,13 +62,14 @@ The configured addresses, their allocations (for Transfer legacies), and — for
 ### On an EOA legacy
 
 - No finalizing step: on-chain changes happen as soon as you sign. Simpler flow, less coordination.
-- Any outgoing transaction from your wallet already counts as a heartbeat. The dedicated action is a convenience when you haven't transacted in a while.
+- Interactions with the legacy count as heartbeats: edits, deposits, withdrawals, or the dedicated heartbeat action. Generic wallet activity elsewhere does **not** reset the timer by itself.
+- If you'd rather have your wallet's general on-chain activity keep the timer fresh, enable **auto-renew** (Premium, opt-in, per legacy): an attestor service observes your wallet's public transaction count and renews for you near the deadline, within strict on-chain bounds. See [EOA Activity & Auto-Renew](../../architecture/eoa-activity-auto-renew.md).
 
 ## The beneficiary's view (Legacies for Me)
 
 Beneficiaries see a legacy left to them on the home page under **Legacies for Me**, starting with status **Not activated**. The details page shows:
 
-- **When they can activate** — based on the owner's last outgoing transaction and the activation trigger.
+- **When they can activate** — based on the owner's last recorded activity and the activation trigger.
 - **What they'd receive** — their allocation and the current list of approved assets (Transfer) or the Safe they'll take over (Multisig).
 - **Activation button** — enabled once the window has elapsed. Any designated beneficiary can trigger it; distribution happens to _all_ beneficiaries according to the allocations, not just the one who activated.
 

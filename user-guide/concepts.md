@@ -15,11 +15,20 @@ How your assets pass to your beneficiaries. Two shapes:
 
 ## Activation trigger
 
-The condition that makes a legacy claimable. Today there's one trigger: **inactivity** — the time since your wallet's (or Safe's) last outgoing transaction. Measured in days. When the window elapses, any beneficiary can activate.
+The condition that makes a legacy claimable. Today there's one trigger: **inactivity** — the time since your last activity the legacy can see (what counts differs by wallet type; see [Heartbeat](#heartbeat)). Measured in days. When the window elapses, any beneficiary can activate.
 
 ## Heartbeat
 
-Any action that proves you're still around and resets the activation timer. Most on-chain activity from your wallet counts automatically (a send, a swap, an approval, …). If you don't have another transaction to make, the details page has a dedicated heartbeat action that resets the timer in a single transaction.
+Any action that proves you're still around and resets the activation timer. What counts depends on your wallet type:
+
+- **Safe legacies** — every Safe transaction counts automatically (the Safe Guard records it), so normal usage keeps the legacy fresh.
+- **EOA legacies** — interactions with your legacy count: edits, deposits, withdrawals, or the dedicated heartbeat action on the details page. Generic wallet activity elsewhere (a send, a swap) does **not** reset the timer by itself — unless you enable [Auto-renew](#auto-renew-eoa-legacies).
+
+If you don't have another qualifying action to make, the details page has a dedicated heartbeat action that resets the timer in a single transaction.
+
+## Auto-renew (EOA legacies)
+
+An optional Premium feature, off by default, that you enable per legacy. When on, an attestor service watches your wallet's public on-chain activity (its transaction count) and renews your inactivity timer for you when you've been active near the deadline — no email, no click, no gas from you. Every safety bound is enforced on-chain: renewals only work near the deadline, stop 365 days after your last real check-in, and can never make a legacy claimable earlier. See [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md) for the full trust model.
 
 ## Creator vs. signer (Safe legacies)
 

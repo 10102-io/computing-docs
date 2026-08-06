@@ -1,7 +1,8 @@
 ---
 description: >-
-  Subgraphs on The Graph keep the UI fast; activity tracking is a fully
-  on-chain inactivity timer, different for Safe and EOA owners.
+  Subgraphs on The Graph keep the UI fast; activity tracking is an on-chain
+  inactivity timer, different for Safe and EOA owners, with an optional
+  attested auto-renew path for EOAs.
 ---
 
 # Indexing & Activity Tracking
@@ -9,11 +10,11 @@ description: >-
 Two distinct problems sit under one banner here:
 
 1. **Indexing** — reading structured data out of on-chain events quickly. Solved with [The Graph](https://thegraph.com).
-2. **Activity tracking** — knowing whether an owner has been inactive long enough to trigger activation. Solved entirely on-chain, with no oracle: a Safe Guard for Safe owners, and a per-legacy inactivity timer for EOA owners.
+2. **Activity tracking** — knowing whether an owner has been inactive long enough to trigger activation. The activation decision itself is entirely on-chain: a Safe Guard for Safe owners, and a per-legacy inactivity timer for EOA owners. EOA owners can additionally opt in to [auto-renew](eoa-activity-auto-renew.md), where an attestor resets the timer for them within strict on-chain bounds.
 
 The indexing layer is strictly additive: the on-chain contracts are authoritative, and the UI falls back to direct RPC reads when the indexed layer is stale or unavailable. The activation decision never depends on it.
 
-> **Retired:** earlier drafts of this product described EOA activity tracking as a "Chainlink Functions + Moralis hybrid" that bridged an off-chain check of the owner's wider wallet activity back on-chain. That mechanism is **not in use** (the Chainlink Automation/Functions integration was retired and its subscriptions cancelled on mainnet and Sepolia). EOA activation relies solely on the on-chain inactivity timer described below.
+> **Retired:** earlier drafts of this product described EOA activity tracking as a "Chainlink Functions + Moralis hybrid" that bridged an off-chain check of the owner's wider wallet activity back on-chain. That mechanism is **not in use** (the Chainlink Automation/Functions integration was retired and its subscriptions cancelled on mainnet and Sepolia). Its successor is the strictly opt-in [auto-renew attestor](eoa-activity-auto-renew.md) — a much narrower mechanism whose safety bounds live in the contract, not in an oracle network. Without opting in, EOA activation relies solely on the on-chain inactivity timer described below.
 
 ## Subgraphs on The Graph
 
@@ -65,19 +66,21 @@ return true;     // inactive long enough — eligible
 
 `_lastTimestamp` is reset to `block.timestamp` by any owner interaction with the legacy: creation, edits (beneficiaries / allocations / trigger / name), withdrawals, the auto-swap / unswap helpers, receiving ETH directly from the owner, or the explicit `activeAlive` ("I'm still alive") heartbeat. A beneficiary then activates permissionlessly via `TransferEOALegacyRouter.activeLegacy(legacyId, ...)`, and the contract itself decides whether the window has elapsed.
 
-The deliberate limitation: arbitrary transactions the owner makes _elsewhere_ are invisible to the per-legacy contract. There is **no oracle and no off-chain lookup** bridging that information in. An EOA owner who is active on-chain but never touches their legacy will still see the timer count down — which is exactly why the heartbeat exists.
+The deliberate limitation: arbitrary transactions the owner makes _elsewhere_ are invisible to the per-legacy contract. By default, nothing bridges that information in — an EOA owner who is active on-chain but never touches their legacy will still see the timer count down, which is exactly why the heartbeat exists.
+
+For owners who want their general wallet activity to count, there is one deliberate, opt-in exception: **auto-renew** (Premium). An attestor service observes the owner's public transaction count and calls the router to reset the timer when the owner has been active near the deadline. Every safety bound is on-chain — attestor-only entry point, opt-in required, strictly increasing nonce, a 30-day near-deadline window, and a 365-day budget since the owner's last real check-in — so a compromised attestor can only *delay* activation (bounded), never accelerate it or touch funds. Full mechanics and trust model: [EOA Activity & Auto-Renew](eoa-activity-auto-renew.md).
 
 ### Trust and verification
 
 - **The contract is authoritative and self-contained.** Both paths reduce activation to an on-chain timestamp comparison. Nothing off-chain can fabricate a "yes, activate" signal or block a legitimate activation.
-- **No external party in the trust path.** There is no oracle network, no third-party activity API, and no backend attestation involved in deciding whether a legacy may activate.
+- **No external party can trigger or accelerate activation.** There is no oracle network or third-party API in the activation path. The only off-chain writer anywhere near the timer is the opt-in [auto-renew attestor](eoa-activity-auto-renew.md), and it can only *reset* the timer (i.e. delay activation) within on-chain bounds — it has no power to make a legacy claimable earlier, and it never touches legacies that haven't opted in.
 
 ### Failure modes
 
-Because activation is purely on-chain, an outage of our app, backend, or the subgraph has **no effect on the ability to activate** — a beneficiary can call the router directly. The realistic EOA failure mode runs the other way: the owner forgets to check in and the timer elapses while they're still alive. That is recoverable (they heartbeat or edit to reset it), whereas a premature disbursement would not be — so the design intentionally only ever resets the timer on the owner's own deliberate, on-chain interactions.
+Because activation is purely on-chain, an outage of our app, backend, or the subgraph has **no effect on the ability to activate** — a beneficiary can call the router directly. The realistic EOA failure mode runs the other way: the owner forgets to check in and the timer elapses while they're still alive. That is recoverable (they heartbeat or edit to reset it), whereas a premature disbursement would not be — so by default the timer only ever resets on the owner's own deliberate, on-chain interactions, and even the opt-in auto-renew path can only err in the recoverable direction (a bounded delay, never an early activation).
 
 ## What this means operationally
 
 - Activation never waits on us. There is no activity oracle to be "down," and no subscription that can run dry and block a claim.
-- The off-chain pieces that _do_ exist around the legacy — the [reminder worker](email-reminders.md) and the subgraph — are reminder/indexing conveniences only. If they degrade, owners may miss a nudge or the UI may lag, but correctness and the ability to claim are unaffected.
+- The off-chain pieces that _do_ exist around the legacy — the [reminder worker](email-reminders.md), the [auto-renew attestor](eoa-activity-auto-renew.md), and the subgraph — are conveniences only, and all of them fail safe. If the attestor stops, renewals pause and reminder emails take over; if the worker or subgraph degrades, owners may miss a nudge or the UI may lag. Correctness and the ability to claim are unaffected in every case.
 - Moving toward "every wallet is a smart wallet" (EIP-4337 account abstraction) would let EOA owners get the same passive, broad activity tracking Safe owners enjoy today; we expect to add an AA-specific integration once such wallets standardize a way to expose it.

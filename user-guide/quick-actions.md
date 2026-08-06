@@ -49,7 +49,7 @@ Use when: your Safe is your long-term vault and you want other people (family, a
 
 ## Gotchas
 
-- **Quick Action ≠ shortcut through approvals.** Approval (asset inclusion) still happens in the standard second step, with the standard wallet prompts.
+- **Quick Action ≠ skipping asset permissions.** Including assets still works exactly like the standard create: you pick tokens in the configure screen and the permission rides the single create transaction. See [Create a Legacy Contract](./legacy/create-a-legacy-contract.md) for what your wallet will show.
 - **The Multisig quick action requires a Safe.** Don't click it from an EOA-only context; you'll get routed to the Safe check. If you don't have a Safe, create one at [app.safe.global](https://app.safe.global) first.
 - **Nothing is irreversible before signing.** You can swap types (e.g. change Transfer to Multisig), change beneficiaries, change allocations. Quick Actions are defaults, not locks.
 

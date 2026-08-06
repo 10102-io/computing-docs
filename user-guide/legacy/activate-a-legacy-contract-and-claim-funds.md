@@ -13,9 +13,9 @@ When a legacy's activation window has elapsed, any of its designated beneficiari
 
 Before you can activate:
 
-1. **Enough time must have passed** — the owner must have been inactive (no outgoing transactions from the owning wallet/Safe) for at least the configured trigger window.
+1. **Enough time must have passed** — the owner must have been inactive (no activity the legacy can see) for at least the configured trigger window.
 2. **Your wallet must be one of the configured beneficiaries** — primary, or contingent after the corresponding line has kicked in.
-3. **You need gas** — activation is a paid transaction. You pay, but the assets are distributed to _all_ beneficiaries according to the allocations, not just to you.
+3. **Gas** — activation is a paid transaction, and the assets are distributed to _all_ beneficiaries according to the allocations, not just to you. For EOA transfer legacies, you usually **don't need any ETH yourself** — see [Claiming without ETH](#claiming-without-eth) below.
 
 ## Via the 10102 app
 
@@ -32,6 +32,16 @@ All approved ERC-20s are distributed from the owner's wallet to the listed benef
 {% hint style="info" %}
 **Big legacies distribute in batches.** The contract can process up to 100 transfers per activation transaction. If the legacy you're claiming has more than that (e.g. 4 beneficiaries × 30 tokens = 120 transfers), a **Claim Remaining Fund** button stays available on the details page until everything is distributed. Any beneficiary can press it, any number of times.
 {% endhint %}
+
+### Claiming without ETH
+
+If you're claiming an EOA transfer legacy and your wallet can't cover the network fee — common when the owner generated a fresh wallet for you — the app handles it automatically:
+
+1. Instead of a transaction, your wallet asks for a **free signature** (an EIP-712 message titled *ClaimAuth*). Signing costs nothing.
+2. 10102's relay service submits the claim transaction and pays the gas.
+3. The app tracks the transaction and shows the result exactly as if you had sent it yourself.
+
+The signature only authorizes the claim you were already entitled to: it names your address, this specific legacy, and the exact asset list, and it can be used once. Nobody — including us — can use it to send funds anywhere other than where the owner's allocations say. If you *do* have ETH, nothing changes: you pay your own fee as before. Owners can disable sponsored claims per legacy on-chain if they prefer; the pay-your-own-gas path always works. Details: [Gas-Sponsored Intents](../../architecture/gas-sponsored-intents.md).
 
 ### For Multisig legacies
 
@@ -74,7 +84,7 @@ The contract will distribute assets exactly as it would have done from the UI �
 
 - **"Not enough time has passed"** — your clock isn't the authoritative one. The contract checks against the owner's last outgoing transaction timestamp on-chain. Wait, or verify the owner really has been inactive for the trigger window.
 - **"You are not a beneficiary"** — the address you're connected with doesn't match a configured beneficiary for this legacy ID. Re-check the card; check the address you expect to be listed; ask the owner if you suspect a typo.
-- **"Insufficient gas"** — activation for a legacy with many tokens and beneficiaries can be expensive. If you're running low, coordinate with another beneficiary, or use the Claim Remaining Fund batching to split the cost.
+- **"Insufficient gas"** — activation for a legacy with many tokens and beneficiaries can be expensive. For EOA transfer legacies the app normally covers this for you automatically ([Claiming without ETH](#claiming-without-eth)); otherwise coordinate with another beneficiary, or use the Claim Remaining Fund batching to split the cost.
 
 ## See also
 

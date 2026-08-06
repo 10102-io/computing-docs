@@ -27,42 +27,52 @@ If you started from a **Quick action** on the home page, we've pre-filled the ty
 
 ## Create a Transfer legacy
 
-Created from your connected EOA wallet — your wallet stays in full control; the legacy contract only gets permission to move assets once activated.
+Creating a Transfer legacy is **one transaction**. You configure everything on one screen, confirm once in your wallet, and the contract is live with its asset permissions already in place. Your wallet keeps full custody the whole time — nothing moves until activation.
 
-### Step 1 — Deploy the contract
+### Configure
 
 Fill in:
 
-- **Name** — private label, visible only to you and the beneficiaries you invite.
+- **Name** — a private label. It's saved on your device only; it is never written to the blockchain, and neither are beneficiary names.
 - **Beneficiaries** — up to 10 addresses. If you list only one, we auto-allocate 100%.
 - **Allocations** — percentages must sum to 100%.
-- **Activation trigger** — inactivity period (time since your last outgoing transaction) before beneficiaries can claim. Days, not months.
+- **Activation trigger** — inactivity period (time since your last interaction with the legacy) before beneficiaries can claim. Days, not months.
+- **Assets to include** — the ERC-20 tokens your beneficiaries will be able to claim. You pick them here, in the same form; there is no separate approval step afterwards.
 
-Click **Deploy**. Your wallet will prompt a single transaction to create the contract via our `LegacyDeployer` using `CREATE2`, meaning the final contract address is deterministic — you'll see it before you sign.
+Tick the terms checkbox. Your acceptance is recorded by the create transaction itself — there's no separate "sign this message" prompt.
 
 {{screenshot: configure-legacy-eoa-step1}}
 
-### Step 2 — Approve the assets
+### Confirm
 
-After deployment, the details page opens. Nothing has been moved yet; your wallet still holds everything. To decide what gets distributed on activation, you approve the legacy contract as a spender.
+Click **Deploy**. Two things happen in your wallet:
 
-For each ERC-20 token: use the **include** action on the token row. Your wallet prompts a standard `approve(legacyAddress, amount)` — normal ERC-20 semantics, no unusual permissions.
+1. If you included tokens, you sign one **gas-free permission message** covering all of them at once. The permission goes through [Permit2](https://github.com/Uniswap/permit2), the token-permission standard used across the Ethereum ecosystem, and names a single spender: our published, Etherscan-verified vault contract — the same address for every 10102 user. You can check it against the address in [How Legacy Creation Works](../../architecture/create-flow-v2.md).
+2. You confirm **one transaction**. It deploys your legacy contract and registers the token permissions together. The contract address is deterministic (`CREATE2`), so the address shown on screen is the address you get.
 
-For ETH: ETH can't be approved directly because it isn't an ERC-20. Use the **add ETH** action to swap it to a **supported storage token** (WETH or a liquid staking token) through a built-in swap route, then approve the resulting token. This is a two-wallet-prompt flow; both prompts are expected.
+That's it — the details page opens and your legacy is live.
 
-{% hint style="warning" %}
-**Why does my wallet warn me about the second transaction?** Some wallets (MetaMask, Rabby, Rainbow, …) flag the swap's approval step as "possibly suspicious" because the legacy contract is new to the wallet — there's no prior transaction history with it. That's expected for a brand-new contract. You can verify the spender address matches the legacy address shown at the top of the details page. The warning goes away once the contract has some history with your wallet.
+{% hint style="info" %}
+**A possible one-time extra.** If your wallet has never used a particular token with Permit2 before (in any app), that token needs a one-time `approve(Permit2)` transaction first. The app detects this and prompts you. It's once per token per wallet, and it's shared with every other Permit2-based app you use.
 {% endhint %}
 
 {% hint style="info" %}
-**Partial approvals are fine.** You control the allowance amount. To include only 50% of your USDC, approve only 50%. Your beneficiaries can only ever claim what's approved; the rest stays spendable by you as usual.
+**What does the permission actually allow?** Nothing, until activation. Tokens stay in your wallet and remain fully spendable by you. If the legacy activates, beneficiaries receive their configured percentages of whatever is in your wallet at that time. You can revoke the permission at any point by deleting the legacy or directly in your wallet's Permit2 settings.
 {% endhint %}
 
-### Step 3 — Print a Legacy Claim Card (optional but recommended)
+### Adding ETH
+
+ETH can't be permissioned directly because it isn't an ERC-20. Use the **add ETH** action on the details page to swap it to a **supported storage token** (WETH or a liquid staking token) through a built-in swap route; the permission for the resulting token is set up as part of the same flow.
+
+### Print a Legacy Claim Card (optional but recommended)
 
 The app generates a one-page printable card with the minimum information your beneficiaries need to claim — even if our UI is ever unavailable. See [Legacy Claim Card](./legacy-claim-card.md).
 
-## Create a Multisig legacy
+## Safe-based legacies (Multisig / Safe Transfer)
+
+Safe-based flows work differently from the EOA flow above: creation goes through your Safe's own transaction process, so your Safe's co-signers approve it at your normal threshold.
+
+### Create a Multisig legacy
 
 Multisig legacy _is_ your Safe — beneficiaries become co-signers on activation, taking over the wallet and any positions it holds elsewhere (staking, governance, NFTs, etc.).
 
@@ -85,16 +95,21 @@ If you subscribe to Premium, you can configure up to two additional contingent l
 
 ## Common questions
 
-**Can I add ETH directly to the legacy?** Not for Transfer legacies — ETH must be swapped to a storage token first. This is by design: the legacy contract uses ERC-20 allowances, which ETH doesn't have.
+**Does the contract hold custody of my assets?** No, for Transfer legacy. Your tokens never leave your wallet before activation. The create transaction only grants a claim permission, and only your own legacy contract can ever use it.
 
-**What happens if I move my approved tokens?** Your allowance stays, but beneficiaries can only claim what's actually in your wallet on activation. The approval is a promise, not a lock.
+**What happens if I move my included tokens?** Nothing breaks. The permission is a promise, not a lock — beneficiaries can only claim what's actually in your wallet on activation. Spend, stake, or move your tokens as usual.
+
+**Can I add ETH directly to the legacy?** Not for Transfer legacies — ETH must be swapped to a storage token first. This is by design: the legacy contract works through ERC-20 token permissions, which ETH doesn't have.
+
+**Can I include more tokens later?** Yes — use the include action on the details page. Adding a token after creation is a small on-chain transaction.
+
+**Where are the names stored?** The legacy's name and your beneficiaries' names live on your device, not on the blockchain. On-chain there are only addresses, percentages, and the trigger — see [How Legacy Creation Works](../../architecture/create-flow-v2.md).
 
 **Can I change the beneficiaries later?** Yes — see [Edit or Delete a Legacy Contract](./edit-or-delete-a-legacy-contract.md).
-
-**Does the contract hold custody of my assets?** No, for Transfer legacy. You keep custody until activation. The contract only has permission to move what you've approved.
 
 ## What's next
 
 - [Legacy Contract Details](./legacy-contract-details.md) — what the details view shows, and how to interpret it.
-- [Edit or Delete a Legacy Contract](./edit-or-delete-a-legacy-contract.md) — updating allocations, revoking approvals, or tearing everything down.
+- [Edit or Delete a Legacy Contract](./edit-or-delete-a-legacy-contract.md) — updating allocations, revoking permissions, or tearing everything down.
 - [Manage Contingent Beneficiaries](../premium-features/manage-contingent-beneficiaries.md) — Premium fallback layers.
+- [How Legacy Creation Works](../../architecture/create-flow-v2.md) — the architecture behind the one-transaction create, for the curious.

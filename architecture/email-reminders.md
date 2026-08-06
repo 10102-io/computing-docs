@@ -3,7 +3,8 @@ description: >-
   How email reminders are driven from on-chain state — an off-chain
   reminder-worker reads PII-free notify signals, keeps recipient emails
   encrypted, and sends them, while the plan keeps working even if email
-  delivery fails.
+  delivery fails. Plus the worker's non-email passes: protocol stats and
+  prices, the upgrade-queue watch, and an ops readout.
 ---
 
 # Email Reminders
@@ -90,7 +91,7 @@ The following on-chain email machinery has been **decommissioned**:
 Scheduling moved to the worker's own tick + `PremiumReminderView`; delivery moved to the worker + `email-proxy`. On **mainnet**, the teardown completed on **2026-06-02**: the upkeeps were cancelled, the Functions subscription was cancelled, and remaining LINK was withdrawn. `PremiumSetting` was slimmed in the same cutover — emails/names are no longer stored or emitted, activation triggers are emit-only, and the spoofable mail-trigger path was removed.
 
 {% hint style="info" %}
-This page covers **email reminders** only. The separate Chainlink/Moralis activity-oracle described in [Indexing & Activity Tracking](indexing-and-activity-tracking.md) and [Inactivity Detection](../dev/technical-analysis.md) is a different subsystem and is documented there.
+This page covers **email reminders** first (with the worker's other passes summarized [below](#beyond-email-the-workers-other-passes)). How activity and inactivity are actually tracked is a different subsystem, documented in [Indexing & Activity Tracking](indexing-and-activity-tracking.md) and [EOA Activity & Auto-Renew](eoa-activity-auto-renew.md).
 {% endhint %}
 
 ## Privacy and opt-in
@@ -105,3 +106,29 @@ This page covers **email reminders** only. The separate Chainlink/Moralis activi
 If the email layer is entirely broken (worker down, `email-proxy` down, Mailjet down), the only consequence is that reminder emails don't send. The legacy itself continues to work exactly as specified on-chain. A beneficiary whose reminder never arrives can still activate on time via the app or via Etherscan — using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md) — because the on-chain state has all the information needed.
 
 This is the "plan survives us" principle in action: email reminders are a _better experience_, never a _requirement_.
+
+## Beyond email: the worker's other passes
+
+The reminder-worker has grown into the protocol's general off-chain watcher and relayer. Besides reminders, it runs several additional passes. Each is independently optional (a deploy without the configuration simply skips the pass), none of them touches recipient PII, and none of them is something a legacy depends on.
+
+### Protocol stats and token prices
+
+The worker periodically computes aggregate protocol statistics (counts and value secured across legacies and timelocks) and serves them from a read-only `GET /stats` endpoint — this is what feeds the stat line on the app's landing page. Alongside it, `GET /stats/prices` serves a snapshot of token prices read from Chainlink price feeds on-chain, refreshed every few minutes, which the app uses for USD estimates. Both endpoints expose only aggregate, public, on-chain-derived numbers — no addresses, no emails, nothing per-user.
+
+### Upgrade-queue watch
+
+The worker also watches the protocol's `UpgradeTimelock` — the contract every proxy upgrade must be publicly queued on, per the [Upgrade Policy](upgrade-policy.md). It scans the timelock's logs and raises an alert the moment anything happens there: an operation scheduled, executed, or cancelled, or the minimum delay changed. Alerts always go to the service log, and additionally to an ops email when configured.
+
+This is the operational half of the upgrade policy's honesty story: the 48-hour queue only protects users if someone is actually watching it. A queued upgrade nobody expected is the signal to cancel and rotate keys — and because the events are public, anyone can run the same watch themselves straight from Etherscan.
+
+### Gas-sponsored relaying
+
+The worker is also the relayer behind [gas-sponsored intents](gas-sponsored-intents.md): it accepts a user's signed EIP-712 authorization (a beneficiary's claim, or an owner's check-in), submits the corresponding router transaction, and pays the gas. Every safety property lives on-chain — the worker only adds spending bounds (daily caps, a gas-price ceiling) and simulates each call before paying for it. Claims are relayed free for everyone; sponsored check-ins are a Premium perk. If this pass is down, nothing is lost but the convenience: the direct, pay-your-own-gas paths always work.
+
+### Auto-renew attestations
+
+The [auto-renew attestor](eoa-activity-auto-renew.md) runs as a pass of this same worker: for EOA legacies whose owner opted in, it observes the owner's public transaction count and renews the inactivity timer near the deadline, within the strict on-chain bounds described on its page.
+
+### Ops-status readout
+
+Finally, the worker exposes a read-only ops-status readout used by an internal founder-facing status page. It reports which optional passes are configured on the running deploy, as booleans and public on-chain facts only — never secret values. It is gated by its own low-privilege secret, deliberately separate from the worker's powerful operational secret (which guards data-erasure and send paths and never leaves the server side); until that secret is set, the endpoint doesn't exist. Leaking it would expose configuration posture, nothing more.

@@ -12,7 +12,7 @@ description: >-
 
 ### 1. On-chain: the core plan
 
-Solidity contracts on Ethereum. Deployed behind upgradeable proxies owned by a Safe multisig. Verified on Etherscan and published at [github.com/10102-io/computing-sc](https://github.com/10102-io/computing-sc).
+Solidity contracts on Ethereum. Deployed behind upgradeable proxies administered by a `ProxyAdmin` that is owned by a public 48-hour upgrade timelock — see [Upgrade Policy](upgrade-policy.md). Verified on Etherscan and published at [github.com/10102-io/computing-sc](https://github.com/10102-io/computing-sc).
 
 - **Legacy routers** — `MultisigLegacyRouter`, `TransferLegacyRouter` (Safe owners), `TransferEOALegacyRouter` (plain EOAs).
 - **Timelock router** — `TimeLockRouter`.
@@ -36,8 +36,8 @@ The UI prefers subgraph reads for the indexed data but falls back to direct on-c
 
 Strictly additive layers that improve UX but can fail without breaking the plan:
 
-- **Chainlink Functions** — bridges Moralis API data into on-chain activation checks for EOA legacies (where the EVM can't natively read a wallet's last-tx timestamp).
 - **Reminder worker** — an off-chain service (Railway + Postgres) that drives email reminder evaluation and delivery. It reads PII-free notify events from the subgraph plus a read-only on-chain "due" view (`PremiumReminderView`), keeps recipient emails encrypted off-chain, and sends through the mail service. This **replaces the retired Chainlink Automation cron and Chainlink Functions email path** (decommissioned on mainnet 2026-06-02).
+- **Auto-renew attestor** — a dedicated key, run alongside the reminder worker, that serves EOA legacies whose owner has **opted in** to auto-renew (Premium): it observes the owner's public transaction count and resets the inactivity timer for them near the deadline, within strict on-chain bounds. It can only delay activation, never accelerate it. See [EOA Activity & Auto-Renew](eoa-activity-auto-renew.md).
 - **Mailjet** — SMTP delivery for reminder emails, behind the 10102 mail proxy the worker posts to.
 - **Public RPC providers + Etherscan** — fallback read paths the UI can switch to.
 
@@ -45,10 +45,14 @@ Strictly additive layers that improve UX but can fail without breaking the plan:
 
 - [Legacy Contracts Created with Safe SDK](legacy-contracts-created-with-safe-sdk.md) — how Multisig and Safe-backed Transfer legacies work, including the Safe Guard and Safe Module integration.
 - [Legacy Contracts Created with EOAs](legacy-contracts-created-with-eoas.md) — how pure-EOA Transfer legacies work, including the approval model and CREATE2 deployment.
+- [How Legacy Creation Works (v2)](create-flow-v2.md) — the one-transaction create: EIP-1167 clones, Permit2 permissions to the immutable `LegacyPullVault`, transaction-based consent, PII-free events.
 - [New Account Generation for Beneficiaries](new-account-generation-for-beneficiaries.md) — client-side keypair generation for beneficiaries without an Ethereum address.
-- [Indexing & Activity Tracking](indexing-and-activity-tracking.md) — how The Graph and the hybrid Chainlink/Moralis path feed the app.
+- [Indexing & Activity Tracking](indexing-and-activity-tracking.md) — how The Graph keeps the UI fast, and how the on-chain inactivity timers decide activation.
+- [EOA Activity & Auto-Renew](eoa-activity-auto-renew.md) — the opt-in attestor that lets an EOA owner's general wallet activity renew their timer, with all safety bounds on-chain.
+- [Gas-Sponsored Intents](gas-sponsored-intents.md) — how beneficiaries claim without holding ETH: signature-authorized intents, relayed and paid for by 10102.
 - [Email Reminders](email-reminders.md) — the off-chain encrypted reminder-worker that sends out-of-band notifications (replacing the retired Chainlink path).
+- [Upgrade Policy](upgrade-policy.md) — how contract upgrades work: a public, on-chain 48-hour queue that anyone can watch.
 
 ## A note on upgradeability
 
-Every contract deployed by 10102 sits behind a transparent upgradeable proxy whose admin is a Safe multisig held by the 10102 team. We can patch bugs and ship improvements — we _cannot_ silently drain assets or retroactively alter an existing legacy's terms. Beneficiaries, owners, allocations, and activation windows are stored in per-legacy state that upgrades leave intact. Migration to a community-governed admin is on the public roadmap.
+Every contract deployed by 10102 sits behind a transparent upgradeable proxy administered by a single `ProxyAdmin` — and that ProxyAdmin is owned by an on-chain **upgrade timelock**: no implementation can change without first sitting in a public queue for 48 hours, during which anyone can inspect the queued code and we can cancel. We can patch bugs and ship improvements — we _cannot_ silently drain assets or retroactively alter an existing legacy's terms. Beneficiaries, owners, allocations, and activation windows are stored in per-legacy state that upgrades leave intact. The full commitment, including what is deliberately *not* timelocked and how to watch the queue yourself, is in [Upgrade Policy](upgrade-policy.md).

@@ -24,7 +24,7 @@ Every feature in this app is operable directly from the Ethereum contracts — w
 - **Contracts are verified on Etherscan**. Anyone can call them from any Ethereum interface.
 - **Code and audits are public**. See [github.com/10102-io/computing-sc](https://github.com/10102-io/computing-sc) and [github.com/10102-labs/audits](https://github.com/10102-labs/audits).
 - **The Legacy Claim Card is printable**. Every legacy produces a one-pager documenting the contract address, legacy ID, and activation instructions — enough for a beneficiary to claim via Etherscan even decades from now. See [Legacy Claim Card](user-guide/legacy/legacy-claim-card.md).
-- **Upgrades are Safe-controlled, not founder-controlled**. The `DefaultProxyAdmin` for all upgradeable contracts is owned by a multisig.
+- **Upgrades are timelocked and publicly visible**. The `DefaultProxyAdmin` for all upgradeable contracts is owned by an on-chain upgrade timelock: no implementation can change without first sitting in a public 48-hour queue that anyone can watch. See [Upgrade Policy](architecture/upgrade-policy.md).
 
 If our website goes down tomorrow, your legacy still works. That's the entire bet.
 

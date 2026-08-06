@@ -60,6 +60,20 @@ Watchers get a **My Watchlist** section in their dashboard. Each entry shows:
 
 Watchers cannot act. No edit. No delete. No activation. They can only read.
 
+## Advisor view
+
+If you're the watcher — a family advisor, estate attorney, or professional service watching several clients' legacies — the app gives you a consolidated **Advisor view**. Connect the wallet that owners have listed as a watcher and every contract you watch appears in one read-only list, sorted most urgent first (soonest check-in deadline at the top, activated contracts last).
+
+Each contract card shows:
+
+- A status chip: **Active**, **Check-in due soon** (the owner's check-in deadline is under 7 days away), **Ready to activate**, or **Activated**.
+- Days remaining until the owner's next check-in deadline, where known.
+- The owner's identity at whatever visibility level that legacy grants you — the owner's address (or ENS name) with full visibility, the private identifier with limited visibility.
+
+There is nothing for the watcher to enable or pay for: the entry point appears automatically once at least one legacy lists your wallet as a watcher, and it disappears if none do. Authorized watchers are a capability of each **owner's** Premium plan; the watcher doesn't need a subscription of their own.
+
+The same rule applies here as everywhere: the advisor view is read-only. A watcher can never check in, edit, delete, or activate a legacy from it — opening a contract leads to the same read-only detail view as the watchlist.
+
 ## Contingent beneficiaries are automatically watchers
 
 Second-line and third-line contingent beneficiaries are, by default, added as watchers with **limited visibility**. The owner can change their visibility at any time (e.g. upgrade an estate-lawyer contingent to full visibility).
