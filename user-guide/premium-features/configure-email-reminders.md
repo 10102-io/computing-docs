@@ -8,7 +8,7 @@ description: >-
 
 Email reminders let the owner and beneficiaries get out-of-band notifications at key moments in a legacy's lifecycle, so nobody has to remember to check the app.
 
-Reminders are **additive**: the on-chain contract doesn't know about emails and doesn't depend on them. If a reminder doesn't reach someone, the plan still works — but reminders make it much harder for something to be silently missed.
+Reminders are **additive**: the on-chain contract doesn't know about emails and doesn't depend on them. If a reminder doesn't reach someone, the plan still works, but reminders make it much harder for something to be silently missed.
 
 ## Events that trigger emails
 
@@ -43,12 +43,12 @@ You can edit or delete a reminder setup at any time from the same screen.
 {% endhint %}
 
 {% hint style="warning" %}
-**For Safe-backed legacies, only the creator can edit reminders.** The creator is the specific Safe signer who submitted the original creation transaction. See [Concepts — Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies). If you're another Safe signer you can view the reminder configuration but not change it — you'll see a "Notification settings managed by 0x…abcd" banner pointing to the creator.
+**For Safe-backed legacies, only the creator can edit reminders.** The creator is the specific Safe signer who submitted the original creation transaction. See [Concepts: Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies). If you're another Safe signer you can view the reminder configuration but not change it; you'll see a "Notification settings managed by 0x…abcd" banner pointing to the creator.
 {% endhint %}
 
 ## What emails look like
 
-Emails are informational only — they never contain links asking for signatures or private keys. The app URL in an email is there for convenience, not to act as an authentication factor. Beneficiaries can always go straight to `app.10102.io` (or use the printed [Legacy Claim Card](../legacy/legacy-claim-card.md)) instead of clicking through.
+Emails are informational only; they never contain links asking for signatures or private keys. The app URL in an email is there for convenience, not to act as an authentication factor. Beneficiaries can always go straight to `app.10102.io` (or use the printed [Legacy Claim Card](../legacy/legacy-claim-card.md)) instead of clicking through.
 
 Each email includes the Legacy ID so the recipient can look the legacy up on-chain directly if they prefer.
 
@@ -56,10 +56,10 @@ Each email includes the Legacy ID so the recipient can look the legacy up on-cha
 
 - **Email addresses are not on-chain.** They're stored off-chain, encrypted at rest, and only used for sending reminders.
 - **The owner sees their beneficiaries' emails** in the reminder configuration. If a beneficiary prefers total privacy, they can ask to be omitted.
-- **Reminders are tied to the legacy**, not the wallet — deleting the legacy deletes the reminder configuration.
+- **Reminders are tied to the legacy**, not the wallet: deleting the legacy deletes the reminder configuration.
 
 ## See also
 
 - [Manage Authorized Watchers](./manage-authorized-watchers.md)
 - [Manage Contingent Beneficiaries](./manage-contingent-beneficiaries.md)
-- [Concepts — Creator vs. signer (Safe legacies)](../concepts.md#creator-vs-signer-safe-legacies)
+- [Concepts: Creator vs. signer (Safe legacies)](../concepts.md#creator-vs-signer-safe-legacies)

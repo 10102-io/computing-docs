@@ -1,30 +1,30 @@
 ---
 description: >-
   The "why" behind the harder engineering decisions in 10102 Computing
-  Legacy — useful for auditors, integrators, and future maintainers.
+  Legacy. Useful for auditors, integrators, and future maintainers.
 ---
 
 # Design & Engineering Notes
 
-This section is for readers who want to understand why the app is shaped the way it is, not just what it does. If you're picking up the codebase — contributing, auditing, or integrating against it — this is the place that explains the trade-offs the [Architecture](../architecture/README.md) section takes as given.
+This section is for readers who want to understand why the app is shaped the way it is, not just what it does. If you're picking up the codebase to contribute, audit, or integrate against it, this is the place that explains the trade-offs the [Architecture](../architecture/README.md) section takes as given.
 
 We deliberately kept this section small. There are thousands of small decisions in the codebase; only a handful are load-bearing enough to warrant a page here.
 
 ## What's in this section
 
-- [Inactivity Detection](technical-analysis.md) — the hard problem at the heart of the product, and why the EOA and Safe paths look different.
-- [Core Mechanisms](core-mechanisms.md) — the system's moving parts (CREATE2, upgradeable proxies, heartbeat, the router pattern) explained at the level of "what each piece is responsible for and why it exists."
-- [Roadmap](backlog.md) — public ledger of planned work and explicitly deferred items, with enough context to understand each trigger condition.
+- [Inactivity Detection](technical-analysis.md): the hard problem at the heart of the product, and why the EOA and Safe paths look different.
+- [Core Mechanisms](core-mechanisms.md): the system's moving parts (CREATE2, upgradeable proxies, heartbeat, the router pattern) explained at the level of "what each piece is responsible for and why it exists."
+- [Roadmap](backlog.md): public ledger of planned work and explicitly deferred items, with enough context to understand each trigger condition.
 
 ## Principles we try to live by
 
 A few opinions we fall back on when we're not sure which way to go:
 
 - **Plan survives us.** Every feature must have a path to activation that doesn't require our UI, servers, or company. This is the single most important principle. It shows up as the Legacy Claim Card, as verified contracts on Etherscan, as public source code and audits, as multisig-controlled upgradeability.
-- **On-chain authoritative, off-chain additive.** Anything our backend or any third-party service (e.g. Mailjet for the off-chain reminder worker) contributes must be verifiable against on-chain state, and its absence must degrade UX but not correctness. Activation itself takes no off-chain input — there is no activity oracle in the trust path.
+- **On-chain authoritative, off-chain additive.** Anything our backend or any third-party service (e.g. Mailjet for the off-chain reminder worker) contributes must be verifiable against on-chain state, and its absence must degrade UX but not correctness. Activation itself takes no off-chain input; there is no activity oracle in the trust path.
 - **Two thin routers beat one fat one.** The EOA and Safe legacy flows share ~80% of their semantics, but the 20% that differs is different enough that conflating them makes both paths carry each other's complexity. The same applies to the three timelock flavors (Timelock / Soft / Gift) being distinct code paths.
-- **Explicit is better than clever.** For a long time this principle meant the EOA create flow was two separate transactions (deploy, then approve), because the explicit version was easier for users to verify than a wallet-magic bundle. Create-flow v2 collapsed that to a single confirmation _without_ giving up the property the two steps protected: the permission the user grants is a Permit2 allowance to one immutable, published vault contract that any wallet can verify — strictly easier to audit than N approvals to a fresh per-user address. The durable form of the principle: never trade verifiability for fewer clicks; look for the design that gets both. See [How Legacy Creation Works](../architecture/create-flow-v2.md).
-- **Fail closed on activation.** We bias every uncertain case toward _not_ activating early — a delayed real claim is recoverable (the owner heartbeats, the beneficiary retries once the window elapses), a premature disbursement is not. For EOAs this is why the inactivity timer only resets on the owner's own legacy interactions rather than on a best-effort guess about their wider wallet activity.
+- **Explicit is better than clever.** For a long time this principle meant the EOA create flow was two separate transactions (deploy, then approve), because the explicit version was easier for users to verify than a wallet-magic bundle. Create-flow v2 collapsed that to a single confirmation _without_ giving up the property the two steps protected: the permission the user grants is a Permit2 allowance to one immutable, published vault contract that any wallet can verify, which is strictly easier to audit than N approvals to a fresh per-user address. The durable form of the principle: never trade verifiability for fewer clicks; look for the design that gets both. See [How Legacy Creation Works](../architecture/create-flow-v2.md).
+- **Fail closed on activation.** We bias every uncertain case toward _not_ activating early: a delayed real claim is recoverable (the owner heartbeats, the beneficiary retries once the window elapses), a premature disbursement is not. For EOAs this is why the inactivity timer only resets on the owner's own legacy interactions rather than on a best-effort guess about their wider wallet activity.
 
 ## What's _not_ here
 

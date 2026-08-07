@@ -1,6 +1,6 @@
 ---
 description: >-
-  How email reminders are driven from on-chain state — an off-chain
+  How email reminders are driven from on-chain state: an off-chain
   reminder-worker reads PII-free notify signals, keeps recipient emails
   encrypted, and sends them, while the plan keeps working even if email
   delivery fails. Plus the worker's non-email passes: protocol stats and
@@ -14,7 +14,7 @@ Email reminders are an opt-in Premium capability that gives owners and beneficia
 For the user-facing behavior (what events trigger emails, who gets what), see [Configure Email Reminders](../user-guide/premium-features/configure-email-reminders.md). This page covers the architecture.
 
 {% hint style="info" %}
-**Architecture change (2026-06-02).** Reminders used to run on-chain through Chainlink Automation (a daily cron) and Chainlink Functions (the `PremiumMail*` consumers that called the mail service), with recipient emails stored on-chain. That path is **retired** — see [Retired: the Chainlink path](#retired-the-chainlink-path) below. Reminders now run from an off-chain `reminder-worker`, and recipient emails are **no longer stored on-chain**.
+**Architecture change (2026-06-02).** Reminders used to run on-chain through Chainlink Automation (a daily cron) and Chainlink Functions (the `PremiumMail*` consumers that called the mail service), with recipient emails stored on-chain. That path is **retired**; see [Retired: the Chainlink path](#retired-the-chainlink-path) below. Reminders now run from an off-chain `reminder-worker`, and recipient emails are **no longer stored on-chain**.
 {% endhint %}
 
 ## Components
@@ -22,7 +22,7 @@ For the user-facing behavior (what events trigger emails, who gets what), see [C
 | Component | Role |
 |---|---|
 | Router contracts | Deploy the per-legacy contracts at legacy creation, and emit PII-free notify events (e.g. `LegacyEmailNotifyRequested`) at activation. Not otherwise involved in reminders. |
-| `PremiumSetting` | Stores reminder configuration **as addresses only** — which beneficiaries to notify and the advance-notice windows. No emails or names are stored or emitted on-chain. |
+| `PremiumSetting` | Stores reminder configuration **as addresses only**: which beneficiaries to notify and the advance-notice windows. No emails or names are stored or emitted on-chain. |
 | `PremiumReminderView` | A standalone, stateless, read-only contract. The worker polls it (`dueRemindersBatch`) to learn which time-based reminder windows are currently open for a legacy. Falls back to a 7-day window when a creator hasn't set their own. |
 | `reminder-worker` | Off-chain service (Railway + Postgres). Holds recipient emails/names **encrypted at rest**, reads notify signals from the subgraph and `PremiumReminderView`, dedupes, and dispatches email. |
 | `email-proxy` | The existing 10102 mail service the worker posts to. Fills in template variables and hands off to the SMTP provider. |
@@ -42,7 +42,7 @@ Recipient emails and names are **off-chain and encrypted**:
 
 ## Authenticating to the worker
 
-The frontend talks to the worker with **EIP-712 wallet signatures** — no shared secret ever ships in the browser. The owner signs a typed message and the worker recovers the signer and checks it against the legacy's on-chain `creator()`. To avoid one signature per recipient, the save/erase/read flows are **batch-signed once per legacy**:
+The frontend talks to the worker with **EIP-712 wallet signatures**; no shared secret ever ships in the browser. The owner signs a typed message and the worker recovers the signer and checks it against the legacy's on-chain `creator()`. To avoid one signature per recipient, the save/erase/read flows are **batch-signed once per legacy**:
 
 | Endpoint | Purpose | Who may sign |
 |---|---|---|
@@ -51,44 +51,44 @@ The frontend talks to the worker with **EIP-712 wallet signatures** — no share
 | `/erase-legacy` | Wipe the legacy's entire recipient set | The legacy's on-chain `creator()` |
 | `/send-instructions` | Send the manual "send instructions" email to a legacy's recipients | The legacy `owner` (also checked `creator() == owner` on-chain) |
 
-The worker **fails closed** if it can't read `creator()` on-chain. "Send instructions" runs entirely server-side — the browser never sees the recipient emails — and is throttled by a **per-owner cooldown stored in Postgres** (replacing the old client-side guard).
+The worker **fails closed** if it can't read `creator()` on-chain. "Send instructions" runs entirely server-side (the browser never sees the recipient emails) and is throttled by a **per-owner cooldown stored in Postgres** (replacing the old client-side guard).
 
 ## Workflow
 
-### Step 1 — Subscription and configuration
+### Step 1: Subscription and configuration
 
 1. The owner purchases a Premium subscription (paid in ETH, USDC, or USDT to the `PremiumRegistry` contract). The subscription is on-chain, time-bound, and scoped to the paying wallet.
 2. While Premium is active, the owner configures reminders. The **addresses** to notify and the advance-notice windows are written **on-chain** to `PremiumSetting`; the matching **emails/names** are synced to the `reminder-worker` over an EIP-712-signed `/ingest-legacy` call.
 3. No cron registration happens on-chain. The off-chain worker discovers legacies to watch from the subgraph and the on-chain configuration.
 
-### Step 2 — Evaluation
+### Step 2: Evaluation
 
 The worker runs on a schedule (its own tick, not an on-chain cron). Each tick does two passes:
 
-1. **Event pass** — pulls recent `NotifyRequested` entities from the subgraph (owner-reset, multisig activation, transfer activation). For transfer activations it reconstructs per-recipient ERC-20 amounts from the activation transaction's `Transfer` logs.
-2. **Due pass** — calls `PremiumReminderView.dueRemindersBatch(...)` for the watched legacies to learn which **time-based** windows are open (e.g. "approaching activation", "ready to activate", second-line windows). The chain is the trust anchor for *when* a reminder is due.
+1. **Event pass**: pulls recent `NotifyRequested` entities from the subgraph (owner-reset, multisig activation, transfer activation). For transfer activations it reconstructs per-recipient ERC-20 amounts from the activation transaction's `Transfer` logs.
+2. **Due pass**: calls `PremiumReminderView.dueRemindersBatch(...)` for the watched legacies to learn which **time-based** windows are open (e.g. "approaching activation", "ready to activate", second-line windows). The chain is the trust anchor for *when* a reminder is due.
 
-### Step 3 — Reminder dispatch
+### Step 3: Reminder dispatch
 
 Both passes funnel into a single dispatch step:
 
 1. Resolve the recipient rows for the legacy.
-2. Claim an idempotency key in the **sent-ledger** (`claim-before-send`) so the same `(legacy, recipient, event)` is only ever sent once — even across worker restarts or subgraph re-org replays.
+2. Claim an idempotency key in the **sent-ledger** (`claim-before-send`) so the same `(legacy, recipient, event)` is only ever sent once, even across worker restarts or subgraph re-org replays.
 3. Decrypt the recipient's email **in memory only** and POST to `email-proxy`, which fills template variables and delivers via Mailjet.
 4. Record the provider message id. A failed send releases the claim so the next tick retries.
 
 ### Resolved: no more duplicate emails
 
-The old Chainlink path executed on multiple oracle nodes that each made an independent mail call, and the mail service didn't dedupe — so **the same reminder could arrive more than once**. A single worker with a **claim-before-send sent-ledger** removes that fan-out entirely: each reminder is claimed once and sent once. This previously-documented limitation is **resolved**.
+The old Chainlink path executed on multiple oracle nodes that each made an independent mail call, and the mail service didn't dedupe, so **the same reminder could arrive more than once**. A single worker with a **claim-before-send sent-ledger** removes that fan-out entirely: each reminder is claimed once and sent once. This previously-documented limitation is **resolved**.
 
 ## Retired: the Chainlink path
 
 The following on-chain email machinery has been **decommissioned**:
 
-- **Chainlink Automation** — the per-user upkeep crons (via `PremiumAutomationManager`) that called `checkUpkeep` / `performUpkeep` to evaluate when a reminder was due.
-- **Chainlink Functions** — the `PremiumMail*` consumer contracts that bridged the "send email" signal to the off-chain mail call.
+- **Chainlink Automation**: the per-user upkeep crons (via `PremiumAutomationManager`) that called `checkUpkeep` / `performUpkeep` to evaluate when a reminder was due.
+- **Chainlink Functions**: the `PremiumMail*` consumer contracts that bridged the "send email" signal to the off-chain mail call.
 
-Scheduling moved to the worker's own tick + `PremiumReminderView`; delivery moved to the worker + `email-proxy`. On **mainnet**, the teardown completed on **2026-06-02**: the upkeeps were cancelled, the Functions subscription was cancelled, and remaining LINK was withdrawn. `PremiumSetting` was slimmed in the same cutover — emails/names are no longer stored or emitted, activation triggers are emit-only, and the spoofable mail-trigger path was removed.
+Scheduling moved to the worker's own tick + `PremiumReminderView`; delivery moved to the worker + `email-proxy`. On **mainnet**, the teardown completed on **2026-06-02**: the upkeeps were cancelled, the Functions subscription was cancelled, and remaining LINK was withdrawn. `PremiumSetting` was slimmed in the same cutover: emails/names are no longer stored or emitted, activation triggers are emit-only, and the spoofable mail-trigger path was removed.
 
 {% hint style="info" %}
 This page covers **email reminders** first (with the worker's other passes summarized [below](#beyond-email-the-workers-other-passes)). How activity and inactivity are actually tracked is a different subsystem, documented in [Indexing & Activity Tracking](indexing-and-activity-tracking.md) and [EOA Activity & Auto-Renew](eoa-activity-auto-renew.md).
@@ -103,7 +103,7 @@ This page covers **email reminders** first (with the worker's other passes summa
 
 ## What happens when email breaks
 
-If the email layer is entirely broken (worker down, `email-proxy` down, Mailjet down), the only consequence is that reminder emails don't send. The legacy itself continues to work exactly as specified on-chain. A beneficiary whose reminder never arrives can still activate on time via the app or via Etherscan — using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md) — because the on-chain state has all the information needed.
+If the email layer is entirely broken (worker down, `email-proxy` down, Mailjet down), the only consequence is that reminder emails don't send. The legacy itself continues to work exactly as specified on-chain. A beneficiary whose reminder never arrives can still activate on time via the app, or via Etherscan using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md), because the on-chain state has all the information needed.
 
 This is the "plan survives us" principle in action: email reminders are a _better experience_, never a _requirement_.
 
@@ -113,17 +113,17 @@ The reminder-worker has grown into the protocol's general off-chain watcher and 
 
 ### Protocol stats and token prices
 
-The worker periodically computes aggregate protocol statistics (counts and value secured across legacies and timelocks) and serves them from a read-only `GET /stats` endpoint — this is what feeds the stat line on the app's landing page. Alongside it, `GET /stats/prices` serves a snapshot of token prices read from Chainlink price feeds on-chain, refreshed every few minutes, which the app uses for USD estimates. Both endpoints expose only aggregate, public, on-chain-derived numbers — no addresses, no emails, nothing per-user.
+The worker periodically computes aggregate protocol statistics (counts and value secured across legacies and timelocks) and serves them from a read-only `GET /stats` endpoint; this is what feeds the stat line on the app's landing page. Alongside it, `GET /stats/prices` serves a snapshot of token prices read from Chainlink price feeds on-chain, refreshed every few minutes, which the app uses for USD estimates. Both endpoints expose only aggregate, public, on-chain-derived numbers: no addresses, no emails, nothing per-user.
 
 ### Upgrade-queue watch
 
-The worker also watches the protocol's `UpgradeTimelock` — the contract every proxy upgrade must be publicly queued on, per the [Upgrade Policy](upgrade-policy.md). It scans the timelock's logs and raises an alert the moment anything happens there: an operation scheduled, executed, or cancelled, or the minimum delay changed. Alerts always go to the service log, and additionally to an ops email when configured.
+The worker also watches the protocol's `UpgradeTimelock`, the contract every proxy upgrade must be publicly queued on, per the [Upgrade Policy](upgrade-policy.md). It scans the timelock's logs and raises an alert the moment anything happens there: an operation scheduled, executed, or cancelled, or the minimum delay changed. Alerts always go to the service log, and additionally to an ops email when configured.
 
-This is the operational half of the upgrade policy's honesty story: the 48-hour queue only protects users if someone is actually watching it. A queued upgrade nobody expected is the signal to cancel and rotate keys — and because the events are public, anyone can run the same watch themselves straight from Etherscan.
+This is the operational half of the upgrade policy's honesty story: the 48-hour queue only protects users if someone is actually watching it. A queued upgrade nobody expected is the signal to cancel and rotate keys. And because the events are public, anyone can run the same watch themselves straight from Etherscan.
 
 ### Gas-sponsored relaying
 
-The worker is also the relayer behind [gas-sponsored intents](gas-sponsored-intents.md): it accepts a user's signed EIP-712 authorization (a beneficiary's claim, or an owner's check-in), submits the corresponding router transaction, and pays the gas. Every safety property lives on-chain — the worker only adds spending bounds (daily caps, a gas-price ceiling) and simulates each call before paying for it. Claims are relayed free for everyone; sponsored check-ins are a Premium perk. If this pass is down, nothing is lost but the convenience: the direct, pay-your-own-gas paths always work.
+The worker is also the relayer behind [gas-sponsored intents](gas-sponsored-intents.md): it accepts a user's signed EIP-712 authorization (a beneficiary's claim, or an owner's check-in), submits the corresponding router transaction, and pays the gas. Every safety property lives on-chain; the worker only adds spending bounds (daily caps, a gas-price ceiling) and simulates each call before paying for it. Claims are relayed free for everyone; sponsored check-ins are a Premium perk. If this pass is down, nothing is lost but the convenience: the direct, pay-your-own-gas paths always work.
 
 ### Auto-renew attestations
 
@@ -131,4 +131,4 @@ The [auto-renew attestor](eoa-activity-auto-renew.md) runs as a pass of this sam
 
 ### Ops-status readout
 
-Finally, the worker exposes a read-only ops-status readout used by an internal founder-facing status page. It reports which optional passes are configured on the running deploy, as booleans and public on-chain facts only — never secret values. It is gated by its own low-privilege secret, deliberately separate from the worker's powerful operational secret (which guards data-erasure and send paths and never leaves the server side); until that secret is set, the endpoint doesn't exist. Leaking it would expose configuration posture, nothing more.
+Finally, the worker exposes a read-only ops-status readout used by an internal founder-facing status page. It reports which optional passes are configured on the running deploy, as booleans and public on-chain facts only, never secret values. It is gated by its own low-privilege secret, deliberately separate from the worker's powerful operational secret (which guards data-erasure and send paths and never leaves the server side); until that secret is set, the endpoint doesn't exist. Leaking it would expose configuration posture, nothing more.

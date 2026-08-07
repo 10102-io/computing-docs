@@ -1,7 +1,7 @@
 ---
 description: >-
   Opinionated shortcuts on the home page that pre-fill a legacy or timelock for
-  a specific goal. All of them drop into the standard flows — you can tweak
+  a specific goal. All of them drop into the standard flows, so you can tweak
   anything before signing.
 ---
 
@@ -33,13 +33,13 @@ Use when: you know this will be a multi-beneficiary setup and you'd rather start
 
 Pre-fills a **Timelocked gift** with recipient, locked duration, and assets to include. The locked window is configurable in days.
 
-Use when: you want scheduled delivery to another wallet on a specific date — planned giving, a child's milestone, a trust-fund-style disbursement.
+Use when: you want scheduled delivery to another wallet on a specific date, like planned giving, a child's milestone, or a trust-fund-style disbursement.
 
 ### Protect all my funds (for a waiting period)
 
 Pre-fills a **Soft Timelock**: locks your chosen assets indefinitely; when _you_ want them back, you initiate an unlock and a configurable waiting period begins. The window is measured in days.
 
-Use when: you want anti-coercion protection — compromised keys or a wrench attack can't immediately drain the locked balance.
+Use when: you want anti-coercion protection, so compromised keys or a wrench attack can't immediately drain the locked balance.
 
 ### Designate future signers for my Safe
 
@@ -55,6 +55,6 @@ Use when: your Safe is your long-term vault and you want other people (family, a
 
 ## See also
 
-- [Create a Legacy Contract](./legacy/create-a-legacy-contract.md) — the full creation flow that Quick Actions drop into.
-- [Using Timelock](./timelock/using-timelock.md) — details on the three timelock flavors.
-- [Concepts](./concepts.md) — vocabulary reference.
+- [Create a Legacy Contract](./legacy/create-a-legacy-contract.md): the full creation flow that Quick Actions drop into.
+- [Using Timelock](./timelock/using-timelock.md): details on the three timelock flavors.
+- [Concepts](./concepts.md): vocabulary reference.

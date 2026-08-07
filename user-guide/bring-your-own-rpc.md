@@ -8,7 +8,7 @@ description: >-
 
 # Bring your own RPC endpoint
 
-Every action in 10102 Computing Legacy that reads on-chain state — checking a legacy's status, listing beneficiaries, verifying ownership, etc. — goes through an Ethereum JSON-RPC endpoint. By default the app rotates through a list of providers we configure, so a single provider being slow or rate-limited doesn't take the app down.
+Every action in 10102 Computing Legacy that reads on-chain state (checking a legacy's status, listing beneficiaries, verifying ownership, etc.) goes through an Ethereum JSON-RPC endpoint. By default the app rotates through a list of providers we configure, so a single provider being slow or rate-limited doesn't take the app down.
 
 If you have your own node, a paid Alchemy/Infura/drpc key, or simply prefer not to depend on the providers we ship, you can point the app at your endpoint instead.
 
@@ -74,7 +74,7 @@ If the override endpoint fails several requests in a row at the network level (D
 [rpc] chain 1: user-override evicted after 5 consecutive failures (was: https://…). Falling back to the default providers.
 ```
 
-Eviction is triggered strictly by **transport-level** failures. A working node that responds with a valid JSON-RPC error (for example, the node saying "that method is not supported") does **not** count toward eviction — because that means the node itself is healthy. Any successful request resets the counter, so an endpoint that's generally fine but occasionally slow won't get evicted by coincidence.
+Eviction is triggered strictly by **transport-level** failures. A working node that responds with a valid JSON-RPC error (for example, the node saying "that method is not supported") does **not** count toward eviction, because that means the node itself is healthy. Any successful request resets the counter, so an endpoint that's generally fine but occasionally slow won't get evicted by coincidence.
 
 Once evicted, the app won't auto-reinstate the same endpoint. You can reconfigure one by supplying a fresh `?ds-rpc-<chainId>=` query parameter.
 
@@ -95,7 +95,7 @@ After reloads (without the query parameter), the same log appears but mentions i
 ## Things to know
 
 {% hint style="info" %}
-**What this changes and what it doesn't.** The override affects **read** calls the app makes to inspect chain state. It does **not** change how your wallet connects to the network or where your wallet signs/submits transactions — that is controlled entirely by your wallet's own RPC settings. If you want your transactions to also go through your own node, set that inside your wallet (e.g. MetaMask → Settings → Networks).
+**What this changes and what it doesn't.** The override affects **read** calls the app makes to inspect chain state. It does **not** change how your wallet connects to the network or where your wallet signs/submits transactions; that is controlled entirely by your wallet's own RPC settings. If you want your transactions to also go through your own node, set that inside your wallet (e.g. MetaMask → Settings → Networks).
 {% endhint %}
 
 {% hint style="warning" %}
@@ -103,7 +103,7 @@ After reloads (without the query parameter), the same log appears but mentions i
 {% endhint %}
 
 {% hint style="warning" %}
-**If your endpoint embeds an API key, restrict it at the provider.** RPC keys you paste into the query parameter end up in the browser request (and transiently in your history, screenshots, and any link you share). This is the same exposure model every web dapp has — the fix isn't to hide the key but to lock it down at the provider. Alchemy, Infura, QuickNode all support per-key "allowed origins" restrictions; enable that so even a leaked key is useless from any domain other than yours, and ideally disable `eth_sendRawTransaction` on read-only keys. Because the app persists your override after the first paste, you only need to put the URL in the query string once, which limits the exposure window.
+**If your endpoint embeds an API key, restrict it at the provider.** RPC keys you paste into the query parameter end up in the browser request (and transiently in your history, screenshots, and any link you share). This is the same exposure model every web dapp has; the fix isn't to hide the key but to lock it down at the provider. Alchemy, Infura, QuickNode all support per-key "allowed origins" restrictions; enable that so even a leaked key is useless from any domain other than yours, and ideally disable `eth_sendRawTransaction` on read-only keys. Because the app persists your override after the first paste, you only need to put the URL in the query string once, which limits the exposure window.
 {% endhint %}
 
 {% hint style="info" %}
@@ -112,5 +112,5 @@ After reloads (without the query parameter), the same log appears but mentions i
 
 ## See also
 
-- [Authentication](./authentication.md) — how wallets connect and submit transactions.
-- [Concepts](./concepts.md) — what the app does with chain state it reads.
+- [Authentication](./authentication.md): how wallets connect and submit transactions.
+- [Concepts](./concepts.md): what the app does with chain state it reads.

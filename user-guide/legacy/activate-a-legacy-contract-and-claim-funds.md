@@ -13,9 +13,9 @@ When a legacy's activation window has elapsed, any of its designated beneficiari
 
 Before you can activate:
 
-1. **Enough time must have passed** — the owner must have been inactive (no activity the legacy can see) for at least the configured trigger window.
-2. **Your wallet must be one of the configured beneficiaries** — primary, or contingent after the corresponding line has kicked in.
-3. **Gas** — activation is a paid transaction, and the assets are distributed to _all_ beneficiaries according to the allocations, not just to you. For EOA transfer legacies, you usually **don't need any ETH yourself** — see [Claiming without ETH](#claiming-without-eth) below.
+1. **Enough time must have passed**: the owner must have been inactive (no activity the legacy can see) for at least the configured trigger window.
+2. **Your wallet must be one of the configured beneficiaries**: primary, or contingent after the corresponding line has kicked in.
+3. **Gas**: activation is a paid transaction, and the assets are distributed to _all_ beneficiaries according to the allocations, not just to you. For EOA transfer legacies, you usually **don't need any ETH yourself**; see [Claiming without ETH](#claiming-without-eth) below.
 
 ## Via the 10102 app
 
@@ -35,17 +35,17 @@ All approved ERC-20s are distributed from the owner's wallet to the listed benef
 
 ### Claiming without ETH
 
-If you're claiming an EOA transfer legacy and your wallet can't cover the network fee — common when the owner generated a fresh wallet for you — the app handles it automatically:
+If you're claiming an EOA transfer legacy and your wallet can't cover the network fee (common when the owner generated a fresh wallet for you), the app handles it automatically:
 
 1. Instead of a transaction, your wallet asks for a **free signature** (an EIP-712 message titled *ClaimAuth*). Signing costs nothing.
 2. 10102's relay service submits the claim transaction and pays the gas.
 3. The app tracks the transaction and shows the result exactly as if you had sent it yourself.
 
-The signature only authorizes the claim you were already entitled to: it names your address, this specific legacy, and the exact asset list, and it can be used once. Nobody — including us — can use it to send funds anywhere other than where the owner's allocations say. If you *do* have ETH, nothing changes: you pay your own fee as before. Owners can disable sponsored claims per legacy on-chain if they prefer; the pay-your-own-gas path always works. Details: [Gas-Sponsored Intents](../../architecture/gas-sponsored-intents.md).
+The signature only authorizes the claim you were already entitled to: it names your address, this specific legacy, and the exact asset list, and it can be used once. Nobody, including us, can use it to send funds anywhere other than where the owner's allocations say. If you *do* have ETH, nothing changes: you pay your own fee as before. Owners can disable sponsored claims per legacy on-chain if they prefer; the pay-your-own-gas path always works. Details: [Gas-Sponsored Intents](../../architecture/gas-sponsored-intents.md).
 
 ### For Multisig legacies
 
-Activation adds the beneficiaries as signers to the owner's Safe, with the threshold the owner configured. From that point on, the Safe is under your collective control — you can act on it in the normal Safe UI, our UI, or any other tool.
+Activation adds the beneficiaries as signers to the owner's Safe, with the threshold the owner configured. From that point on, the Safe is under your collective control: you can act on it in the normal Safe UI, our UI, or any other tool.
 
 ## Via the Safe platform (Safe legacies only)
 
@@ -62,12 +62,12 @@ Useful as a backup path if our UI is down, or if you already live in Safe's inte
 This is the path your Legacy Claim Card describes. You can reach it any time, with or without our UI.
 
 1. Open an explorer like Etherscan for the network the legacy is on.
-2. Navigate to the **Router contract** from the card — it's a **Transfer Legacy Router** (or EOA Router) for Transfer legacies.
+2. Navigate to the **Router contract** from the card. It's a **Transfer Legacy Router** (or EOA Router) for Transfer legacies.
 3. Connect your wallet (beneficiary address).
 4. On the _Contract → Write_ tab, call the activation function with the **Legacy ID** from the card as the argument.
 5. Sign and pay gas.
 
-The contract will distribute assets exactly as it would have done from the UI — the router has no knowledge of where the call originated.
+The contract will distribute assets exactly as it would have done from the UI; the router has no knowledge of where the call originated.
 
 {% hint style="success" %}
 **You don't need a list of assets.** The router reads the approved token list from the legacy contract itself. You only need the Legacy ID.
@@ -77,16 +77,16 @@ The contract will distribute assets exactly as it would have done from the UI �
 
 - **Status** reads **Activated** for everyone (owner, beneficiaries, watchers).
 - **Watchers** still see the legacy under their watchlist for historical context.
-- **Owner actions** are disabled — no more edits, no more deletes. The legacy has done its job.
+- **Owner actions** are disabled: no more edits, no more deletes. The legacy has done its job.
 - **Email notifications** (if configured) go out to impacted parties summarizing the distribution.
 
 ## Troubleshooting
 
-- **"Not enough time has passed"** — your clock isn't the authoritative one. The contract checks against the owner's last outgoing transaction timestamp on-chain. Wait, or verify the owner really has been inactive for the trigger window.
-- **"You are not a beneficiary"** — the address you're connected with doesn't match a configured beneficiary for this legacy ID. Re-check the card; check the address you expect to be listed; ask the owner if you suspect a typo.
-- **"Insufficient gas"** — activation for a legacy with many tokens and beneficiaries can be expensive. For EOA transfer legacies the app normally covers this for you automatically ([Claiming without ETH](#claiming-without-eth)); otherwise coordinate with another beneficiary, or use the Claim Remaining Fund batching to split the cost.
+- **"Not enough time has passed"**: your clock isn't the authoritative one. The contract checks against the owner's last outgoing transaction timestamp on-chain. Wait, or verify the owner really has been inactive for the trigger window.
+- **"You are not a beneficiary"**: the address you're connected with doesn't match a configured beneficiary for this legacy ID. Re-check the card; check the address you expect to be listed; ask the owner if you suspect a typo.
+- **"Insufficient gas"**: activation for a legacy with many tokens and beneficiaries can be expensive. For EOA transfer legacies the app normally covers this for you automatically ([Claiming without ETH](#claiming-without-eth)); otherwise coordinate with another beneficiary, or use the Claim Remaining Fund batching to split the cost.
 
 ## See also
 
-- [Legacy Claim Card](./legacy-claim-card.md) — the printed safety net.
-- [Concepts — Activation trigger](../concepts.md#activation-trigger).
+- [Legacy Claim Card](./legacy-claim-card.md): the printed safety net.
+- [Concepts: Activation trigger](../concepts.md#activation-trigger).

@@ -8,7 +8,7 @@ description: >-
 
 An **authorized watcher** is a read-only spectator on a legacy. They see it under **My Watchlist** in their 10102 dashboard; they can never edit, delete, activate, or otherwise affect it.
 
-Watchers are a first-class way to coordinate with people who need visibility but shouldn't have control — estate lawyers, family members, advisors, compliance officers.
+Watchers are a first-class way to coordinate with people who need visibility but shouldn't have control: estate lawyers, family members, advisors, compliance officers.
 
 ## Configuring
 
@@ -18,12 +18,12 @@ For each watcher you add:
 
 - Their Ethereum address (EOA).
 - A display name (private label for your own reference).
-- A visibility level — see below.
+- A visibility level; see below.
 
 You can add, remove, or change a watcher's visibility at any time.
 
 {% hint style="warning" %}
-**For Safe-backed legacies, only the creator can edit the watcher list.** The creator is the specific Safe signer who submitted the original creation transaction. Other Safe signers see the watcher list but with editing disabled and a "Notification settings managed by 0x…abcd" badge. This is documented in [Concepts — Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies); the workaround for handing off creator control is to delete and recreate with the new signer as submitter.
+**For Safe-backed legacies, only the creator can edit the watcher list.** The creator is the specific Safe signer who submitted the original creation transaction. Other Safe signers see the watcher list but with editing disabled and a "Notification settings managed by 0x…abcd" badge. This is documented in [Concepts: Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies); the workaround for handing off creator control is to delete and recreate with the new signer as submitter.
 {% endhint %}
 
 ## Visibility levels
@@ -35,7 +35,7 @@ With limited visibility:
 - **Owner wallet address**: hidden. Replaced by a unique private identifier tied to the owner's 10102 account.
 - **Safe co-signer addresses** (Multisig legacies): hidden.
 - **Beneficiary addresses**: hidden. Names (owner-entered labels) are shown.
-- **Watchers cannot locate the legacy on-chain** from what the app shows them — the identifier is 10102-internal, not an Ethereum address.
+- **Watchers cannot locate the legacy on-chain** from what the app shows them; the identifier is 10102-internal, not an Ethereum address.
 
 Use when: you want oversight without exposing the on-chain footprint. Typical for a general-purpose family watcher.
 
@@ -47,7 +47,7 @@ With full visibility:
 - Watchers can look up the legacy contract on Etherscan and see the on-chain activity directly.
 - Allocations, activation triggers, and asset lists are fully visible.
 
-Use when: the watcher genuinely needs the addresses — typically an estate lawyer coordinating with off-chain documents, or a professional recovery service who needs to be able to act on-chain later.
+Use when: the watcher genuinely needs the addresses, typically an estate lawyer coordinating with off-chain documents, or a professional recovery service who needs to be able to act on-chain later.
 
 ## How watchers see the legacy
 
@@ -62,34 +62,34 @@ Watchers cannot act. No edit. No delete. No activation. They can only read.
 
 ## Advisor view
 
-If you're the watcher — a family advisor, estate attorney, or professional service watching several clients' legacies — the app gives you a consolidated **Advisor view**. Connect the wallet that owners have listed as a watcher and every contract you watch appears in one read-only list, sorted most urgent first (soonest check-in deadline at the top, activated contracts last).
+If you're the watcher (a family advisor, estate attorney, or professional service watching several clients' legacies), the app gives you a consolidated **Advisor view**. Connect the wallet that owners have listed as a watcher and every contract you watch appears in one read-only list, sorted most urgent first (soonest check-in deadline at the top, activated contracts last).
 
 Each contract card shows:
 
 - A status chip: **Active**, **Check-in due soon** (the owner's check-in deadline is under 7 days away), **Ready to activate**, or **Activated**.
 - Days remaining until the owner's next check-in deadline, where known.
-- The owner's identity at whatever visibility level that legacy grants you — the owner's address (or ENS name) with full visibility, the private identifier with limited visibility.
+- The owner's identity at whatever visibility level that legacy grants you: the owner's address (or ENS name) with full visibility, the private identifier with limited visibility.
 
 There is nothing for the watcher to enable or pay for: the entry point appears automatically once at least one legacy lists your wallet as a watcher, and it disappears if none do. Authorized watchers are a capability of each **owner's** Premium plan; the watcher doesn't need a subscription of their own.
 
-The same rule applies here as everywhere: the advisor view is read-only. A watcher can never check in, edit, delete, or activate a legacy from it — opening a contract leads to the same read-only detail view as the watchlist.
+The same rule applies here as everywhere: the advisor view is read-only. A watcher can never check in, edit, delete, or activate a legacy from it; opening a contract leads to the same read-only detail view as the watchlist.
 
 ## Contingent beneficiaries are automatically watchers
 
 Second-line and third-line contingent beneficiaries are, by default, added as watchers with **limited visibility**. The owner can change their visibility at any time (e.g. upgrade an estate-lawyer contingent to full visibility).
 
-- Contingents can't be removed from the watcher list directly — they're removed by editing the legacy itself (removing them from the contingent configuration).
+- Contingents can't be removed from the watcher list directly; they're removed by editing the legacy itself (removing them from the contingent configuration).
 - When their line activates, they move from **My Watchlist** to **Legacies for Me** with full-visibility beneficiary access.
 
 ## Real-world use cases
 
 - **Consolidated oversight across wallets.** You manage several EOAs and Safes; watchers let a single dashboard see all of them without any one wallet having access to the others.
 - **Estate coordination.** A lawyer references the plan from off-chain documents. Limited visibility preserves the owner's privacy while the unique identifier lets documents unambiguously point to a specific plan.
-- **Family peace-of-mind.** A spouse or adult child has visibility without control — they know the plan exists, can see it's still active, but can't accidentally tamper.
+- **Family peace-of-mind.** A spouse or adult child has visibility without control: they know the plan exists, can see it's still active, but can't accidentally tamper.
 - **Monitoring counterparty plans.** Professional setups where one party's 10102 legacy is a contingency for another party's obligations.
 
 ## See also
 
 - [Configure Email Reminders](./configure-email-reminders.md)
 - [Manage Contingent Beneficiaries](./manage-contingent-beneficiaries.md)
-- [Concepts — Creator vs. signer (Safe legacies)](../concepts.md#creator-vs-signer-safe-legacies)
+- [Concepts: Creator vs. signer (Safe legacies)](../concepts.md#creator-vs-signer-safe-legacies)

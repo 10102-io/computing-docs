@@ -6,18 +6,18 @@ description: >-
 
 # Roadmap
 
-This page is the public-facing summary of work ahead. It's deliberately high-level — specific implementation plans, test matrices, and detailed deferred items live alongside the code in the [`computing-sc`](https://github.com/10102-io/computing-sc) repo.
+This page is the public-facing summary of work ahead. It's deliberately high-level: specific implementation plans, test matrices, and detailed deferred items live alongside the code in the [`computing-sc`](https://github.com/10102-io/computing-sc) repo.
 
-We publish this because the "plan survives us" principle applies to development too: users and integrators should know what's coming, what's on hold, and why — not just what shipped.
+We publish this because the "plan survives us" principle applies to development too: users and integrators should know what's coming, what's on hold, and why, not just what shipped.
 
 ## Active work
 
 Areas we're actively investing in over the next few release cycles:
 
 - **Upgrade-timelock proposer hardening.** Contract upgrades already wait in a public 48-hour queue (see [Upgrade Policy](../architecture/upgrade-policy.md)); the planned next step is moving the proposer role from a single maintainer key to a multisig. Thanks to the timelock, that change will itself be publicly visible when it happens.
-- **Asymmetric-permission fix for Multisig legacies.** Today, any Safe owner can edit on-chain fields (beneficiaries, activation trigger, name/note) at Safe threshold, but only the original creator EOA can edit off-chain notification settings (watchers, email reminders). We're designing a `transferCreator` function in `PremiumSetting` to resolve the asymmetry — needs a proxy upgrade, which we're bundling with the next round of other improvements rather than shipping alone.
+- **Asymmetric-permission fix for Multisig legacies.** Today, any Safe owner can edit on-chain fields (beneficiaries, activation trigger, name/note) at Safe threshold, but only the original creator EOA can edit off-chain notification settings (watchers, email reminders). We're designing a `transferCreator` function in `PremiumSetting` to resolve the asymmetry; it needs a proxy upgrade, which we're bundling with the next round of other improvements rather than shipping alone.
 - **Audit round 2.** Scheduled follow-up audit covering all router changes since the v1 audit. Reports will be published to [`github.com/10102-labs/audits`](https://github.com/10102-labs/audits) as they land.
-- **Better error messages and offline tolerance.** Ongoing — the generic "something went wrong" errors are being replaced with specific, actionable messages. Includes distinguishing subgraph outages, RPC latency, wallet rejections, etc.
+- **Better error messages and offline tolerance.** Ongoing: the generic "something went wrong" errors are being replaced with specific, actionable messages. Includes distinguishing subgraph outages, RPC latency, wallet rejections, etc.
 
 ## Recently shipped
 
@@ -43,10 +43,10 @@ Ideas we think are promising but haven't committed to:
 
 Items we've explicitly decided to _not_ do now, with enough context to pick them up later:
 
-- **Native NFT transfer for Multisig legacies.** NFTs held by the Safe are covered automatically because the whole Safe passes. NFTs as first-class asset types in _Transfer_ legacies are intentionally not supported yet — the allocation semantics ("how do you split a single NFT across 3 beneficiaries?") don't have a clean product answer.
+- **Native NFT transfer for Multisig legacies.** NFTs held by the Safe are covered automatically because the whole Safe passes. NFTs as first-class asset types in _Transfer_ legacies are intentionally not supported yet: the allocation semantics ("how do you split a single NFT across 3 beneficiaries?") don't have a clean product answer.
 - **Multichain deployment beyond mainnet + Sepolia.** Technically straightforward but substantially increases operational surface. We'd rather do mainnet + Sepolia extremely well than ship on 5 chains with half-working cross-chain UX.
 
-A more granular list — with triggers for when each item becomes urgent — lives in the `computing-sc` repo alongside the code, so `git log` is the audit trail.
+A more granular list, with triggers for when each item becomes urgent, lives in the `computing-sc` repo alongside the code, so `git log` is the audit trail.
 
 ## How to influence this
 

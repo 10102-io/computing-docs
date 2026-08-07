@@ -10,25 +10,25 @@ description: >-
 
 How your assets pass to your beneficiaries. Two shapes:
 
-- **Transfer legacy** — distributes specific assets to specific addresses when activated, proportional to allocations you set. Created from your connected EOA wallet.
-- **Multisig legacy** — hands over your existing Safe by adding your beneficiaries as co-signers on activation. The Safe itself (and everything it holds, stakes, or governs) is the legacy.
+- **Transfer legacy**: distributes specific assets to specific addresses when activated, proportional to allocations you set. Created from your connected EOA wallet.
+- **Multisig legacy**: hands over your existing Safe by adding your beneficiaries as co-signers on activation. The Safe itself (and everything it holds, stakes, or governs) is the legacy.
 
 ## Activation trigger
 
-The condition that makes a legacy claimable. Today there's one trigger: **inactivity** — the time since your last activity the legacy can see (what counts differs by wallet type; see [Heartbeat](#heartbeat)). Measured in days. When the window elapses, any beneficiary can activate.
+The condition that makes a legacy claimable. Today there's one trigger: **inactivity**, the time since your last activity the legacy can see (what counts differs by wallet type; see [Heartbeat](#heartbeat)). Measured in days. When the window elapses, any beneficiary can activate.
 
 ## Heartbeat
 
 Any action that proves you're still around and resets the activation timer. What counts depends on your wallet type:
 
-- **Safe legacies** — every Safe transaction counts automatically (the Safe Guard records it), so normal usage keeps the legacy fresh.
-- **EOA legacies** — interactions with your legacy count: edits, deposits, withdrawals, or the dedicated heartbeat action on the details page. Generic wallet activity elsewhere (a send, a swap) does **not** reset the timer by itself — unless you enable [Auto-renew](#auto-renew-eoa-legacies).
+- **Safe legacies**: every Safe transaction counts automatically (the Safe Guard records it), so normal usage keeps the legacy fresh.
+- **EOA legacies**: interactions with your legacy count (edits, deposits, withdrawals, or the dedicated heartbeat action on the details page). Generic wallet activity elsewhere (a send, a swap) does **not** reset the timer by itself, unless you enable [Auto-renew](#auto-renew-eoa-legacies).
 
 If you don't have another qualifying action to make, the details page has a dedicated heartbeat action that resets the timer in a single transaction.
 
 ## Auto-renew (EOA legacies)
 
-An optional Premium feature, off by default, that you enable per legacy. When on, an attestor service watches your wallet's public on-chain activity (its transaction count) and renews your inactivity timer for you when you've been active near the deadline — no email, no click, no gas from you. Every safety bound is enforced on-chain: renewals only work near the deadline, stop 365 days after your last real check-in, and can never make a legacy claimable earlier. See [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md) for the full trust model.
+An optional Premium feature, off by default, that you enable per legacy. When on, an attestor service watches your wallet's public on-chain activity (its transaction count) and renews your inactivity timer for you when you've been active near the deadline: no email, no click, no gas from you. Every safety bound is enforced on-chain: renewals only work near the deadline, stop 365 days after your last real check-in, and can never make a legacy claimable earlier. See [Automatic Renewal](premium-features/automatic-renewal.md) for the guide, and [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md) for the full trust model.
 
 ## Creator vs. signer (Safe legacies)
 
@@ -44,7 +44,7 @@ The deterministic contract-deployment opcode. We use it so your legacy contract'
 
 ## Safe threshold
 
-The minimum number of Safe signers required to execute a transaction (e.g. 2 of 3). Every on-chain change to a Safe-backed legacy is a Safe transaction and respects your Safe's threshold. You can finalize signatures inside our app or on [app.safe.global](https://app.safe.global) — either works.
+The minimum number of Safe signers required to execute a transaction (e.g. 2 of 3). Every on-chain change to a Safe-backed legacy is a Safe transaction and respects your Safe's threshold. You can finalize signatures inside our app or on [app.safe.global](https://app.safe.global); either works.
 
 ## Finalizing
 
@@ -52,7 +52,7 @@ When a Safe transaction has collected enough signatures but hasn't executed yet,
 
 ## Watchers
 
-Read-only accounts a Premium user can authorize to view selected legacies under **My Watchlist**. Used for estate lawyers, family oversight, or personal dashboards across wallets. Watchers have one of two visibility levels — see [Manage Authorized Watchers](./premium-features/manage-authorized-watchers.md).
+Read-only accounts a Premium user can authorize to view selected legacies under **My Watchlist**. Used for estate lawyers, family oversight, or personal dashboards across wallets. Watchers have one of two visibility levels; see [Manage Authorized Watchers](./premium-features/manage-authorized-watchers.md).
 
 ## Contingent beneficiaries
 
@@ -60,15 +60,15 @@ Optional Premium layers. If the primary beneficiaries don't claim within a confi
 
 ## Legacy Claim Card
 
-A printable one-page summary with the minimum information your beneficiaries need to claim via any Ethereum interface — not just our UI. Contains the legacy ID and contract address; intentionally _excludes_ the owner's address for privacy. See [Legacy Claim Card](./legacy/legacy-claim-card.md).
+A printable one-page summary with the minimum information your beneficiaries need to claim via any Ethereum interface, not just our UI. Contains the legacy ID and contract address; intentionally _excludes_ the owner's address for privacy. See [Legacy Claim Card](./legacy/legacy-claim-card.md).
 
 ## Timelock
 
 A self-directed time-based lock on your own assets. Three flavors:
 
-- **Timelock** — locked until a date; then you reclaim.
-- **Soft timelock** — locked indefinitely; a waiting period starts when _you_ initiate an unlock.
-- **Timelocked gift** — locked until a date; then a specified recipient claims.
+- **Timelock**: locked until a date; then you reclaim.
+- **Soft timelock**: locked indefinitely; a waiting period starts when _you_ initiate an unlock.
+- **Timelocked gift**: locked until a date; then a specified recipient claims.
 
 See [Timelock](./timelock/README.md).
 

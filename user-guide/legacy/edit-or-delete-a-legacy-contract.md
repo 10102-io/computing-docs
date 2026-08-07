@@ -13,14 +13,14 @@ Once a legacy is **Live**, the owner (or, for Safe legacies, any Safe signer) ca
 
 ### What you can change
 
-- **Name** — private label.
-- **Beneficiaries** — add, remove, or replace up to 10 primary addresses.
-- **Allocations** — any percentages, as long as they sum to 100%. Single-beneficiary legacies auto-allocate 100%.
-- **Activation trigger** — the inactivity window (days).
-- **Note to beneficiaries** — an on-chain message they'll see in the beneficiary view.
-- **Approvals** — include new ERC-20s, adjust existing allowances, or remove tokens from the inclusion set.
-- **Safe threshold for beneficiaries** (Multisig legacies only) — how many beneficiaries must sign as the new Safe's threshold after activation.
-- **Contingent layers** (Premium) — add, remove, or resize the second- and third-line activation windows.
+- **Name**: private label.
+- **Beneficiaries**: add, remove, or replace up to 10 primary addresses.
+- **Allocations**: any percentages, as long as they sum to 100%. Single-beneficiary legacies auto-allocate 100%.
+- **Activation trigger**: the inactivity window (days).
+- **Note to beneficiaries**: an on-chain message they'll see in the beneficiary view.
+- **Approvals**: include new ERC-20s, adjust existing allowances, or remove tokens from the inclusion set.
+- **Safe threshold for beneficiaries** (Multisig legacies only): how many beneficiaries must sign as the new Safe's threshold after activation.
+- **Contingent layers** (Premium): add, remove, or resize the second- and third-line activation windows.
 
 ### EOA legacy
 
@@ -38,9 +38,9 @@ Any Safe signer can submit the edit; your Safe co-signers then finalize at the S
 
 Deletion is available to owners (EOA) or any Safe signer (Safe), and returns the legacy to a clean state:
 
-- **Native tokens** held by the contract (rare — Transfer legacies rarely hold native tokens directly; this mostly applies to legacy contracts that pre-date the storage-token flow) are returned to the owner's wallet.
+- **Native tokens** held by the contract (rare: Transfer legacies rarely hold native tokens directly; this mostly applies to legacy contracts that pre-date the storage-token flow) are returned to the owner's wallet.
 - **Token permissions** are dealt with according to how the legacy was created:
-  - Legacies created with the current one-transaction flow use Permit2 permissions. The delete transaction itself releases them — afterwards nothing can use the permissions you signed at create. No extra prompts needed.
+  - Legacies created with the current one-transaction flow use Permit2 permissions. The delete transaction itself releases them; afterwards nothing can use the permissions you signed at create. No extra prompts needed.
   - Older legacies created with direct per-token approvals get an `approve(legacy, 0)` per token; the UI runs through each one after the delete.
 
 ### EOA delete
@@ -60,13 +60,13 @@ Deletion is available to owners (EOA) or any Safe signer (Safe), and returns the
 ### Safe delete
 
 1. Click **Delete contract** on the details page.
-2. Confirm in the popup — this submits the first signature.
+2. Confirm in the popup; this submits the first signature.
 3. Safe co-signers finalize at the threshold; status shows _Needs finalizing to delete_ until done.
 4. Once finalized, assets return to the Safe and approvals are revoked.
 
 ## What stays the same after edits
 
-Notification settings — **watchers and email reminders** — are tied to the wallet that created the legacy, not to the legacy itself. Editing or replacing beneficiaries doesn't change who controls notifications. For Safe legacies where the creator is a specific Safe signer, only that signer can change notification settings; see [Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies).
+Notification settings (**watchers and email reminders**) are tied to the wallet that created the legacy, not to the legacy itself. Editing or replacing beneficiaries doesn't change who controls notifications. For Safe legacies where the creator is a specific Safe signer, only that signer can change notification settings; see [Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies).
 
 If the creator needs to effectively hand off notification settings to another Safe signer, the current workaround is: delete the legacy and recreate it, with the new signer submitting the creation transaction.
 

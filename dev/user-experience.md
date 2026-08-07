@@ -1,5 +1,5 @@
 ---
-description: Superseded — see the User Guide instead.
+description: Superseded; see the User Guide instead.
 hidden: true
 ---
 

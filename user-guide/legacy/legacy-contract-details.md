@@ -12,32 +12,32 @@ After creating a legacy, clicking it from the home page opens its details view. 
 
 ### Header
 
-- **Name** and **Legacy ID** — the on-chain identifier, useful for claiming via Etherscan and for cross-referencing with emails.
-- **Contract address** — where allocations, approvals, and native token deposits live.
-- **Status** — see [Status values](#status-values) below.
-- **Creator** (Safe legacies only) — the wallet that originally submitted the creation transaction. Relevant because notification settings (watchers, reminders) are creator-only; see the callout on the affected settings pages.
+- **Name** and **Legacy ID**: the on-chain identifier, useful for claiming via Etherscan and for cross-referencing with emails.
+- **Contract address**: where allocations, approvals, and native token deposits live.
+- **Status**: see [Status values](#status-values) below.
+- **Creator** (Safe legacies only): the wallet that originally submitted the creation transaction. Relevant because notification settings (watchers, reminders) are creator-only; see the callout on the affected settings pages.
 
 ### Activity and trigger
 
-- **Last activity** — the most recent activity the legacy knows about. For Safe legacies that's the Safe's last transaction (every Safe transaction counts). For EOA legacies it's your last interaction with the legacy itself — see [The owner's view](#on-an-eoa-legacy) below.
-- **Activation trigger** — the inactivity threshold you configured. The details page shows how much of the window has elapsed.
-- **Heartbeat action** — resets the trigger timer in a single transaction when you don't have another qualifying action to make naturally. On a Safe legacy, any Safe transaction already counts; on an EOA legacy, only interactions with the legacy count (unless you enable [auto-renew](../concepts.md#auto-renew-eoa-legacies)), so the dedicated action is the standard way to check in.
+- **Last activity**: the most recent activity the legacy knows about. For Safe legacies that's the Safe's last transaction (every Safe transaction counts). For EOA legacies it's your last interaction with the legacy itself; see [The owner's view](#on-an-eoa-legacy) below.
+- **Activation trigger**: the inactivity threshold you configured. The details page shows how much of the window has elapsed.
+- **Heartbeat action**: resets the trigger timer in a single transaction when you don't have another qualifying action to make naturally. On a Safe legacy, any Safe transaction already counts; on an EOA legacy, only interactions with the legacy count (unless you enable [auto-renew](../concepts.md#auto-renew-eoa-legacies)), so the dedicated action is the standard way to check in.
 
 ### Assets (Transfer legacies)
 
 Shows the ERC-20s approved to the legacy contract, their current allowances, and the per-beneficiary distribution that would happen on activation.
 
-- Only tokens with a non-zero approved amount are shown — keeping the view focused on what actually moves on activation. To see the full list of held tokens with zero allowance, enter edit mode.
-- ETH is not shown in the assets table — ETH can't be approved as an ERC-20, so it's represented by whatever storage token (WETH, a liquid staking token, …) you swapped into. The home page shows your wallet's current ETH balance separately, independent of the legacy.
+- Only tokens with a non-zero approved amount are shown, keeping the view focused on what actually moves on activation. To see the full list of held tokens with zero allowance, enter edit mode.
+- ETH is not shown in the assets table: ETH can't be approved as an ERC-20, so it's represented by whatever storage token (WETH, a liquid staking token, …) you swapped into. The home page shows your wallet's current ETH balance separately, independent of the legacy.
 
 ### Beneficiaries
 
-The configured addresses, their allocations (for Transfer legacies), and — for Safe legacies — the role they'll take on activation.
+The configured addresses, their allocations (for Transfer legacies), and, for Safe legacies, the role they'll take on activation.
 
 ### Danger zone
 
-- **Edit contract** — adjust beneficiaries, allocations, trigger window, or asset approvals.
-- **Delete contract** — tear the legacy down and return any native tokens; see [Edit or Delete](./edit-or-delete-a-legacy-contract.md).
+- **Edit contract**: adjust beneficiaries, allocations, trigger window, or asset approvals.
+- **Delete contract**: tear the legacy down and return any native tokens; see [Edit or Delete](./edit-or-delete-a-legacy-contract.md).
 
 ## Status values
 
@@ -55,7 +55,7 @@ The configured addresses, their allocations (for Transfer legacies), and — for
 
 ### On a Safe legacy
 
-- You'll see a banner if the legacy needs finalizing — your Safe co-signers can add signatures there, or at [app.safe.global](https://app.safe.global). Finalizing is a gas-paying transaction that any Safe signer can submit once the threshold is met.
+- You'll see a banner if the legacy needs finalizing. Your Safe co-signers can add signatures there, or at [app.safe.global](https://app.safe.global). Finalizing is a gas-paying transaction that any Safe signer can submit once the threshold is met.
 - The heartbeat action is available to any Safe signer; the Safe's own transactions already reset the timer.
 - Notification settings (watchers, reminders) are managed by the creator of the legacy, which may or may not be you. If it isn't, you'll see a "Notification settings managed by 0x…abcd" badge pointing to the creator. See [Creator vs. signer](../concepts.md#creator-vs-signer-safe-legacies).
 
@@ -63,15 +63,15 @@ The configured addresses, their allocations (for Transfer legacies), and — for
 
 - No finalizing step: on-chain changes happen as soon as you sign. Simpler flow, less coordination.
 - Interactions with the legacy count as heartbeats: edits, deposits, withdrawals, or the dedicated heartbeat action. Generic wallet activity elsewhere does **not** reset the timer by itself.
-- If you'd rather have your wallet's general on-chain activity keep the timer fresh, enable **auto-renew** (Premium, opt-in, per legacy): an attestor service observes your wallet's public transaction count and renews for you near the deadline, within strict on-chain bounds. See [EOA Activity & Auto-Renew](../../architecture/eoa-activity-auto-renew.md).
+- If you'd rather have your wallet's general on-chain activity keep the timer fresh, enable **auto-renew** (Premium, opt-in, per legacy): an attestor service observes your wallet's public transaction count and renews for you near the deadline, within strict on-chain bounds. See [Automatic Renewal](../premium-features/automatic-renewal.md).
 
 ## The beneficiary's view (Legacies for Me)
 
 Beneficiaries see a legacy left to them on the home page under **Legacies for Me**, starting with status **Not activated**. The details page shows:
 
-- **When they can activate** — based on the owner's last recorded activity and the activation trigger.
-- **What they'd receive** — their allocation and the current list of approved assets (Transfer) or the Safe they'll take over (Multisig).
-- **Activation button** — enabled once the window has elapsed. Any designated beneficiary can trigger it; distribution happens to _all_ beneficiaries according to the allocations, not just the one who activated.
+- **When they can activate**: based on the owner's last recorded activity and the activation trigger.
+- **What they'd receive**: their allocation and the current list of approved assets (Transfer) or the Safe they'll take over (Multisig).
+- **Activation button**: enabled once the window has elapsed. Any designated beneficiary can trigger it; distribution happens to _all_ beneficiaries according to the allocations, not just the one who activated.
 
 See [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-and-claim-funds.md) for the beneficiary flow.
 

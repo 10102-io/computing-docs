@@ -1,7 +1,7 @@
 ---
 description: >-
   A printable one-page summary that gives your beneficiaries everything they
-  need to claim — even if our UI or website ever goes away.
+  need to claim, even if our UI or website ever goes away.
 ---
 
 # Legacy Claim Card
@@ -12,12 +12,12 @@ The point: **your legacy lives on Ethereum, not on our website.** As long as ben
 
 ## What's on the card
 
-- **Legacy ID** — the on-chain identifier, used directly with the router contract.
-- **Legacy contract address** — where the allocations and approvals live.
-- **Router contract address** — the router beneficiaries call to activate.
-- **Activation instructions** — short, plain-language steps describing the function to call and what arguments it expects.
-- **Network** — mainnet, Sepolia, etc.
-- **QR codes** — scannable links for the contract address and router address, so beneficiaries don't have to hand-type 42-character hex strings.
+- **Legacy ID**: the on-chain identifier, used directly with the router contract.
+- **Legacy contract address**: where the allocations and approvals live.
+- **Router contract address**: the router beneficiaries call to activate.
+- **Activation instructions**: short, plain-language steps describing the function to call and what arguments it expects.
+- **Network**: mainnet, Sepolia, etc.
+- **QR codes**: scannable links for the contract address and router address, so beneficiaries don't have to hand-type 42-character hex strings.
 
 ## What's intentionally _not_ on the card
 
@@ -39,7 +39,7 @@ Print (or regenerate) the card whenever:
 If `app.10102.io` is unreachable for any reason, a beneficiary can still claim. The card includes step-by-step instructions, but the short version is:
 
 1. Wait until the activation window has elapsed (time since the owner's last outgoing transaction exceeds the configured threshold).
-2. Open any Ethereum interface that supports calling an arbitrary contract — Etherscan's _Contract → Write_ tab works.
+2. Open any Ethereum interface that supports calling an arbitrary contract; Etherscan's _Contract → Write_ tab works.
 3. Connect the beneficiary's wallet.
 4. Call the router's activation function with the **Legacy ID** from the card.
 5. Sign. Pay gas. Assets are distributed according to the allocations the owner configured.
@@ -53,16 +53,16 @@ This is the same function our UI calls behind the scenes. The contracts don't kn
 ## Where to find it
 
 - On a legacy's details page after creation, an action downloads the card as a printable PDF.
-- Regenerate at any time — the card is derived from on-chain data, so it's always up to date.
+- Regenerate at any time. The card is derived from on-chain data, so it's always up to date.
 - We don't store a copy on our servers. Keep the PDF (or a print) somewhere your beneficiaries can reach it when they need it.
 
 ## Privacy considerations
 
 - Treat a Legacy Claim Card like you'd treat a will document: give it to people who need it, store copies securely, update when things change.
-- The card doesn't contain private keys or anything sensitive beyond on-chain public coordinates — but it _does_ contain the pre-activation pointer to a specific legacy, which is information some owners treat as private.
+- The card doesn't contain private keys or anything sensitive beyond on-chain public coordinates, but it _does_ contain the pre-activation pointer to a specific legacy, which is information some owners treat as private.
 - If you've given someone a copy and want to revoke their ability to claim, delete and recreate the legacy (which generates a new contract address).
 
 ## See also
 
-- [Create a Legacy Contract](./create-a-legacy-contract.md) — the card is generated from here.
-- [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-and-claim-funds.md) — the beneficiary's side.
+- [Create a Legacy Contract](./create-a-legacy-contract.md): the card is generated from here.
+- [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-and-claim-funds.md): the beneficiary's side.

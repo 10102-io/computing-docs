@@ -1,5 +1,5 @@
 ---
-description: Historical — Milestone 2 scope, shipped.
+description: 'Historical: Milestone 2 scope, shipped.'
 hidden: true
 ---
 
