@@ -16,13 +16,13 @@ Areas we're actively investing in over the next few release cycles:
 
 - **Upgrade-timelock proposer hardening.** Contract upgrades already wait in a public 48-hour queue (see [Upgrade Policy](../architecture/upgrade-policy.md)); the planned next step is moving the proposer role from a single maintainer key to a multisig. Thanks to the timelock, that change will itself be publicly visible when it happens.
 - **Asymmetric-permission fix for Multisig legacies.** Today, any Safe owner can edit on-chain fields (beneficiaries, activation trigger, name/note) at Safe threshold, but only the original creator EOA can edit off-chain notification settings (watchers, email reminders). We're designing a `transferCreator` function in `PremiumSetting` to resolve the asymmetry; it needs a proxy upgrade, which we're bundling with the next round of other improvements rather than shipping alone.
-- **Audit round 2.** Scheduled follow-up audit covering all router changes since the v1 audit. Reports will be published to [`github.com/10102-labs/audits`](https://github.com/10102-labs/audits) as they land.
 - **Better error messages and offline tolerance.** Ongoing: the generic "something went wrong" errors are being replaced with specific, actionable messages. Includes distinguishing subgraph outages, RPC latency, wallet rejections, etc.
 
 ## Recently shipped
 
 Formerly on this list, now live on mainnet:
 
+- **Audit round 2 (CDSecurity).** The follow-up audit is complete: CDSecurity reviewed the full suite — including the timelocks and premium contracts added since the first audit — with the report published October 2025 in [`github.com/CDSecurity/audits`](https://github.com/CDSecurity/audits) and mirrored in [`github.com/10102-labs/audits`](https://github.com/10102-labs/audits). The original legacy contracts were audited by RockSolid Security ([report January 2025](https://github.com/10102-io/computing-sc/blob/main/Security_Review_Computing_Will.pdf)).
 - **Permit2 one-confirmation creates.** Creating a Transfer legacy or timelock is now a single confirmation: one signed Permit2 batch replaces the per-token `approve` transactions, and tokens stay in the owner's wallet until claim. This also delivered the single-prompt create flow we previously tracked under EIP-5792 batching.
 - **EIP-1167 minimal-proxy clones for EOA legacies.** New EOA legacies deploy as ~45-byte clones of one audited implementation per network, cutting creation gas by 80%+. Existing legacies are unaffected.
 - **EOA activity auto-renew.** Opt-in Premium feature: an attestor observes the owner's public wallet activity and renews the inactivity timer for them, with every safety bound on-chain. See [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md).

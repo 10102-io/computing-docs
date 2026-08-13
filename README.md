@@ -10,6 +10,8 @@ Crypto security has matured. Smart contracts get audited, wallets get hardware-h
 
 **10102 Computing Legacy** is a small, auditable set of Ethereum smart contracts (plus a thin app on top) that lets you define the rules for how your on-chain assets pass on, and executes them automatically when those rules are met. No custody. No subscription required for the core flows. No middleman the plan depends on.
 
+The protocol has been live on Ethereum mainnet since **October 2024** and independently audited twice ([RockSolid Security, report January 2025](https://github.com/10102-io/computing-sc/blob/main/Security_Review_Computing_Will.pdf); [CDSecurity, report October 2025](https://github.com/CDSecurity/audits)). Development started in June 2024 — the original contracts repository is [archived and public](https://github.com/10102-labs/computing-sc-og), preserved when the project moved to the `10102-io` GitHub organization in January 2026.
+
 ## What it does
 
 - **Transfer legacy**: split specific assets across named Ethereum addresses when you've been inactive for a configurable window. Created from your connected EOA wallet (MetaMask, Ledger, Trezor, Rainbow, Coinbase Wallet, WalletConnect-compatible mobile wallets).
