@@ -32,6 +32,7 @@
   * [Upgrade Policy](architecture/upgrade-policy.md)
   * [Quantum Readiness](architecture/quantum-readiness.md)
 * [Agents & Builders](agents-and-builders.md)
+* [Partner Program](partners.md)
 * [Design & Engineering Notes](dev/README.md)
   * [Inactivity Detection](dev/technical-analysis.md)
   * [Core Mechanisms](dev/core-mechanisms.md)

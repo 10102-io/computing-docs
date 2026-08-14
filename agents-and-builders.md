@@ -82,9 +82,10 @@ The anonymous MCP surface above is free and stays open; partner keys never restr
 
 - Send it as `Authorization: Bearer <key>` on your MCP requests; the partner context is bound to your MCP session when it initializes.
 - A key does not unlock extra data or any write path; the tools are identical to the public ones. What it adds is identification (so we can support and reason about your integration) and attribution: setup links your integration builds carry your partner reference instead of the generic one.
+- A key can also carry your **referral-program code**: setup links then attribute Premium purchases by the clients your agent onboards to your partner account, on the same on-chain-verified ledger as regular referral links. See [Partner Program](partners.md).
 - An unknown key is rejected with `401` rather than silently falling back to anonymous access, so a typo is visible immediately.
 
-Partner keys are provisioned manually. To request one, reach out via [GitHub](https://github.com/10102-io/computing).
+Partner keys are provisioned manually. To request one, reach out via [GitHub](https://github.com/10102-io/computing) or [info@10102.io](mailto:info@10102.io).
 
 ## Pay-per-call inference (x402)
 
