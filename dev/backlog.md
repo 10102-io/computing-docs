@@ -26,11 +26,11 @@ Formerly on this list, now live on mainnet:
   (`app.10102.io/?via=code`); attribution is recorded only after the
   purchase transaction is verified on-chain, each purchase credits once,
   and every partner gets a scoped stats token to reconcile statements
-  independently — including a live `active_subscribers` count read from
+  independently, including a live `active_subscribers` count read from
   the chain. See the [Partner Program](../partners.md) page. On-chain
   attribution proofs and automatic payment splits remain deferred until
   volume justifies the contract-upgrade surface.
-- **Audit round 2 (CDSecurity).** The follow-up audit is complete: CDSecurity reviewed the full suite — including the timelocks and premium contracts added since the first audit — with the report published October 2025 in [`github.com/CDSecurity/audits`](https://github.com/CDSecurity/audits) and mirrored in [`github.com/10102-labs/audits`](https://github.com/10102-labs/audits). The original legacy contracts were audited by RockSolid Security ([report January 2025](https://github.com/10102-io/computing-sc/blob/main/Security_Review_Computing_Will.pdf)).
+- **Audit round 2 (CDSecurity).** The follow-up audit is complete: CDSecurity reviewed the full suite, including the timelocks and premium contracts added since the first audit, with the report published October 2025 in [`github.com/CDSecurity/audits`](https://github.com/CDSecurity/audits) and mirrored in [`github.com/10102-labs/audits`](https://github.com/10102-labs/audits). The original legacy contracts were audited by RockSolid Security ([report January 2025](https://github.com/10102-io/computing-sc/blob/main/Security_Review_Computing_Will.pdf)).
 - **Permit2 one-confirmation creates.** Creating a Transfer legacy or timelock is now a single confirmation: one signed Permit2 batch replaces the per-token `approve` transactions, and tokens stay in the owner's wallet until claim. This also delivered the single-prompt create flow we previously tracked under EIP-5792 batching.
 - **EIP-1167 minimal-proxy clones for EOA legacies.** New EOA legacies deploy as ~45-byte clones of one audited implementation per network, cutting creation gas by 80%+. Existing legacies are unaffected.
 - **EOA activity auto-renew.** Opt-in Premium feature: an attestor observes the owner's public wallet activity and renews the inactivity timer for them, with every safety bound on-chain. See [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md).
