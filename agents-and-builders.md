@@ -15,7 +15,7 @@ The product is non-custodial and fully on-chain. Nothing here takes custody of f
 
 Guardian is the AI assistant inside 10102 Computing Legacy. It helps people set up their digital legacy and timelock contracts: it interviews a wallet owner about goals, helps them choose a matching contract type (Legacy or Timelock), and builds pre-filled setup links that the user completes by connecting a wallet and signing on-chain.
 
-- **Powered by Venice AI.** Guardian runs on Venice's privacy-preserving inference. Conversations are not stored and are not used to train models. The chat model is GLM 5.2.
+- **Powered by Venice AI.** Guardian runs on Venice's privacy-preserving inference. Conversations are not stored and are not used to train models. The chat model tracks Venice's function-calling default (currently GLM 5.2), with Venice's server-side web search available for questions that need live information.
 - **Free allowance for everyone.** A free inference allowance applies per caller, so anyone can use Guardian without bringing their own credits.
 - **A guide, not an advisor.** Guardian helps you configure legacy and timelock contracts. It does not give legal, tax, or financial advice.
 
