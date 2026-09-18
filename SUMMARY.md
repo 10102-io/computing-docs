@@ -22,6 +22,7 @@
   * [Timelock](user-guide/timelock/README.md)
     * [Using Timelock](user-guide/timelock/using-timelock.md)
   * [Heirloom (sealed gifts)](user-guide/heirloom.md)
+  * [Save (a monthly lock)](user-guide/save.md)
 * [Architecture](architecture/README.md)
   * [Legacy Contracts Created with Safe SDK](architecture/legacy-contracts-created-with-safe-sdk.md)
   * [Legacy Contracts Created with EOAs](architecture/legacy-contracts-created-with-eoas.md)
