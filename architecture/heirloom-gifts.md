@@ -62,13 +62,16 @@ paper opens the page fully personalized.
   names: no server copy exists.
 
 Whoever holds the link can view the gift. Only the on-chain recipient can
-withdraw, regardless of who submits the transaction.
+withdraw, regardless of who submits the transaction, and only the
+recipient's own signature can name where the funds go.
 
 ## Gasless claims: the sponsored withdrawal relay
 
 The recipient signs an EIP-712 `WithdrawAuth` (free, no gas) and the
 reminder-worker's relayer submits `TimeLockRouter.withdrawFor`, paying the
-network fee.
+network fee. Since the router's domain version 2 (mainnet, 24 September
+2026) the struct carries `payTo`, the wallet that receives the funds;
+`address(0)` means the recipient itself.
 
 ```mermaid
 sequenceDiagram
@@ -76,26 +79,42 @@ sequenceDiagram
     participant W as Reminder worker
     participant C as TimeLockRouter
 
-    R->>C: read sponsorNonce(recipient)
-    R->>R: sign WithdrawAuth (recipient, timelockId, skipSwap, nonce, deadline)
+    R->>C: read eip712Domain() and sponsorNonce(recipient)
+    R->>R: sign WithdrawAuth (recipient, payTo, timelockId, skipSwap, nonce, deadline)
     R->>W: POST /sponsor/gift-withdraw
     W->>W: rate limits, daily caps, payload checks
     W->>C: estimateGas withdrawFor(...)
     C-->>W: ok (reverts cost nothing)
     W->>C: withdrawFor(timelockId, skipSwap, auth)
-    C->>C: verify signature, exact nonce, deadline
-    C-->>R: pays out to the RECOVERED SIGNER only
+    C->>C: verify signature, exact nonce, deadline within 7 days
+    C-->>R: pays payTo, or the RECOVERED SIGNER when payTo is empty
     W-->>R: txHash
 ```
 
 Why this cannot be drained:
 
 - **The contract is the judge**: `withdrawFor` recovers the signer from
-  the typed-data signature and pays out strictly to that recovered
-  address. A forged or replayed request reverts; the relayer's
-  `estimateGas` catches it before any gas is spent.
+  the typed-data signature, requires that signer to be the lock's
+  recipient, and pays out to the `payTo` bound in that same signature (or
+  to the signer). A relayer cannot alter the destination, the id or any
+  other field without invalidating the signature; a forged or replayed
+  request reverts, and the relayer's `estimateGas` catches it before any
+  gas is spent.
 - **Exact sequential nonce** (`sponsorNonce`) and a deadline bound every
-  authorization to one use, soon.
+  authorization to one use. The deadline may not sit more than seven days
+  out at submission, so a signature obtained long before an unlock is
+  useless at the unlock.
+- **Vault-side**: the destination is applied through a router-only
+  `withdrawTo` on the escrow vaults; the open `withdraw` path still pays
+  the recipient and nobody else. Signatures over the previous struct
+  (domain version 1) fail by construction rather than paying the wrong
+  wallet.
+- **Why a destination at all**: a claim signature reveals the recipient
+  key's public key. Paying a wallet the recipient already controls means
+  a paper or email key signs once and the funds never need to rest in the
+  revealed address. This is best effort: anyone can trigger the plain
+  `withdraw` to the recipient first, in which case nothing is lost and the
+  recipient moves the funds later.
 - **Worker caps** bound the spend: a global daily relay cap, a per-gift
   daily cap, a gas-price ceiling, and per-IP rate limits. The numbers
   live in the reminder-worker configuration; at current mainnet fees a

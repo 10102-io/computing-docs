@@ -120,9 +120,17 @@ again) and claims:
   signs the claim and 10102 submits it.
 - **With a wallet**: connect the wallet the gift was sealed for and sign
   one free message.
+- **Straight to your own wallet**: on the claim page you can paste the
+  address of a wallet you already use, and the gift lands there in the
+  same free transaction. The choice is part of the message the gift's
+  key signs, so nobody else can change where it goes. We recommend it for
+  paper and email gifts: the printed or email key is then used exactly
+  once and never holds the funds. Leave the field empty and the gift goes
+  to the gift's own wallet, as before.
 - Whichever way, claiming costs the recipient nothing: 10102 submits the
-  transaction and pays the network fee, and the contract pays out
-  strictly to the on-chain recipient.
+  transaction and pays the network fee, and the contract pays out only to
+  the on-chain recipient or to the wallet that recipient named in the
+  signed claim.
 - If the sponsored path is ever unavailable, a wallet holder can submit
   the withdrawal self-paid, and a paper holder can import the key into a
   wallet app (MetaMask: "Import account") and do the same.
@@ -146,10 +154,13 @@ crypto. Here is exactly what happens, so you can decide if it fits.
   email's owner proves it is them with the code, and 10102 holds no
   credential that could move the funds.
 - On opening day the recipient enters the email and the code, and the
-  wallet signs the claim. The funds land in that same email wallet, and
-  the recipient can log in again on the gift page any time. A one-tap
-  "move to my own wallet" step is on the roadmap; until it ships, write
-  to info@10102.io and we walk the recipient through the manual path.
+  wallet signs the claim. The claim page asks where the gift should land:
+  paste the address of a wallet the recipient already uses and the funds
+  go there directly, in the same free transaction. Left empty, the funds
+  stay in the email wallet, and the recipient can log in again on the
+  gift page any time. For gifts claimed to the email wallet before this
+  option existed, write to info@10102.io and we walk the recipient
+  through moving them.
 - **The honest trade**: this is a step away from pure self-custody. The
   recipient depends on their email account and on Turnkey's service to
   reach the key, where the paper gift and the wallet gift depend on
