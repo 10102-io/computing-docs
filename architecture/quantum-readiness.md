@@ -108,26 +108,28 @@ sequenceDiagram
 
 ## What this does not do, stated plainly
 
-The registry is a **readiness step, not an enforcement mechanism**. Nothing
-in it can move funds, veto a transaction, or stop an attacker today. Its
-value is the provable pre-break timestamp, which future enforcement (a
-delay vault with a hash-based veto, a Safe module, or Ethereum's own
-post-quantum recovery plans, all of which are actively developed in the
-ecosystem) can honor. We would rather tell you exactly what you bought than
-sell you a stronger-sounding claim.
+The registry on its own is a **readiness step, not an enforcement
+mechanism**. Nothing in it can move funds, veto a transaction, or stop an
+attacker. Its value is the provable pre-break timestamp, which enforcement
+layers can honor. The first such layer is live:
+[Protect a holding](../user-guide/shield.md) (ShieldVault) reads a
+registry commitment as the secret that stops a withdrawal. Coins outside
+it, in a plain wallet or a legacy, are exactly as protected as before. We
+would rather tell you exactly what you bought than sell you a
+stronger-sounding claim.
 
-## Where this goes next
+## Enforcement: what is live, what is next
 
-The natural next layers, in the order we expect to build them:
-
-1. **Delay plus veto.** Withdrawals announce themselves and wait; during
-   the window, revealing the pre-registered secret can veto a thief. This
-   extends our existing timelock machinery and works even against an
-   attacker who fully controls your broken key.
+1. **Delay plus veto, in a standalone holding. Live since 2026-09-28.**
+   ShieldVault (`0x83074f8519F54AF05f7C48911E432e0C44dBEE69` on Ethereum):
+   withdrawals and setting changes announce themselves and wait a delay
+   the owner chose; during the wait, revealing the pre-registered secret
+   moves everything to the recovery wallet bound into it. It works even
+   against an attacker who fully controls the owner's key, classical or
+   quantum. Reviewed adversarially before deployment, not yet
+   independently audited. See [Protect a holding](../user-guide/shield.md).
 2. **A Safe module** adding the same delay and veto to an existing Safe
-   without moving funds.
-3. **A standalone protected holding contract** for users who want the delay
-   and veto without a Safe at all.
+   without moving funds. Next, not scheduled.
 
 Practical hygiene that costs nothing meanwhile: prefer receiving long-term
 holdings at fresh addresses that have never signed, and treat a Safe (whose
