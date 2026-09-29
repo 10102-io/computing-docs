@@ -6,7 +6,7 @@ description: >-
 
 # Partner Program
 
-10102 Computing Legacy is free to use; revenue comes from the optional Premium plan ($199/year or $499 lifetime, paid on-chain). Partners who introduce their audience or clients to the app earn a share of the Premium purchases they bring, with an attribution system designed so you never have to take our word for a number.
+10102 Computing Legacy is free to use; revenue comes from the optional Premium plan ($99/year or $399 lifetime, paid on-chain) and a small fee when assets are delivered. Partners who introduce their audience or clients to the app earn a share of the Premium purchases they bring, with an attribution system designed so you never have to take our word for a number.
 
 This page is the practical guide. The legally binding mechanics live in the published [Partner Program Terms](https://10102.io/partner-terms) (EN and FR).
 

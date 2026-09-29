@@ -31,7 +31,7 @@ Development started in June 2024. Live on Ethereum mainnet since October 2024, u
 
 ## How it earns
 
-Premium, paid on-chain in ETH, USDC or USDT: $199 per year or $499 once. Partners who introduce clients or an audience earn a share of the Premium purchases they bring, reconciled against public transactions. See the [Partner Program](partners.md).
+Premium, paid on-chain in ETH, USDC or USDT: $99 per year or $399 once. And a small fee when assets are delivered (0.25% today), fixed into each contract when it is created and shown before you confirm; never to set one up or keep it. Partners who introduce clients or an audience earn a share of the Premium purchases they bring, reconciled against public transactions. See the [Partner Program](partners.md).
 
 ## How it is built
 

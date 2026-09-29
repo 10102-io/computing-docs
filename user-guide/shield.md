@@ -16,7 +16,7 @@ to the people you name.
 
 Open it from **Shield Vault** in the menu, or at `app.10102.io/shield`. It
 runs on Ethereum, in the contract
-`0x83074f8519F54AF05f7C48911E432e0C44dBEE69`.
+`0xA1EA2F8C0518458975E09ED63bf5D48980f76C38`.
 
 ## Making one
 
@@ -31,8 +31,11 @@ Five decisions, one per step. Nothing is sent until the last one.
    the date a withdrawal started today would complete.
 3. **Who receives it if you go silent.** Optional. Choose 6, 12, 24 or 36
    months without activity, then up to 10 wallet addresses with a share
-   each; the shares must add up to 100%. Anything you do on the holding
-   counts as activity, and a check-in is one small transaction.
+   each; the shares must add up to 100%. For someone without a wallet,
+   choose a printed card instead of an address: the page makes a card with
+   a key for them, and their share waits in the vault until they claim it.
+   Anything you do on the holding counts as activity, and a check-in is one
+   small transaction.
 4. **A recovery sheet.** Recommended. Enter a recovery wallet, ideally a
    fresh address from a hardware wallet that has never signed anything,
    and never the wallet you are connected with. The page makes the sheet
@@ -40,7 +43,8 @@ Five decisions, one per step. Nothing is sent until the last one.
    instructions. Print it before going on. If you download it to print
    elsewhere, delete the file once it is on paper.
 5. **Check and protect it.** The page restates everything in sentences,
-   including the first date the holding could go to your people. Then up
+   including the first date the holding could go to your people and the
+   fee (below). Then up
    to three confirmations in your wallet: register the sheet, allow the
    vault to take the amount (only if needed; USDT asks twice when an old
    allowance is set), and open the holding. If one is interrupted, come
@@ -64,7 +68,8 @@ protection against theft.
 
 Your holdings show on the same page, with one main action each:
 
-- **Check in** restarts the silence clock.
+- **Check in** restarts the silence clock. With Premium it is free: you
+  sign, and we send and pay for the transaction.
 - **Add more** puts more of the same token in, under the same settings.
   It counts as a check-in.
 - **Withdraw** starts the wait for an amount or for everything, to an
@@ -96,7 +101,8 @@ If a withdrawal or a change you did not ask for appears:
    type the secret and the recovery wallet exactly as printed.
 3. The page checks the sheet on your device first. A wrong sheet is
    refused there, costs nothing and never leaves the device.
-4. Send it from any wallet with a little ETH for the fee, not only yours.
+4. Send it. The page sends it for free when it can; otherwise any wallet
+   with a little ETH for the network fee will do, not only yours.
    Everything in the holding moves to the recovery wallet on the sheet,
    right away, and the holding closes. There is no undo.
 
@@ -122,14 +128,21 @@ After the silence period passes with no activity, anyone can release the
 holding to the people you named, in their shares. If one share cannot be
 delivered (for example an address a token has blocked), it is kept for
 that address and can be claimed later from the status page; the others
-are paid anyway.
+are paid anyway. Finishing a release costs the family nothing: the page
+sends it for free.
+
+Someone named by a printed card opens `app.10102.io/shield/claim`, scans
+the card (or types what is printed on it) and enters the wallet the share
+should go to. The card's key signs on their device and never leaves it; no
+wallet, no ETH and no fee for the claim itself are needed.
 
 ## What you should know
 
 - **It stays yours.** Only the wallet that opens a holding can withdraw
   from it. We cannot move it, pause withdrawals or change your settings.
   The governance Safe that owns the contract can only choose which tokens
-  it accepts and pause new deposits.
+  it accepts, pause new deposits, and set the fee for holdings opened
+  later, never above 0.5%.
 - **Three ways out, no others.** Your own withdrawal after the wait, your
   people after the silence period, or your recovery sheet to your recovery
   wallet.
@@ -139,11 +152,14 @@ are paid anyway.
 - **The vault pays no interest.** You get back exactly the tokens you put
   in. A token that grows by itself, like wstETH, keeps growing while it
   waits.
-- **Reviewed, not yet audited.** The contract had an adversarial review
+- **Reviewed, not yet audited.** The contract had two adversarial reviews
   before deployment and has not had an independent audit yet. It cannot
   be upgraded: a fix would be a new vault, and every holding can leave
   through its own wait.
-- **Fees.** Each step is a transaction on Ethereum, and you pay its fee.
+- **Fees.** 0.25% of what leaves, when you withdraw or when it goes to
+  your people, fixed for each holding when you open it. Stopping it with
+  the sheet is always free, and so is claiming a share that was kept.
+  Steps you send from your own wallet also pay the Ethereum network fee.
 
 How it works underneath, with the threat model:
 [Quantum Readiness](../architecture/quantum-readiness.md).

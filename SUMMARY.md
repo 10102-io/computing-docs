@@ -37,6 +37,7 @@
   * [Upgrade Policy](architecture/upgrade-policy.md)
   * [Quantum Readiness](architecture/quantum-readiness.md)
 * [Agents & Builders](agents-and-builders.md)
+* [For Estate Planners](for-estate-planners.md)
 * [Partner Program](partners.md)
 * [Design & Engineering Notes](dev/README.md)
   * [Inactivity Detection](dev/technical-analysis.md)
