@@ -115,7 +115,7 @@ again) and claims:
   claim on the recipient's own device and never leaves it. No wallet app,
   no account, nothing to install.
 - **With their email** (email gifts): the gift page asks for the email
-  the gift was sent to, then for the six-digit code that arrives in that
+  the gift was sent to, then for the six-character code that arrives in that
   inbox. Typing the code is the whole login. The wallet behind the email
   signs the claim and 10102 submits it.
 - **With a wallet**: connect the wallet the gift was sealed for and sign
@@ -157,10 +157,19 @@ crypto. Here is exactly what happens, so you can decide if it fits.
   wallet signs the claim. The claim page asks where the gift should land:
   paste the address of a wallet the recipient already uses and the funds
   go there directly, in the same free transaction. Left empty, the funds
-  stay in the email wallet, and the recipient can log in again on the
-  gift page any time. For gifts claimed to the email wallet before this
-  option existed, write to info@10102.io and we walk the recipient
-  through moving them.
+  stay in the email wallet.
+- **Moving out later**: the email wallet page
+  ([app.10102.io/email-wallet](https://app.10102.io/email-wallet)) opens
+  the same wallet with the same email code. It shows the USDC, ETH and
+  WETH it holds and moves any of them to an address the recipient pastes.
+  USDC moves for free (USDC's own signed transfer, which 10102 submits and
+  pays for); ETH pays its own small network fee from the ETH being moved.
+  Addresses on sanctions lists are refused.
+- **The recovery phrase**: the same page shows the wallet's recovery
+  phrase once, can print it, and checks that it was written down. With it
+  the wallet opens in any standard wallet app (MetaMask, Rabby, a Ledger),
+  without Turnkey and without 10102. Anyone holding the phrase holds the
+  wallet; keep it private.
 - **The honest trade**: this is a step away from pure self-custody. The
   recipient depends on their email account and on Turnkey's service to
   reach the key, where the paper gift and the wallet gift depend on
