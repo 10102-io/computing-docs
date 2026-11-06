@@ -1,7 +1,8 @@
 ---
 description: >-
-  Put a little aside every month, locked until a date you choose. Buy on
-  Coinbase, send it to your wallet, lock it. Opens on the day you pick.
+  Put a little aside, locked until a date you choose. Save with just your
+  email (autopilot locks what you send), or lock from your own wallet. Opens
+  on the day you pick.
 ---
 
 # Save (a monthly lock)
@@ -15,9 +16,50 @@ nothing new on the blockchain; it only removes the choices you do not need.
 Every lock you make here also shows in the Timelock tab, where you take it
 back once it opens.
 
-Open it at `app.10102.io/save`.
+Open it at `app.10102.io/save`. There are two ways to save:
 
-## Making a lock
+- **With just your email** (autopilot): no wallet app, no network fees.
+  You send USDC to a wallet that opens with your email, and it is locked
+  for you. US residents only for now.
+- **From your own wallet**: you lock USDC or ETH yourself, one amount at a
+  time, and pay the network fee.
+
+## Saving with just your email (autopilot)
+
+1. **Sign in with your email.** You get a six-character code; a passkey
+   works too once you have added one. The first time, this creates your
+   savings wallet. It is yours: it runs on Turnkey, a separate company that
+   keeps the keys in secure hardware. You write its recovery phrase on
+   paper before anything else.
+2. **Pick your date.** At least 90 days away. Everything autopilot locks
+   for you opens on that date.
+3. **Turn autopilot on.** You give 10102 one narrow permission: to lock the
+   USDC that arrives in this wallet into a timelock in your name, opening
+   on your date. It cannot send your money anywhere else, not to us and not
+   to anyone. The permission lasts a year at most; you are reminded before
+   it ends, and you can stop at any time.
+4. **Send USDC whenever you like.** From Coinbase or any other app, on the
+   Ethereum network. Once at least 20 USDC has arrived, autopilot locks all
+   of it, usually within the hour, at most once a day and up to 10,000 USDC
+   in any 30 days. It emails you when it is done. Other tokens are left
+   alone.
+
+On your date, sign in and take your savings back, to this wallet or
+straight to another.
+
+{% hint style="info" %}
+**Honest limits.** Autopilot is offered to US residents only for now, and
+not yet in California or New York. 10102 pays the network fees for now (it
+tops up the little ETH your wallet needs); it may stop doing that, will
+tell you first, and autopilot may pause. If the autopilot key were ever
+stolen it still could not send your money anywhere: the worst it could do
+is lock USDC in your own name for longer than you chose. This is a step
+away from pure self-custody: you depend on your email account and on
+Turnkey's service to sign in, and the recovery phrase is your way out
+without either.
+{% endhint %}
+
+## Making a lock from your own wallet
 
 1. **What are you locking.** USDC if you want the value to stay steady, or
    ETH. The page shows what your wallet holds and starts on whichever you
@@ -34,7 +76,7 @@ Open it at `app.10102.io/save`.
 The lock appears under **Your locks so far** on the same page, with its
 opening date, and in the Timelock tab.
 
-## Funding it from Coinbase, once a month
+### Funding it from Coinbase, once a month
 
 The page walks through this with your own wallet address ready to copy and
 a code to scan:
@@ -68,5 +110,8 @@ as wrapped ETH (WETH) while locked; you can have it back as ETH.
   covers it. It sits in an audited contract on Ethereum, in your name.
 - **Prices move.** ETH goes up and down. USDC is made to stay close to one
   dollar.
-- **Fees.** Locking is a transaction, and so is taking it back. You pay the
-  network fee for each.
+- **Fees.** From your own wallet, locking is a transaction and so is taking
+  it back; you pay the network fee for each. With autopilot, 10102 pays
+  them for now.
+- **Upgrades wait in public.** The contracts that hold locks can be
+  upgraded, and every upgrade waits in public for at least 48 hours first.
