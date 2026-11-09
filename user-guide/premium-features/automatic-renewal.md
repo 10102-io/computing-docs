@@ -7,9 +7,9 @@ description: >-
 
 # Automatic Renewal
 
-Wallet-based (EOA) legacies work on a check-in timer: if you don't interact with your legacy for the inactivity window you configured, it becomes claimable. That's the core promise, but it comes with a chore: remembering to check in, even during years when you never need to touch the plan.
+Wallet-based (EOA) legacies work on a check-in timer. Checking in resets the countdown, and so does any change you make to the legacy. Sending, swapping or signing elsewhere does not, so checking in is up to you. If the countdown runs out, the legacy becomes claimable. That's the core promise, but it comes with a chore: remembering to check in, even during years when you never need to touch the plan.
 
-**Automatic renewal** removes the chore. When it's on, 10102 watches your wallet's *public* on-chain activity (its transaction count). If you've been active close to your deadline, we reset the countdown for you: no click, no email, no gas. You keep living on-chain; the plan keeps up.
+**Automatic renewal** removes the chore. In the app's words: "Automatic renewal is on. If this wallet has sent a transaction since the countdown last restarted, we reset it for you in the last 30 days before your deadline. This works for up to 12 months after your last check-in and while Premium is active. Then check in yourself once and it carries on. You can check in yourself at any time." No click, no gas. You keep living on-chain; the plan keeps up.
 
 ## Turning it on
 
@@ -23,7 +23,7 @@ Wallet-based (EOA) legacies work on a check-in timer: if you don't interact with
 
 ## What we watch, and what we can't see
 
-We read one public number: your wallet's transaction count, the same figure anyone can see on Etherscan. There is no tracking beyond that: no browsing data, no location, no off-chain identity. If the count went up near your deadline, you've been active, and the attestor renews your timer.
+We read one public number: your wallet's transaction count, the same figure anyone can see on Etherscan. There is no tracking beyond that: no browsing data, no location, no off-chain identity. If the count went up since your countdown last restarted, your wallet has sent a transaction, and in the last 30 days before your deadline the attestor renews your timer. Any transaction from the wallet counts, including one sent by an app or a bot you gave it to.
 
 ## The safety rails, in plain words
 
@@ -44,7 +44,19 @@ Renewals stop (and email reminders take over) whenever:
 - your Premium subscription lapses (your opt-in is remembered; renewals resume if you re-subscribe),
 - or you turn the switch off.
 
-Nothing about the legacy itself changes in any of these cases. The timer keeps counting exactly as configured, and checking in yourself always works.
+Nothing about the legacy itself changes in any of these cases. The timer keeps counting exactly as configured, and checking in yourself always works. [Home](../home.md) shows each legacy's timer with whether renewal can really run before the date.
+
+Premium cannot be renewed early: renewal opens on its expiry date. If your Premium ends before the last 30 days of your countdown open, renewal will not run in time, so check in yourself before then.
+
+## Emails and the Home notice
+
+These go to the owner email saved in the legacy's [email reminders](./configure-email-reminders.md). Without one, the Home notice is your warning.
+
+- **"Your legacy was renewed automatically."** Each time a renewal resets your countdown, you get this email instead of the ordinary "reset" one. It gives your next deadline and the date to check in yourself by to keep renewal working.
+- **Premium ends soon.** 14 days before your Premium ends, an email and a notice on Home: "Your Premium ends on (date)." Renewal opens on that date; until then, check in to keep your timer safe.
+- **Premium ended.** Once it has ended, an email and a notice on Home: "Automatic renewal is paused." Check in yourself before your deadline, or renew Premium and automatic renewal starts again by itself. Your setting stays on.
+
+The Home notice always offers **Check in**, and **Renew Premium** once Premium has ended.
 
 ## Common questions
 

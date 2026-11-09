@@ -1,12 +1,12 @@
 ---
 description: >-
-  A decentralized framework for digital legacy planning: give your crypto a
-  survivable plan, without trusting a centralized custodian.
+  A decentralized framework for digital legacy planning: give your digital
+  assets a survivable plan, without trusting a centralized custodian.
 ---
 
 # Introduction
 
-Crypto security has matured. Smart contracts get audited, wallets get hardware-hardened, users get more discerning. Legacy planning for crypto has not kept up. Most "solutions" still rely on centralized custodians, legal instruments designed for fiat assets, or a scrap of paper shoved in a safe that nobody remembers where.
+Security for digital assets has matured. Smart contracts get audited, wallets get hardware-hardened, users get more discerning. Legacy planning for digital assets has not kept up. Most "solutions" still rely on centralized custodians, legal instruments designed for fiat assets, or a scrap of paper shoved in a safe that nobody remembers where.
 
 **10102 Computing Legacy** is a small, auditable set of Ethereum smart contracts (plus a thin app on top) that lets you define the rules for how your on-chain assets pass on, and executes them automatically when those rules are met. No custody. No subscription required for the core flows. No middleman the plan depends on.
 
@@ -43,7 +43,7 @@ Any wallet that speaks a standard Ethereum connector works: **MetaMask**, **Wall
 
 ## Mainnet and Sepolia
 
-You can switch networks inside the app. **Sepolia** is the public testnet: identical flow, free test ETH, activation windows configurable in minutes instead of days so you can exercise the whole cycle in a short session. **Mainnet** is production: real assets, real value, real consequences.
+You can switch networks inside the app. **Sepolia** is the public testnet, for legacies and timelocks: free test ETH, and activation periods counted in minutes instead of months, so you can exercise the whole cycle in a short session. The products built on them (the Shield Vault, Stake & Shield, Save, Heirloom and the email wallet) run on mainnet only; see [Networks](user-guide/authentication.md#networks). **Mainnet** is production: real assets, real value, real consequences.
 
 ## Where to go next
 

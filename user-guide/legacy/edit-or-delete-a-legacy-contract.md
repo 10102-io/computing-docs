@@ -16,18 +16,21 @@ Once a legacy is **Live**, the owner (or, for Safe legacies, any Safe signer) ca
 - **Name**: private label.
 - **Beneficiaries**: add, remove, or replace up to 10 primary addresses.
 - **Allocations**: any percentages, as long as they sum to 100%. Single-beneficiary legacies auto-allocate 100%.
-- **Activation trigger**: the inactivity window (days).
-- **Note to beneficiaries**: an on-chain message they'll see in the beneficiary view.
+- **Activation trigger**: the inactivity window, in months.
+- **Note to beneficiaries**: a message they'll see in the beneficiary view.
 - **Approvals**: include new ERC-20s, adjust existing allowances, or remove tokens from the inclusion set.
+- **ETH** (EOA legacies): **Add ETH to your legacy** converts ETH into a storage token the legacy can use; on legacies created since 2026-11-07, **Convert all back to ETH** converts the whole stored-token balance in your wallet back. See [Create a Legacy Contract: Adding ETH](./create-a-legacy-contract.md#adding-eth).
 - **Safe threshold for beneficiaries** (Multisig legacies only): how many beneficiaries must sign as the new Safe's threshold after activation.
 - **Contingent layers** (Premium): add, remove, or resize the second- and third-line activation windows.
+
+On an EOA legacy, changes to the name, the beneficiaries' names and the note are saved on your device, not on the blockchain, so changing only them sends no transaction. If you [sign in on each device](../authentication.md#sign-in-on-each-device), the names (not the note) follow your wallet to your other devices.
 
 ### EOA legacy
 
 A single transaction from your wallet applies the change. No coordination needed.
 
 {% hint style="info" %}
-**Which edits reset the activation timer?** Approving, adjusting, or removing allowances and changing the note **do not** reset the timer. All other edits (beneficiaries, allocations, trigger window) do. If you want to explicitly reset without another edit, use the heartbeat action instead.
+**Which edits reset the activation timer?** Checking in resets the countdown, and so does any change you make to this legacy (beneficiaries, allocations, trigger window). Sending, swapping or signing elsewhere does not, so checking in is up to you. With Premium, [automatic renewal](../premium-features/automatic-renewal.md) can count that activity too. Token approvals are made in your wallet, on the token, so they are not a change to the legacy and do not reset the timer; neither do the name and the note, which are saved on your device. To reset without another edit, use **Check in**.
 {% endhint %}
 
 ### Safe legacy

@@ -48,7 +48,7 @@ A claim link is `/heirloom/{chainId}/{timelockId}#g=<base64url payload>`.
   paper guidance however the visitor arrived.
 
 Paper-key gifts get a second, address-based entry:
-`/heirloom/for/{giftWalletAddress}` — the target of the QR printed on the
+`/heirloom/for/{giftWalletAddress}`, the target of the QR printed on the
 key sheet's COVER. The sheet must print before sealing, when no timelock
 id exists yet, but the gift wallet's address is already known. The page
 resolves the newest gift sealed to that address via the subgraph and
@@ -175,7 +175,7 @@ only when it reads true, and the frontend has a kill switch
 
 `POST /gift/notify` lets the GIVER register a recipient email with a
 timing choice: "a gift is waiting" immediately, on a scheduled day of the
-giver's choosing (`notify_at`, e.g. the birthday itself), or not at all —
+giver's choosing (`notify_at`, e.g. the birthday itself), or not at all;
 plus "your gift just unlocked" on opening day in every mode.
 
 - **Owner-signed EIP-712**: the signature covers the sha256 HASH of the
@@ -226,5 +226,5 @@ symbols customary on greeting cards.
   false-positive appeal is an operational task tracked in the app
   repository's ops checklist.
 - A gift is also visible as a `Gift`-type row in the giver's Timelock
-  tab; the shield score deliberately does not credit outgoing gifts as a
-  protection layer.
+  tab. **Your locks** on Home deliberately leaves outgoing gifts out: a
+  gift belongs to its recipient, and the giver cannot take it back.

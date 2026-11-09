@@ -2,7 +2,8 @@
 description: >-
   Optional, time-bound capabilities on top of the free legacy features:
   backup beneficiary layers, watchers with an advisor view, email reminders,
-  automatic renewal, and gas-free check-ins.
+  automatic renewal, and gas-free check-ins and withdrawals. How to buy it,
+  with a partner code if you have one.
 ---
 
 # Premium Features
@@ -17,7 +18,8 @@ Premium adds a second ring of protection around a plan that already works. The f
 | **Authorized watchers + Advisor view** | Read-only oversight for a lawyer, advisor, or family member, with a consolidated dashboard when they watch several plans | [Manage Authorized Watchers](./manage-authorized-watchers.md) |
 | **Email reminders** | Out-of-band nudges before deadlines, for you and your beneficiaries | [Configure Email Reminders](./configure-email-reminders.md) |
 | **Automatic renewal** | Your normal wallet activity keeps your check-in timer fresh; no more remembering to check in | [Automatic Renewal](./automatic-renewal.md) |
-| **Gas-free check-ins** | 10102 pays the network fee when you reset your timer | [Gas-Free Check-ins & Claims](./gas-free-check-ins-and-claims.md) |
+| **Gas-free check-ins and withdrawals** | 10102 pays the network fee when you reset your timer, and when you withdraw your own timelock | [Gas-Free Check-ins & Claims](./gas-free-check-ins-and-claims.md) |
+| **Wallet alerts for more addresses** | Alerts for up to 20 other wallets and for Bitcoin addresses (your own wallet's alerts are free) | [Wallet alerts and the Bitcoin watch](../wallet-alerts.md) |
 
 {% hint style="info" %}
 **Beneficiaries never need Premium (or even ETH).** Gas-sponsored *claims* are free for everyone: if a beneficiary's wallet can't cover the network fee at claim time, the app asks for a free signature and 10102 pays the gas. See [Gas-Free Check-ins & Claims](./gas-free-check-ins-and-claims.md).
@@ -42,6 +44,16 @@ On the Free plan you only ever pay Ethereum network gas. There is no subscriptio
 - **On-chain record**: the subscription is recorded on-chain against your address.
 - **Per-wallet**: subscriptions are scoped to the wallet that paid. If you manage multiple wallets, each needs its own subscription.
 
+## Buying Premium
+
+Open **Settings**, **10102 Membership**. Pick a plan and a payment token, then **Purchase**.
+
+- **Coupon code.** Checkout has an optional **Coupon code** field, for a code a partner gave you. There is no public code. The page checks the code on-chain as you type and says what it does: a discount, a credit to the partner who sent you, or why it cannot be used (unknown, switched off, expired or used up). Clear the field to buy without it.
+- **The price shown is the price charged.** Right before sending, the app reads the price again. With ETH, the transaction sends exactly that amount. With USDC or USDT, your wallet first approves exactly that amount, and an older, larger approval to the Premium contract is reduced to it. If the price changed in between, nothing is charged and the page shows the new price.
+- **Renewal opens on the expiry date.** While Premium runs, it cannot be bought again, so it cannot be renewed early. Settings shows your expiry date; from that day, you can buy Premium again on the same page.
+
+If you use [automatic renewal](./automatic-renewal.md), Premium ending matters: renewals stop with it. You are warned before and when it ends, by email and on Home; see [Automatic Renewal: emails and the Home notice](./automatic-renewal.md#emails-and-the-home-notice).
+
 ## What Premium unlocks
 
 ### Additional contingent beneficiary layers
@@ -64,11 +76,11 @@ Opt-in email notifications for the owner and for each beneficiary, at configurab
 
 ### Automatic renewal
 
-For wallet-based (EOA) legacies, an opt-in attestor watches your wallet's public on-chain activity and renews your check-in timer for you when you've been active near the deadline. Every safety bound is enforced by the contract, and the mechanism can only ever *delay* activation, never accelerate it. See [Automatic Renewal](./automatic-renewal.md).
+For wallet-based (EOA) legacies, an opt-in attestor watches your wallet's public on-chain activity. If your wallet has sent a transaction since the countdown last restarted, it resets the countdown for you in the last 30 days before your deadline. Every safety bound is enforced by the contract, and the mechanism can only ever *delay* activation, never accelerate it. See [Automatic Renewal](./automatic-renewal.md).
 
-### Gas-free check-ins
+### Gas-free check-ins and withdrawals
 
-When you reset your inactivity timer, the app can ask for a free signature instead of a paid transaction, and 10102's relayer submits it and covers the network fee. Claims by beneficiaries are sponsored for everyone; check-ins are the Premium half of the same machinery. See [Gas-Free Check-ins & Claims](./gas-free-check-ins-and-claims.md).
+When you check in on a wallet legacy or a Shield Vault holding, or withdraw one of your own timelocks once it opens, the app asks for a free signature instead of a paid transaction, and 10102's relayer submits it and covers the network fee. A withdrawal always goes to your own wallet. If the free send is not possible, your wallet sends a normal transaction instead. Claims by beneficiaries are sponsored for everyone; these are the Premium half of the same machinery. See [Gas-Free Check-ins & Claims](./gas-free-check-ins-and-claims.md).
 
 ## Creator-only note for Safe legacies
 

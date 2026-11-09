@@ -14,9 +14,10 @@ Unfamiliar with the vocabulary? Skim [Concepts](./concepts.md) first.
 
 ### Getting started
 
-- [Authentication](./authentication.md): connecting and disconnecting a wallet.
+- [Authentication](./authentication.md): connecting and disconnecting a wallet, and signing in on each device.
 - [Concepts](./concepts.md): short glossary of the terms used throughout this guide.
-- [Quick Actions](./quick-actions.md): shortcuts from the home page that pre-fill common setups.
+- [Home: your plan and your locks](./home.md): facts about your plans read from the chain, and your timelocks with their opening dates.
+- [Quick Actions](./quick-actions.md): shortcuts on the Legacy and Timelock pages that pre-fill common setups.
 
 ### Legacy
 
@@ -33,12 +34,20 @@ Unfamiliar with the vocabulary? Skim [Concepts](./concepts.md) first.
 - [Manage Contingent Beneficiaries](./premium-features/manage-contingent-beneficiaries.md).
 - [Manage Authorized Watchers](./premium-features/manage-authorized-watchers.md).
 - [Configure Email Reminders](./premium-features/configure-email-reminders.md).
+- [Automatic Renewal](./premium-features/automatic-renewal.md): when your wallet has sent a transaction, we reset your legacy's countdown in the last 30 days before its deadline.
+- [Gas-Free Check-ins & Claims](./premium-features/gas-free-check-ins-and-claims.md): free claims for every beneficiary, free check-ins and timelock withdrawals for Premium owners.
 
 ### Timelock
 
 - [Timelock](./timelock/README.md): overview of Timelock, Soft Timelock, Beneficiary Timelock.
 - [Heirloom (sealed gifts)](./heirloom.md): seal ETH or USDC as a gift that opens on a chosen date.
 - [Using Timelock](./timelock/using-timelock.md): create, unlock, and claim for all three flavors.
+- [Save (a monthly lock)](./save.md): put a little aside, locked until a date you choose.
+
+### Protecting what you hold
+
+- [Shield Vault (protect a holding)](./shield.md): a wait on every withdrawal, and a recovery sheet that stops a stolen key.
+- [Wallet alerts and the Bitcoin watch](./wallet-alerts.md): an email when a wallet moves, free for your own; Bitcoin addresses in your watch list.
 
 ## A note on philosophy
 

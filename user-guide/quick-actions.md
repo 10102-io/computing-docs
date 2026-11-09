@@ -1,57 +1,72 @@
 ---
 description: >-
-  Opinionated shortcuts on the home page that pre-fill a legacy or timelock for
-  a specific goal. All of them drop into the standard flows, so you can tweak
-  anything before signing.
+  Opinionated shortcuts on the Legacy and Timelock pages that pre-fill a
+  legacy or timelock for a specific goal. All of them drop into the standard
+  flows, so you can tweak anything before signing.
 ---
 
 # Quick Actions
 
-Quick Actions are prominent buttons on the home page labelled by _what you want to accomplish_, not by product feature. Each one routes you into the relevant creation flow with sensible defaults so you don't have to compose the settings yourself.
+Quick Actions are cards labelled by _what you want to accomplish_, not by product feature. Each one routes you into the relevant creation flow with sensible defaults so you don't have to compose the settings yourself.
+
+## Where they are
+
+- **Legacy page** (`app.10102.io/legacy`): a **Quick actions** section below your legacies, with the legacy shortcuts.
+- **Timelock page**: a **Quick actions** section below your timelocks, with the timelock shortcuts and, where Guardian is available, an **Ask Guardian** button.
+
+They show whether or not a wallet is connected; without one, the app asks you to connect (and to accept the terms) before it opens the form. Home does not carry them: it shows [your plan and your locks](./home.md) instead. Cypherpunk Mode has no Quick Actions; its pages open the create flows directly.
 
 Use them as training wheels, or as actual product: they're not a cut-down flow, just a pre-configured one. Everything is editable before you sign the transaction.
 
 {% hint style="info" %}
-Quick Actions only pre-fill settings. They don't change what gets deployed on-chain. The result is indistinguishable from a hand-configured legacy or timelock of the same type.
+Quick Actions only pre-fill settings. They don't change what gets deployed on-chain. The result is indistinguishable from a hand-configured legacy or timelock of the same type. Guardian's setup links pre-fill the same forms in the same way.
 {% endhint %}
 
-## Available actions
+## On the Legacy page
 
-### Pass my assets to a loved one
+### Check in
 
-Pre-fills a **Transfer legacy** with your connected wallet as the owner and a single beneficiary at 100% allocation. Takes you to the configure screen to add the beneficiary's address and pick which assets to include.
+Shown when you have a live wallet legacy. Opens that legacy's page, where **Check in** resets its countdown.
 
-Use when: you want a straightforward one-person legacy without thinking about allocations.
+### Add a backup wallet
 
-### Split my assets among several people
+Pre-fills a **wallet legacy** named "My Backup Wallet": your assets go to a fallback address you choose if your wallet goes quiet. Takes you to the configure screen to add that address and pick which assets to include.
 
-Pre-fills a **Transfer legacy** with allocation inputs for multiple beneficiaries. You enter the addresses and percentages.
+Use when: you want a second wallet to receive everything if you lose access to this one, or a straightforward one-person legacy.
 
-Use when: you know this will be a multi-beneficiary setup and you'd rather start from a split-ready screen.
-
-### Schedule a future gift (to a loved one)
-
-Opens [Heirloom](./heirloom.md): seal ETH or USDC as a gift that opens on a chosen date, with occasion designs, printable sheets, and free claiming for the recipient. (Deep links and agent tools that reference this action land on the Heirloom page.)
-
-Use when: you want scheduled delivery to a loved one on a specific date, like a child's milestone, a wedding, or planned giving.
-
-### Protect all my funds (for a waiting period)
-
-Pre-fills a **Soft Timelock**: locks your chosen assets indefinitely; when _you_ want them back, you initiate an unlock and a configurable waiting period begins. The window is measured in days.
-
-Use when: you want anti-coercion protection, so compromised keys or a wrench attack can't immediately drain the locked balance.
+A wallet holds one wallet legacy at a time, so this card is disabled, with the reason shown, while the app checks for an existing one or once it finds one.
 
 ### Designate future signers for my Safe
 
-Pre-fills a **Multisig legacy** configuration. Because this flow needs to know _which_ Safe you're targeting, you're first taken to the Safe verification step; once a Safe address is confirmed, the rest of the configure screen is pre-filled to highlight the signer-designation use case.
+Pre-fills a **Multisig legacy** named "My Safe Legacy". Because this flow needs to know _which_ Safe you're targeting, you're first taken to the Safe verification step; once a Safe address is confirmed, the rest of the configure screen is pre-filled.
 
-Use when: your Safe is your long-term vault and you want other people (family, a trusted proxy) to become co-signers if you go quiet.
+Use when: your Safe is your long-term vault and you want other people (family, a trusted proxy) to become co-signers if it goes quiet.
+
+## On the Timelock page
+
+### Lock funds for a fixed period
+
+Pre-fills a standard **Timelock** named "My Timelock": no one, including you, can touch the funds until the period ends. You choose the period.
+
+### Start a 2-year savings fund for a loved one
+
+Pre-fills a **Beneficiary Timelock** named "Savings Fund", locked for 24 months, then released to someone you choose, such as a child or a family member.
+
+### Add a 2-week spending delay
+
+Pre-fills a **Soft Timelock** named "My Spending Delay" with a 14-day waiting period: the funds stay locked until _you_ start an unlock, and then you wait 14 days.
+
+Use when: you want protection against coercion or a stolen key, so nobody can drain the locked balance at once.
+
+### Sending a gift
+
+For a gift that opens on a date, the Timelock page has a **Send a sealed gift** button instead of a card. It opens [Heirloom](./heirloom.md): occasion designs, printable sheets, and free claiming for the recipient.
 
 ## Gotchas
 
 - **Quick Action ≠ skipping asset permissions.** Including assets still works exactly like the standard create: you pick tokens in the configure screen and the permission rides the single create transaction. See [Create a Legacy Contract](./legacy/create-a-legacy-contract.md) for what your wallet will show.
-- **The Multisig quick action requires a Safe.** Don't click it from an EOA-only context; you'll get routed to the Safe check. If you don't have a Safe, create one at [app.safe.global](https://app.safe.global) first.
-- **Nothing is irreversible before signing.** You can swap types (e.g. change Transfer to Multisig), change beneficiaries, change allocations. Quick Actions are defaults, not locks.
+- **The Safe quick action requires a Safe.** You'll get routed to the Safe check first. If you don't have a Safe, create one at [app.safe.global](https://app.safe.global) first.
+- **Nothing is irreversible before signing.** You can change beneficiaries, allocations, durations and names. Quick Actions are defaults, not locks.
 
 ## See also
 

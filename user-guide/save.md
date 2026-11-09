@@ -31,8 +31,8 @@ Open it at `app.10102.io/save`. There are two ways to save:
    savings wallet. It is yours: it runs on Turnkey, a separate company that
    keeps the keys in secure hardware. You write its recovery phrase on
    paper before anything else.
-2. **Pick your date.** At least 90 days away. Everything autopilot locks
-   for you opens on that date.
+2. **Pick your date.** At least 90 days away. Every lock autopilot makes
+   for you opens on that exact date.
 3. **Turn autopilot on.** You give 10102 one narrow permission: to lock the
    USDC that arrives in this wallet into a timelock in your name, opening
    on your date. It cannot send your money anywhere else, not to us and not
@@ -45,18 +45,47 @@ Open it at `app.10102.io/save`. There are two ways to save:
    alone.
 
 On your date, sign in and take your savings back, to this wallet or
-straight to another.
+straight to another. It is free: 10102 pays the network fee.
+
+### Who sent the USDC: checked before every lock
+
+Before each lock, autopilot checks every address that sent USDC to your
+email wallet against the Chainalysis sanctions list, which is published on
+Ethereum.
+
+- **A transfer of 0 USDC is ignored.** It moves nothing, and anyone can
+  send one, so it can never stop your plan.
+- **USDC from a listed sender is kept aside.** We never lock it, never send
+  it for you and never pay a fee to move it.
+- **Under 20 USDC from listed senders**, your plan carries on and locks the
+  rest. We email you once.
+- **From 20 USDC**, your plan stops. Nothing is locked or moved, and we
+  email you. Your existing locks still open on their date, and the wallet
+  is still yours, but we no longer pay its network fees.
+
+You did nothing wrong if this happens: anyone can send USDC to any address.
+USDC paid out of a 10102 timelock is checked against the people behind that
+lock, unless it is your own savings coming back. Questions:
+[info@10102.io](mailto:info@10102.io).
+
+### Plans made before 2026-11-09
+
+Plans set up before 2026-11-09 keep working as they are: each of their
+locks opens about an hour before your date. Their page shows **Confirm the
+exact date**. One signature switches the plan, and every new lock opens on
+your date exactly. Locks already made keep their date.
 
 {% hint style="info" %}
 **Honest limits.** Autopilot is offered to US residents only for now, and
 not yet in California or New York. 10102 pays the network fees for now (it
 tops up the little ETH your wallet needs); it may stop doing that, will
 tell you first, and autopilot may pause. If the autopilot key were ever
-stolen it still could not send your money anywhere: the worst it could do
-is lock USDC in your own name for longer than you chose. This is a step
-away from pure self-custody: you depend on your email account and on
-Turnkey's service to sign in, and the recovery phrase is your way out
-without either.
+stolen it still could not send your money anywhere: every lock it could
+make opens on the date you chose. On a plan made before 2026-11-09 and not
+yet switched to the exact date, the worst it could do is lock USDC in your
+own name for longer than you chose. This is a step away from pure
+self-custody: you depend on your email account and on Turnkey's service to
+sign in, and the recovery phrase is your way out without either.
 {% endhint %}
 
 ## Making a lock from your own wallet
@@ -97,9 +126,17 @@ you have money opening every month, for as long as you kept saving.
 
 ## Taking it back
 
-When a lock's date arrives it shows **Ready** in the Timelock tab. Tap it,
-confirm once, and the money is back in your wallet. ETH locked here is held
-as wrapped ETH (WETH) while locked; you can have it back as ETH.
+When a lock's date arrives it shows **Ready** in the Timelock tab and in
+**Your locks** on [Home](home.md). Tap **Withdraw** there, or **Claim
+Assets** on the lock's page, confirm once, and the money is back in your
+wallet. With Premium, that confirmation is a free signature and 10102 pays
+the network fee
+([Gas-Free Check-ins & Claims](premium-features/gas-free-check-ins-and-claims.md)).
+ETH locked here is held as wrapped ETH (WETH) while locked; you can have it
+back as ETH.
+
+With autopilot, take your savings back from the autopilot page: **Take it
+back, free**, to your email wallet or straight to another wallet.
 
 ## What you should know
 
@@ -111,7 +148,8 @@ as wrapped ETH (WETH) while locked; you can have it back as ETH.
 - **Prices move.** ETH goes up and down. USDC is made to stay close to one
   dollar.
 - **Fees.** From your own wallet, locking is a transaction and so is taking
-  it back; you pay the network fee for each. With autopilot, 10102 pays
-  them for now.
+  it back; you pay the network fee for each, except that Premium makes
+  taking it back free. With autopilot, 10102 pays them for now, taking your
+  savings back included.
 - **Upgrades wait in public.** The contracts that hold locks can be
   upgraded, and every upgrade waits in public for at least 48 hours first.

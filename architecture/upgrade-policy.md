@@ -75,6 +75,10 @@ What the timelock and the Safe own today:
   router an ETH gift uses at claim, are queued operations too).
 - The timelock router (creation settings and the create pause) is owned by
   the Safe.
+- The legacy router's settings for NEW legacies, since 2026-11-07: which
+  contract code a new legacy is a copy of, which vault its token permission
+  names, and which key may renew it automatically. Each change waits the
+  48 hours in the queue; the Safe administers the router.
 
 ## What we will and won't upgrade
 
@@ -94,14 +98,14 @@ What the timelock and the Safe own today:
 Honesty over theater. Two classes of admin action work instantly:
 
 - **The create pause.** In an active incident we can halt NEW legacy or
-  timelock creation immediately (from the maintainer key for legacies,
-  from the Safe for timelocks). Exit paths are unaffected: pausing can
-  protect new users, never trap existing ones.
-- **Operational settings** (token whitelists, plan configuration, rotation
-  of the clone implementation / pull vault used for *new* creates). These
-  cannot touch existing contracts or user balances; the blast radius is
-  limited to new creations, which the 48-hour window doesn't meaningfully
-  protect anyway.
+  timelock creation immediately, from the Safe. Exit paths are unaffected:
+  pausing can protect new users, never trap existing ones.
+- **Stopping automatic renewals.** If the key that renews legacies for
+  active owners misbehaves, the Safe can switch renewals off at once.
+  Turning them back on, with a new key, goes through the 48-hour queue.
+  Owners can always check in themselves.
+- **Operational settings** (token whitelists, plan configuration). These
+  cannot touch existing contracts or user balances.
 
 ## The honest limit
 

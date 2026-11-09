@@ -6,7 +6,7 @@ description: >-
 
 # Legacy Contract Details
 
-After creating a legacy, clicking it from the home page opens its details view. This is also where beneficiaries land when they open a legacy left to them.
+After creating a legacy, clicking it from the Legacy page (or its timer in **Your plan** on [Home](../home.md)) opens its details view. This is also where beneficiaries land when they open a legacy left to them.
 
 ## Sections of the details page
 
@@ -21,7 +21,7 @@ After creating a legacy, clicking it from the home page opens its details view. 
 
 - **Last activity**: the most recent activity the legacy knows about. For Safe legacies that's the Safe's last transaction (every Safe transaction counts). For EOA legacies it's your last interaction with the legacy itself; see [The owner's view](#on-an-eoa-legacy) below.
 - **Activation trigger**: the inactivity threshold you configured. The details page shows how much of the window has elapsed.
-- **Heartbeat action**: resets the trigger timer in a single transaction when you don't have another qualifying action to make naturally. On a Safe legacy, any Safe transaction already counts; on an EOA legacy, only interactions with the legacy count (unless you enable [auto-renew](../concepts.md#auto-renew-eoa-legacies)), so the dedicated action is the standard way to check in.
+- **Check in** (EOA legacies): resets the trigger timer in a single transaction when you don't have another qualifying action to make naturally. On a Safe legacy, any Safe transaction already counts. On an EOA legacy, a check-in and any change you make to the legacy count, and nothing else does unless you enable [automatic renewal](../premium-features/automatic-renewal.md), so **Check in** is the standard way to stay active. With Premium, it is a free signature ([Gas-Free Check-ins & Claims](../premium-features/gas-free-check-ins-and-claims.md)).
 
 ### Assets (Transfer legacies)
 
@@ -62,8 +62,9 @@ The configured addresses, their allocations (for Transfer legacies), and, for Sa
 ### On an EOA legacy
 
 - No finalizing step: on-chain changes happen as soon as you sign. Simpler flow, less coordination.
-- Interactions with the legacy count as heartbeats: edits, deposits, withdrawals, or the dedicated heartbeat action. Generic wallet activity elsewhere does **not** reset the timer by itself.
-- If you'd rather have your wallet's general on-chain activity keep the timer fresh, enable **auto-renew** (Premium, opt-in, per legacy): an attestor service observes your wallet's public transaction count and renews for you near the deadline, within strict on-chain bounds. See [Automatic Renewal](../premium-features/automatic-renewal.md).
+- **Without automatic renewal**, the page says: "Checking in here resets the countdown, and so does any change you make to this legacy. Sending, swapping or signing elsewhere does not, so checking in is up to you. With Premium, automatic renewal can count that activity too."
+- **With automatic renewal on** (Premium, opt-in, per legacy), it says: "Automatic renewal is on. If this wallet has sent a transaction since the countdown last restarted, we reset it for you in the last 30 days before your deadline. This works for up to 12 months after your last check-in and while Premium is active. Then check in yourself once and it carries on. You can check in yourself at any time." See [Automatic Renewal](../premium-features/automatic-renewal.md).
+- **Check in** costs network gas. With Premium, it is a free signature and 10102 pays the fee; if that is not possible right now, your wallet sends it and you pay the gas.
 
 ## The beneficiary's view (Legacies for Me)
 

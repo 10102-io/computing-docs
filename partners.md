@@ -15,7 +15,17 @@ This page is the practical guide. The legally binding mechanics live in the publ
 1. We agree on your partner code, for example `acme`.
 2. You share your link: `https://app.10102.io/?via=acme`. No signup, no dashboard, no integration work. Links written on `www.10102.io` or the bare `10102.io` carry the code through as well; the `app.10102.io` form is the canonical one to publish.
 3. When someone arrives through your link, their browser remembers your code for **90 days** (last qualifying click wins). If they buy Premium in that window, the purchase is attributed to you.
-4. We settle monthly in USDC on Ethereum, with a statement listing the purchases behind the number.
+4. Purchases not already paid to you on chain (below) are settled monthly in USDC on Ethereum, with a statement listing the purchases behind the number.
+
+## Your code at checkout, credited on chain
+
+Your code can also be registered as a coupon in the Premium contract, naming your wallet. Then:
+
+- **A buyer can type it at checkout.** The **Coupon code** field (Settings, 10102 Membership) checks the code on chain. Your link carries it too: the app reads the coupon behind the link, and when the coupon gives a discount, it fills the field for the buyer to see.
+- **You are credited on chain.** The purchase event names your wallet as the referrer, whether the code was typed or came from your link. A coupon that names its own referrer takes precedence over a link's.
+- **Your share can be paid inside the purchase.** When your wallet is registered with a share, the contract pays it to your wallet in the same transaction, in the token the buyer paid with (ETH, USDC or USDT); the rest goes to 10102. If that transfer fails, the share goes to 10102 and the purchase still goes through. A purchase made by the referrer's own wallet is attributed but never paid.
+
+Not every code is a coupon; we set it up with you. A code that is not a coupon works through your link only, as above. There is no public code.
 
 ## Why you don't have to trust us
 
@@ -36,7 +46,9 @@ curl -H "Authorization: Bearer pt_your_token" \
   https://api.10102.io/referral-stats
 ```
 
-The response contains your totals (`purchases`, `unique_purchasers`, first and last purchase timestamps, and `active_subscribers`) plus your most recent attributed transactions.
+The response contains your totals (`purchases`, `unique_purchasers`, first and last purchase timestamps, and `active_subscribers`) plus your most recent attributed transactions. Add `?month=2026-11` for one month's statement (UTC months).
+
+Each transaction says whether its share was already paid on chain (`paidOnChain`), and the totals count both kinds (`paid_on_chain`, `not_paid_on_chain`). A purchase paid on chain is never counted again in a monthly statement: nothing is owed for it off-chain, so nobody is paid twice. A row recorded before shares were tracked (`share_unknown`) is checked on Etherscan before it is paid.
 
 `active_subscribers` is computed live from the chain: it counts your unique purchasers whose Premium is still active right now (lifetime plans stay counted; expired annual plans drop off). This is the number volume bonuses are measured against.
 
@@ -51,14 +63,14 @@ Treat the token like a password. If it leaks, we rotate it on request; rotation 
 
 Exact rates are set in your partner agreement; we keep deal terms private on both sides.
 
-- Monthly settlement in USDC on Ethereum, to a wallet you control.
+- Monthly settlement in USDC on Ethereum, to a wallet you control, for purchases whose share was not already paid on chain.
 - Balances under $100 roll over to the next month. If participation ends, the final balance pays out in full, even below that threshold.
 - Statements can be disputed within **60 days** of issue.
 - Either party may end participation with **30 days' written notice**; attributions already recorded are honored at the terms they were earned under.
 
 ## Discount mode (fee-barred professionals)
 
-Some partners are legally barred from taking a percentage of a client's purchase, for example French avocats and notaires. For those relationships the code runs in **discount mode**: the buyer gets a reduced Premium price instead, and the partner receives no commission. The stats token works the same way, so you can still see and reconcile your attributed activity. Commission and discount never both apply to the same purchase. If your profession or engagement letter forbids referral fees, say so when we set up your code.
+Some partners are legally barred from taking a percentage of a client's purchase, for example French avocats and notaires. For those relationships the code runs in **discount mode**: the buyer gets a reduced Premium price instead, and the partner receives no commission. When such a code is an on-chain coupon, the discount is applied at checkout and shown before the buyer pays. The stats token works the same way, so you can still see and reconcile your attributed activity. Commission and discount never both apply to the same purchase. If your profession or engagement letter forbids referral fees, say so when we set up your code.
 
 ## Attribution through AI agents
 

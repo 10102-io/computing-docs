@@ -143,8 +143,8 @@ again) and claims:
 ## Email gifts
 
 "Just their email" exists for the recipient who has no wallet and should
-not need one: a grandparent, a child, a friend who has never touched
-crypto. Here is exactly what happens, so you can decide if it fits.
+not need one: a grandparent, a child, a friend who has never used a
+wallet. Here is exactly what happens, so you can decide if it fits.
 
 - At sealing time we ask Turnkey, an embedded-wallet provider, for a
   wallet tied to that email. If none exists, one is created. The gift is

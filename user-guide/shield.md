@@ -44,11 +44,16 @@ Five decisions, one per step. Nothing is sent until the last one.
    elsewhere, delete the file once it is on paper.
 5. **Check and protect it.** The page restates everything in sentences,
    including the first date the holding could go to your people and the
-   fee (below). Then up
-   to three confirmations in your wallet: register the sheet, allow the
-   vault to take the amount (only if needed; USDT asks twice when an old
-   allowance is set), and open the holding. If one is interrupted, come
-   back and it continues where it stopped.
+   fee (below). Then up to four confirmations in your wallet: register the
+   sheet, allow the vault to take the amount (only if needed; USDT asks
+   twice when an old allowance is set), open the holding, and record on
+   chain that you accepted the terms for this holding. If one of the first
+   three is interrupted, come back and it continues where it stopped.
+
+The last confirmation is its own transaction, because the vault does not
+record terms itself. The holding does not depend on it: if it fails, the
+holding is open and protected, and the page offers **Record it now** to try
+again.
 
 ## Straight from ETH: Stake & Shield
 
@@ -156,10 +161,11 @@ wallet, no ETH and no fee for the claim itself are needed.
   before deployment and has not had an independent audit yet. It cannot
   be upgraded: a fix would be a new vault, and every holding can leave
   through its own wait.
-- **Fees.** 0.25% of what leaves, when you withdraw or when it goes to
-  your people, fixed for each holding when you open it. Stopping it with
-  the sheet is always free, and so is claiming a share that was kept.
-  Steps you send from your own wallet also pay the Ethereum network fee.
+- **Fees.** None from 10102 since 2026-11-09: nothing is taken when you
+  withdraw or when it goes to your people. Each holding keeps the rate
+  shown when it was opened, so this can never go up for a holding you
+  already have. Steps you send from your own wallet pay the Ethereum
+  network fee.
 
 How it works underneath, with the threat model:
 [Quantum Readiness](../architecture/quantum-readiness.md).

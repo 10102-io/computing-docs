@@ -1,15 +1,16 @@
 ---
 description: >-
-  For estate planners, attorneys and advisors: how clients include crypto in
-  their plan with 10102, what you see as their authorized watcher, and the
-  partner program.
+  For estate planners, attorneys and advisors: how clients include digital
+  assets in their plan with 10102, what you see as their authorized
+  watcher, and the partner program.
 ---
 
 # For Estate Planners
 
-Crypto is the one asset class that most estate plans cannot reach: if the
-keys are lost with the owner, a will cannot recover them, and handing the
-keys to someone else in advance is a custody risk. 10102 closes that gap
+Digital assets held on a blockchain are the one asset class that most
+estate plans cannot reach: if the keys are lost with the owner, a will
+cannot recover them, and handing the keys to someone else in advance is a
+custody risk. 10102 closes that gap
 without anyone holding the keys, you and us included.
 
 Start here: [app.10102.io/advisor](https://app.10102.io/advisor?from=advisor).
@@ -21,7 +22,7 @@ receives what and in which shares, optional backup people, and how long a
 silence triggers it. They check in from time to time (or it renews itself
 from their normal wallet activity, with Premium). If they go silent past the
 period they chose, the people they named can claim, including with a
-printed claim card that needs no crypto knowledge.
+printed claim card that needs no wallet experience.
 
 Nothing is custodial: the assets stay in the client's wallet until a claim
 happens, and they only ever go to the people the client named. See

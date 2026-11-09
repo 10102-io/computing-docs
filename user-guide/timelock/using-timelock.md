@@ -56,8 +56,14 @@ A timelock holds what you explicitly approve for it. For each asset:
 Once the lock elapses:
 
 1. Open the timelock's details page; the status will read **Ready**.
-2. Click the claim action. Sign one transaction.
+2. Click **Claim Assets**. Sign one transaction.
 3. Assets return to your wallet.
+
+Your open timelocks are also listed in **Your locks** on [Home](../home.md), with a **Withdraw** button.
+
+{% hint style="info" %}
+**Free with Premium.** For a timelock your wallet created for itself, standard or soft, Premium turns that transaction into a free signature and 10102 pays the network fee. The assets go only to your wallet. If the free send is not possible right now, your wallet sends it and you pay the gas. See [Gas-Free Check-ins & Claims](../premium-features/gas-free-check-ins-and-claims.md#timelock-withdrawals-free-for-premium-owners).
+{% endhint %}
 
 ## Soft Timelock
 

@@ -13,7 +13,7 @@ Not every intended beneficiary has an Ethereum address. For a will-like flow to 
 
 ## The mechanics
 
-Ethereum accounts are not registered anywhere; they are simply derived from random entropy. The app uses the standard client-side crypto that every major Ethereum wallet uses:
+Ethereum accounts are not registered anywhere; they are simply derived from random entropy. The app uses the standard client-side cryptography that every major Ethereum wallet uses:
 
 1. **Random entropy**: the browser's `crypto.getRandomValues()` (a WebCrypto primitive backed by the OS CSPRNG) produces 256 bits of random data. This is the same entropy source MetaMask and hardware wallets rely on for key generation.
 2. **Private key**: those 256 bits _are_ the private key, represented as a 64-character hex string.
@@ -46,7 +46,7 @@ See [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md) for the print
 ## Known limits
 
 - **Printed keys are hot keys.** Once printed, anyone with physical access to the card has the funds. Treat claim cards like cash.
-- **Single-key security.** Generated accounts are EOAs with a single key: if the key is lost before claim, the transferred funds are unrecoverable. A beneficiary who is crypto-comfortable should ideally bring their own address instead of using the generated one.
+- **Single-key security.** Generated accounts are EOAs with a single key: if the key is lost before claim, the transferred funds are unrecoverable. A beneficiary who is comfortable with wallets should ideally bring their own address instead of using the generated one.
 - **No recovery.** There is no recovery service. The app does not store a copy. This is intentional; a custodial copy would be a honeypot.
 
-If any of these feel wrong for a given legacy, the answer is to use a real beneficiary address (e.g. a Safe they control) instead of a generated one. The generated-account path is a convenience for beneficiaries who wouldn't otherwise have an address at all, not a recommendation for high-value plans with crypto-savvy recipients.
+If any of these feel wrong for a given legacy, the answer is to use a real beneficiary address (e.g. a Safe they control) instead of a generated one. The generated-account path is a convenience for beneficiaries who wouldn't otherwise have an address at all, not a recommendation for high-value plans with recipients who already use wallets.

@@ -94,6 +94,24 @@ has you download a printable backup sheet (the only copy), and registers
 that sheet. Losing the sheet risks no funds; it only forfeits the head
 start, and you can register a fresh secret at any time.
 
+**Two kinds of scheme-5 commitment.** The registry's `scheme` 5 means "a
+plain hash preimage", and two different preimages use it:
+
+* **Account recovery** (the dashboard card): the digest is
+  `keccak256(secret)` for a 32-byte secret, and the context address is your
+  legacy contract or the zero address.
+* **A Shield Vault recovery sheet**: the digest is
+  `keccak256(abi.encode(tag, chainId, vault, owner, secret, recoveryWallet))`
+  with `tag = keccak256("10102.ShieldVault.veto.v2")`, and the context
+  address is the vault. The retired first vault used
+  `"10102.ShieldVault.veto.v1"` and no `owner` field.
+
+A sheet's secret becomes public the moment it stops a withdrawal, so it is
+never an account's recovery path: the dashboard counts only commitments
+whose context is not a Shield Vault. Anyone reading the registry should
+tell the two apart the same way, by the context address, since the scheme
+number is the same.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -121,7 +139,9 @@ stronger-sounding claim.
 ## Enforcement: what is live, what is next
 
 1. **Delay plus veto, in a standalone holding. Live since 2026-09-28.**
-   ShieldVault (`0x83074f8519F54AF05f7C48911E432e0C44dBEE69` on Ethereum):
+   ShieldVault (`0xA1EA2F8C0518458975E09ED63bf5D48980f76C38` on Ethereum
+   since 2026-09-29; the first vault, `0x83074f8519F54AF05f7C48911E432e0C44dBEE69`,
+   is retired):
    withdrawals and setting changes announce themselves and wait a delay
    the owner chose; during the wait, revealing the pre-registered secret
    moves everything to the recovery wallet bound into it. It works even

@@ -15,20 +15,20 @@ How your assets pass to your beneficiaries. Two shapes:
 
 ## Activation trigger
 
-The condition that makes a legacy claimable. Today there's one trigger: **inactivity**, the time since your last activity the legacy can see (what counts differs by wallet type; see [Heartbeat](#heartbeat)). Measured in days. When the window elapses, any beneficiary can activate.
+The condition that makes a legacy claimable. Today there's one trigger: **inactivity**, the time since your last activity the legacy can see (what counts differs by wallet type; see [Heartbeat](#heartbeat)). Measured in whole months. When the window elapses, any beneficiary can activate.
 
 ## Heartbeat
 
 Any action that proves you're still around and resets the activation timer. What counts depends on your wallet type:
 
 - **Safe legacies**: every Safe transaction counts automatically (the Safe Guard records it), so normal usage keeps the legacy fresh.
-- **EOA legacies**: interactions with your legacy count (edits, deposits, withdrawals, or the dedicated heartbeat action on the details page). Generic wallet activity elsewhere (a send, a swap) does **not** reset the timer by itself, unless you enable [Auto-renew](#auto-renew-eoa-legacies).
+- **EOA legacies**: checking in resets the countdown, and so does any change you make to the legacy. Sending, swapping or signing elsewhere does not, so checking in is up to you. With Premium, [automatic renewal](#auto-renew-eoa-legacies) can count that activity too.
 
-If you don't have another qualifying action to make, the details page has a dedicated heartbeat action that resets the timer in a single transaction.
+If you don't have another qualifying action to make, **Check in** on the details page resets the timer in a single transaction. With Premium, it is a free signature.
 
 ## Auto-renew (EOA legacies)
 
-An optional Premium feature, off by default, that you enable per legacy. When on, an attestor service watches your wallet's public on-chain activity (its transaction count) and renews your inactivity timer for you when you've been active near the deadline: no email, no click, no gas from you. Every safety bound is enforced on-chain: renewals only work near the deadline, stop 365 days after your last real check-in, and can never make a legacy claimable earlier. See [Automatic Renewal](premium-features/automatic-renewal.md) for the guide, and [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md) for the full trust model.
+An optional Premium feature, off by default, that you enable per legacy once it exists. When on, an attestor service watches your wallet's public on-chain activity (its transaction count). If the wallet has sent a transaction since the countdown last restarted, it resets the countdown for you in the last 30 days before your deadline: no click, no gas from you. This works for up to 12 months after your last check-in and while Premium is active; then you check in yourself once and it carries on. Renewals can never make a legacy claimable earlier. See [Automatic Renewal](premium-features/automatic-renewal.md) for the guide, and [EOA Activity & Auto-Renew](../architecture/eoa-activity-auto-renew.md) for the full trust model.
 
 ## Creator vs. signer (Safe legacies)
 

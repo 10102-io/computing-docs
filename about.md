@@ -14,12 +14,12 @@ Development started in June 2024. Live on Ethereum mainnet since October 2024, u
 
 | | |
 | --- | --- |
-| Network | Ethereum mainnet (production) and Sepolia (public testnet, same flows) |
+| Network | Ethereum mainnet (production). Sepolia (public testnet) for legacies and timelocks only: the Shield Vault, Stake & Shield, Save, Heirloom and the email wallet run on mainnet only. [Networks](user-guide/authentication.md#networks) |
 | Custody | None. Funds stay in the user's wallet or Safe until activation or unlock |
 | Audits | RockSolid Security (January 2025), CDSecurity (October 2025). [Reports](https://github.com/10102-labs/audits) |
 | Code | Contracts are open source and verified on Etherscan. [Source](https://github.com/10102-io/computing-sc), [deployed addresses](https://github.com/10102-io/computing-sc/blob/main/contract-addresses.json) |
 | Upgrades | Every contract upgrade waits in a public 48-hour on-chain queue. [Upgrade Policy](architecture/upgrade-policy.md) |
-| Fees | Core flows are free; users pay network gas only |
+| Fees | Setting up, checking in and changing a plan cost network gas only. When the people named in a legacy claim it, a 0.25% fee is taken from what they receive, fixed into each legacy when it is created (never above 0.5% on new legacies). Shield Vault holdings opened since 2026-11-09 pay no fee. Premium is optional |
 
 ## What is live
 
@@ -31,7 +31,7 @@ Development started in June 2024. Live on Ethereum mainnet since October 2024, u
 
 ## How it earns
 
-Premium, paid on-chain in ETH, USDC or USDT: $99 per year or $399 once. And a small fee when assets are delivered (0.25% today), fixed into each contract when it is created and shown before you confirm; never to set one up or keep it. Partners who introduce clients or an audience earn a share of the Premium purchases they bring, reconciled against public transactions. See the [Partner Program](partners.md).
+Premium, paid on-chain in ETH, USDC or USDT: $99 per year or $399 once. And a small fee when assets are delivered (0.25% today), fixed into each contract when it is created and shown before you confirm; never to set one up or keep it. Partners who introduce clients or an audience earn a share of the Premium purchases they bring, paid on chain inside the purchase or settled monthly, and reconciled against public transactions. See the [Partner Program](partners.md).
 
 ## How it is built
 
@@ -43,7 +43,7 @@ What we are working on, evaluating and deferring is public: [Roadmap](dev/backlo
 
 ## Links and contact
 
-- App: [app.10102.io](https://app.10102.io). Add `?network=testnet` to try it on Sepolia.
+- App: [app.10102.io](https://app.10102.io). Add `?network=testnet` to try legacies and timelocks on Sepolia.
 - Docs: [docs.10102.io](https://docs.10102.io). Site: [10102.io](https://10102.io).
 - Partnerships and general questions: [info@10102.io](mailto:info@10102.io)
 - Security disclosures: [security@10102.io](mailto:security@10102.io)
