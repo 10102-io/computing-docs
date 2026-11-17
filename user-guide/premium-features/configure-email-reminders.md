@@ -8,28 +8,29 @@ description: >-
 
 Email reminders let the owner and beneficiaries get out-of-band notifications at key moments in a legacy's lifecycle, so nobody has to remember to check the app.
 
-Reminders are **additive**: the on-chain contract doesn't know about emails and doesn't depend on them. If a reminder doesn't reach someone, the plan still works, but reminders make it much harder for something to be silently missed.
+Reminders are **additive**: the on-chain contract doesn't know about emails and doesn't depend on them. If a reminder doesn't reach someone, the legacy still works, but reminders make it much harder for something to be silently missed.
 
 ## Events that trigger emails
 
 | Event | Who gets it |
 |---|---|
 | **Upcoming activation** (X days before the trigger window elapses) | Owner + impacted beneficiaries for that stage |
-| **Activation timeline reset** (owner made an outgoing transaction or used the heartbeat action) | Owner + impacted beneficiaries for the impending stage |
+| **Activation timeline reset** (the owner checked in or changed the legacy; for a Safe legacy, the Safe made a transaction) | Owner + impacted beneficiaries for the impending stage |
 | **Activation happens** (a stage becomes eligible, or a beneficiary actually claims) | Owner + impacted beneficiaries |
 | **Successful claim** (assets are distributed) | Owner + impacted beneficiaries, with a distribution summary |
+| **Your executor confirmed that you have died** (wallet legacies of the new version) | Owner only, and only if this legacy's reminder has the owner's email, so a mistaken confirmation can be answered with a check-in. See [Name an Executor](./executor.md) |
 
 "Impacted beneficiaries" depends on which stage we're talking about:
 
-- For **primary** activation events: primaries only.
-- For **second-line** events: primaries _and_ the second-line contingent (primaries are notified because second-line eligibility affects their claim window).
-- For **third-line** events: primaries, second-line, and third-line.
+- For **primary** activation events: your beneficiaries only.
+- For **backup beneficiary** (second-line) events: your beneficiaries _and_ the backup beneficiary (beneficiaries are notified because the backup becoming eligible affects their claim window).
+- For **second backup** (third-line) events: your beneficiaries, the backup beneficiary, and the second backup.
 
 The intent is: everyone who can meaningfully act on the information gets it; everyone else doesn't.
 
 ## Configuring
 
-Go to **Settings → Email Reminders → Create a Reminder** and pick the legacy to configure.
+Go to **Settings → Email reminders → Create a reminder** and pick the legacy to configure.
 
 You'll be asked for:
 
@@ -39,7 +40,7 @@ You'll be asked for:
 You can edit or delete a reminder setup at any time from the same screen.
 
 {% hint style="info" %}
-**Emails are opt-in.** A beneficiary who doesn't want to share their email can be left unconfigured; they just won't receive reminders. The plan still functions fully.
+**Emails are opt-in.** A beneficiary who doesn't want to share their email can be left unconfigured; they just won't receive reminders. The legacy still functions fully.
 {% endhint %}
 
 {% hint style="warning" %}
@@ -56,10 +57,12 @@ Each email includes the Legacy ID so the recipient can look the legacy up on-cha
 
 - **Email addresses are not on-chain.** They're stored off-chain, encrypted at rest, and only used for sending reminders.
 - **The owner sees their beneficiaries' emails** in the reminder configuration. If a beneficiary prefers total privacy, they can ask to be omitted.
-- **Reminders are tied to the legacy**, not the wallet: deleting the legacy deletes the reminder configuration.
+- **Reminders are tied to the legacy**, not the wallet: deleting the legacy deletes the reminder configuration. A legacy [moved to the new version](../legacy/move-to-the-new-version.md) is a new legacy at a new address, so set its reminders up again after the move.
+- **Not in Cypherpunk Mode.** Reminders store an email on our server, so [Cypherpunk Mode](../hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode) does not show this part of Settings.
 
 ## See also
 
 - [Manage Authorized Watchers](./manage-authorized-watchers.md)
-- [Manage Contingent Beneficiaries](./manage-contingent-beneficiaries.md)
+- [Backup Beneficiaries and Backup Heirs](./manage-contingent-beneficiaries.md)
+- [Name an Executor](./executor.md)
 - [Concepts: Creator vs. signer (Safe legacies)](../concepts.md#creator-vs-signer-safe-legacies)

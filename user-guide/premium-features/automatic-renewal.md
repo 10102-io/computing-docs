@@ -7,9 +7,9 @@ description: >-
 
 # Automatic Renewal
 
-Wallet-based (EOA) legacies work on a check-in timer. Checking in resets the countdown, and so does any change you make to the legacy. Sending, swapping or signing elsewhere does not, so checking in is up to you. If the countdown runs out, the legacy becomes claimable. That's the core promise, but it comes with a chore: remembering to check in, even during years when you never need to touch the plan.
+Wallet-based (EOA) legacies work on a check-in timer. Checking in resets the countdown, and so does any change you make to the legacy. Sending, swapping or signing elsewhere does not, so checking in is up to you. If the countdown runs out, the legacy becomes claimable. That's how it is meant to work, but it comes with a chore: remembering to check in, even during years when you never need to touch your legacy.
 
-**Automatic renewal** removes the chore. In the app's words: "Automatic renewal is on. If this wallet has sent a transaction since the countdown last restarted, we reset it for you in the last 30 days before your deadline. This works for up to 12 months after your last check-in and while Premium is active. Then check in yourself once and it carries on. You can check in yourself at any time." No click, no gas. You keep living on-chain; the plan keeps up.
+**Automatic renewal** removes the chore. In the app's words: "Automatic renewal is on. If this wallet has sent a transaction since the countdown last restarted, we reset it for you in the last 30 days before your deadline. This works for up to 12 months after your last check-in and while Premium is active. Then check in yourself once and it carries on. You can check in yourself at any time." No click, no gas. You keep living on-chain; your legacy keeps up.
 
 ## Turning it on
 
@@ -44,7 +44,12 @@ Renewals stop (and email reminders take over) whenever:
 - your Premium subscription lapses (your opt-in is remembered; renewals resume if you re-subscribe),
 - or you turn the switch off.
 
-Nothing about the legacy itself changes in any of these cases. The timer keeps counting exactly as configured, and checking in yourself always works. [Home](../home.md) shows each legacy's timer with whether renewal can really run before the date.
+Nothing about the legacy itself changes in any of these cases. The timer keeps counting exactly as configured, and checking in yourself always works. [Home](../home.md) shows each legacy's timer in **Your setup**, with whether renewal can really run before the date.
+
+Two cases from the new version of the wallet legacy:
+
+- **After a move, turn it on again.** A legacy [moved to the new version](../legacy/move-to-the-new-version.md) is a new legacy. The switch belongs to the old one and does not carry over.
+- **After an executor's confirmation, only new activity counts.** If your [executor](./executor.md) confirms that you have died, automatic renewal counts only wallet activity from after that confirmation. A transaction your wallet sent before it does not cancel it. Your own check-in always does.
 
 Premium cannot be renewed early: renewal opens on its expiry date. If your Premium ends before the last 30 days of your countdown open, renewal will not run in time, so check in yourself before then.
 
@@ -62,6 +67,6 @@ The Home notice always offers **Check in**, and **Renew Premium** once Premium h
 
 **Does this replace check-ins entirely?** Almost. You'll be asked to check in yourself once every 12 months at most, so that a real signal from you stays in the loop.
 
-**Does it cost anything per renewal?** No. 10102 pays the gas for every automatic renewal. See [Gas-Free Check-ins & Claims](./gas-free-check-ins-and-claims.md) for the other ways we cover fees.
+**Does it cost anything per renewal?** No. 10102 pays the gas for every automatic renewal. See [Gas-Free Check-ins & Claims](./gas-free-check-ins-and-claims.md) for the other fees we pay.
 
 **What about Safe legacies?** They don't need this: every Safe transaction already counts as activity automatically, via the Safe Guard.

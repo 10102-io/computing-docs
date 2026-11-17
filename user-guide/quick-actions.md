@@ -14,7 +14,7 @@ Quick Actions are cards labelled by _what you want to accomplish_, not by produc
 - **Legacy page** (`app.10102.io/legacy`): a **Quick actions** section below your legacies, with the legacy shortcuts.
 - **Timelock page**: a **Quick actions** section below your timelocks, with the timelock shortcuts and, where Guardian is available, an **Ask Guardian** button.
 
-They show whether or not a wallet is connected; without one, the app asks you to connect (and to accept the terms) before it opens the form. Home does not carry them: it shows [your plan and your locks](./home.md) instead. Cypherpunk Mode has no Quick Actions; its pages open the create flows directly.
+They show whether or not a wallet is connected; without one, the app asks you to connect (and to accept the terms) before it opens the form. Home does not carry them: it shows [your setup and your locks](./home.md) instead. [Cypherpunk Mode](./hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode) has no Quick Actions; its pages open the create flows directly.
 
 Use them as training wheels, or as actual product: they're not a cut-down flow, just a pre-configured one. Everything is editable before you sign the transaction.
 
@@ -34,13 +34,15 @@ Pre-fills a **wallet legacy** named "My Backup Wallet": your assets go to a fall
 
 Use when: you want a second wallet to receive everything if you lose access to this one, or a straightforward one-person legacy.
 
-A wallet holds one wallet legacy at a time, so this card is disabled, with the reason shown, while the app checks for an existing one or once it finds one.
+A wallet holds one wallet legacy at a time, so this card is disabled, with the reason shown, while the app checks for an existing one or once it finds one. A legacy made from this card is a wallet legacy of the new version, so once it exists you can add [NFTs](./legacy/nfts-in-a-legacy.md) and, with Premium, backup heirs and an executor on its page.
 
 ### Designate future signers for my Safe
 
 Pre-fills a **Multisig legacy** named "My Safe Legacy". Because this flow needs to know _which_ Safe you're targeting, you're first taken to the Safe verification step; once a Safe address is confirmed, the rest of the configure screen is pre-filled.
 
 Use when: your Safe is your long-term vault and you want other people (family, a trusted proxy) to become co-signers if it goes quiet.
+
+Each Safe can have one legacy. If you sign for several Safes, each can have its own: the Safe check tells you when the Safe you chose already has one.
 
 ## On the Timelock page
 

@@ -16,17 +16,19 @@ Gas sponsoring closes both gaps with the same machinery: **you sign a free autho
 
 | Action | Free for | Where |
 |---|---|---|
-| Claiming a wallet legacy | Every beneficiary whose wallet cannot cover the fee | The legacy's page |
+| Claiming the tokens of a wallet legacy | Every beneficiary whose wallet cannot pay the fee | The legacy's page |
 | Checking in on a wallet legacy | Premium owners | The legacy's page, **Check in** |
 | Withdrawing your own timelock | Premium owners | The timelock's page, and **Your locks** on [Home](../home.md) |
 | Checking in on a Shield Vault holding | Premium owners | The [Shield Vault](../shield.md) page |
 | Taking back savings from Save on autopilot | Every email wallet | [Save on autopilot](../save.md), **Your locks** |
 
-Heirloom claims, and stopping or releasing a Shield Vault holding, are free too; their pages explain how.
+Heirloom claims, and stopping or releasing a Shield Vault holding or claiming a share kept in it, are free too; their pages explain how.
+
+**What is not sent for free.** On a wallet legacy of the new version: a claim of NFTs, a claim made from the heir page, and an executor's confirmation are ordinary transactions, paid by the wallet that sends them. So are the owner's own settings (NFTs, backup heirs, naming an executor) and a move to the new version. The **Check in** button in the Executor section's notice is an ordinary transaction too; for a free check-in use the page's main **Check in**.
 
 ## Claims: free for every beneficiary
 
-This one isn't a Premium feature; it's part of the product's core promise. When a beneficiary starts a claim and their wallet can't cover the network fee, the app automatically switches from "send a transaction" to "sign a free message". The signature authorizes exactly the claim they were already entitled to (their address, that specific legacy, the exact asset list, usable once), and 10102 submits and pays. Beneficiaries who do hold ETH simply pay their own fee as before.
+This one isn't a Premium feature; it's part of the product itself. When a beneficiary starts a claim and their wallet can't pay the network fee, the app automatically switches from "send a transaction" to "sign a free message". The signature authorizes exactly the claim they were already entitled to (their address, that specific legacy, the exact asset list, usable once), and 10102 submits and pays. Beneficiaries who do hold ETH simply pay their own fee as before.
 
 Owners stay in control: sponsored claims are on by default and can be switched off per legacy on-chain. The beneficiary-pays path always works regardless.
 
@@ -36,13 +38,13 @@ The step-by-step flow is in [Activate a Legacy Contract and Claim Funds](../lega
 
 On a wallet legacy, **Check in** resets your countdown. With Premium, the button asks your wallet for a free signature instead of a transaction. 10102 sends the check-in and pays the network fee. If the free send is not possible right now, your wallet sends a normal check-in and you pay the fee. Either way the check-in is the same.
 
-Claims are sponsored for everyone because a claim is a once-in-a-lifetime moment for someone who may own no ETH at all. Check-ins recur for owners who can pay, so we cover those for Premium subscribers.
+Claims are sponsored for everyone because a claim is a once-in-a-lifetime moment for someone who may own no ETH at all. Check-ins recur for owners who can pay, so we pay those for Premium subscribers.
 
 Safe legacies don't need this: every Safe transaction already resets their countdown. For a hands-off version, see [Automatic renewal](./automatic-renewal.md): it renews your timer from your normal wallet activity, and 10102 pays every renewal.
 
 ## Timelock withdrawals: free for Premium owners
 
-When one of your own timelocks opens, **Withdraw** in **Your locks** on [Home](../home.md), or **Claim Assets** on the timelock's page, asks for a free signature. 10102 sends the withdrawal and pays the fee. If the free send is not possible, your wallet sends a normal withdrawal.
+When one of your own timelocks opens, **Withdraw** in **Your locks** on [Home](../home.md), or **Claim assets** on the timelock's page, asks for a free signature. 10102 sends the withdrawal and pays the fee. If the free send is not possible, your wallet sends a normal withdrawal.
 
 The money always goes to your own wallet. The signature names you as the recipient and no one else, the timelock pays out only to its recipient, and our relay refuses any request that names another destination.
 

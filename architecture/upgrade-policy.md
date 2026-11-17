@@ -1,8 +1,8 @@
 ---
 description: >-
   How 10102's contracts can change, who can change them, and how you can
-  watch: every upgrade waits in a public 48-hour queue, a multisig queues it,
-  and a separate hardware key can stop it.
+  watch: every upgrade waits in a public 48-hour queue, a Safe queues it,
+  a hardware key can stop it, and exits can never be paused.
 ---
 
 # Upgrade Policy
@@ -14,12 +14,16 @@ contract is only as trustworthy as its upgrade process. This page is our
 standing commitment on how upgrades work, written so a stranger can verify
 every claim on-chain.
 
+Not everything is upgradeable. A legacy contract, the pull vaults, the
+Shield Vaults and the recovery registry have no upgrade path at all: what
+exists keeps its code, and a fix is a new deployment for new users.
+
 ## The one-sentence version
 
 **No contract implementation can change without first sitting in a public,
-on-chain queue for 48 hours; the key that queues an upgrade and the key
-that can stop it are different devices; and nothing that lets you exit
-(claim, check in, delete, withdraw) can ever be paused.**
+on-chain queue for 48 hours; a hardware key with no proposer role of its
+own can stop anything queued; and nothing that lets you exit (claim, check
+in, delete, withdraw) can ever be paused.**
 
 ## How it works
 
@@ -43,7 +47,7 @@ queued, delayed operation.
 
 ```mermaid
 flowchart LR
-    A["Proposer (multisig) schedules<br/>public CallScheduled event"] --> B["48-hour public queue<br/>anyone can inspect the verified code"]
+    A["Proposer (Safe) schedules<br/>public CallScheduled event"] --> B["48-hour public queue<br/>anyone can inspect the verified code"]
     B -->|"guardian key spots a problem"| C["Cancelled<br/>nothing changes"]
     B -->|"delay elapsed"| D["Executed<br/>permissionless: nobody can block it"]
     B -.->|"you disagree"| E["You can exit first:<br/>claim, check in, delete, withdraw<br/>(never pausable)"]
@@ -51,34 +55,73 @@ flowchart LR
 
 ## Who holds which key
 
-Since 24 September 2026 the roles are split across devices, so that no
-single key can both queue a change and wave it through:
+Since 24 September 2026 the roles are split: the key that routinely queues
+changes cannot cancel, and the key that cancels holds no proposer role of
+its own (with one limit while the Safe has a threshold of one, stated
+under the table):
 
 | Role | Holder | Can do | Cannot do |
 |---|---|---|---|
-| Proposer | The governance multisig, a [Safe](https://app.safe.global) at [`0x60B3da49f05E21a1fcD7e210075A23b75939C3eA`](https://etherscan.io/address/0x60B3da49f05E21a1fcD7e210075A23b75939C3eA) | Queue upgrades and role or delay changes | Execute early, cancel |
+| Proposer | The governance Safe (two owners, threshold one today), a [Safe](https://app.safe.global) at [`0x60B3da49f05E21a1fcD7e210075A23b75939C3eA`](https://etherscan.io/address/0x60B3da49f05E21a1fcD7e210075A23b75939C3eA) | Queue upgrades and role or delay changes | Execute early, cancel |
 | Proposer (transitional) | The maintainer key `0xfe8b…b630` | Queue routine upgrades from scripts | Cancel; it loses the proposer role once the Safe is 2-of-3 |
-| Canceller | A hardware wallet, [`0x7B61dD775422f465D6b9f28C8EFEE39263ef2579`](https://etherscan.io/address/0x7B61dD775422f465D6b9f28C8EFEE39263ef2579), never connected to a browser extension | Stop anything queued | Queue anything |
+| Canceller | A hardware wallet, [`0x7B61dD775422f465D6b9f28C8EFEE39263ef2579`](https://etherscan.io/address/0x7B61dD775422f465D6b9f28C8EFEE39263ef2579), never connected to a browser extension | Stop anything queued | Queue anything under its own role (but see the Safe's threshold, below) |
 | Executor | Anyone | Execute an operation whose delay has passed | Execute early |
 | Admin | The timelock itself | Grant or revoke roles, change the delay, all through the same queue | Act instantly |
 
-The Safe starts with a threshold of one signer while its third owner is
-added; raising it to two of three is the next change, and it is visible
-on the Safe itself. Read the live table any time: `hasRole` on the
-timelock, or the open-source `verify-governance` script in the contracts
-repository, which prints every row above as pass or fail.
+**The Safe today: two owners, threshold one.** Its owners are the guardian
+hardware key and the maintainer key, and one signature is enough. So the
+guardian key, although it holds no proposer role, can queue an operation
+through the Safe as one of its owners; the separation between "queues" and
+"cancels" is complete only once the threshold is two. A third owner and a
+threshold of two of three are planned and not done; when it happens it is
+visible on the Safe itself. Read the live table any time: `hasRole` on the
+timelock, `getOwners()` and `getThreshold()` on the Safe, or the
+open-source `verify-governance` script in the contracts repository, which
+prints every row above as pass or fail.
 
-What the timelock and the Safe own today:
+What waits in the 48-hour queue today:
 
-- The `ProxyAdmin` of every proxy, and the three timelock vaults that
-  hold every escrowed timelock and gift (their settings, such as the swap
-  router an ETH gift uses at claim, are queued operations too).
-- The timelock router (creation settings and the create pause) is owned by
-  the Safe.
-- The legacy router's settings for NEW legacies, since 2026-11-07: which
-  contract code a new legacy is a copy of, which vault its token permission
-  names, and which key may renew it automatically. Each change waits the
-  48 hours in the queue; the Safe administers the router.
+- **Every implementation change.** The timelock owns the `ProxyAdmin` of
+  every proxy: the legacy and timelock routers, the Premium contracts, the
+  terms verifier and the timelock vaults.
+- **The three timelock vaults' settings.** The vaults hold every escrowed
+  timelock and gift, and the timelock owns them: which router may instruct
+  them and which swap router an ETH gift uses at claim are queued
+  operations too.
+- **The wallet-legacy router's settings for NEW legacies**, since
+  2026-11-07: which contract code a new legacy is a copy of
+  (`setLegacyImplementation`), which vault its token permission names
+  (`setPullVault`), and which key may renew legacies automatically (a
+  non-zero `setActivityAttestor`). Before that date one admin key could
+  change them at once.
+- **Which implementations `LegacyPullVaultV2` accepts.** Only the timelock
+  can add one, and none can ever be removed.
+- **The timelock's own roles and delay.**
+
+What the governance Safe holds directly, without the queue:
+
+- The wallet-legacy router's admin role since 2026-11-07, which is now
+  limited to the two instant levers described below.
+- The timelock router: its create pause and its creation settings
+  (`setTimelock`, `setTokenWhitelist`, `setUniswapRouter`,
+  `setConsentVerifier`), that is, which vault contracts, token list and
+  swap router a NEW lock goes through. They take effect at once.
+- Every role on the `Payment` contract since 2026-09-29: the delivery fee
+  rate for new legacies and the treasury withdrawals.
+- Both Shield Vaults, whose owner can only choose accepted tokens, pause
+  new deposits, set the fee for holdings opened later and choose where
+  collected fees go (see
+  [Shield Vault](shield-vault.md#what-the-owner-key-can-and-cannot-do)).
+- `PremiumSetting`, and a co-admin role on `PremiumRegistry`, `Banner`,
+  the token list and the NFT list, so it can remove the maintainer key
+  there if that key ever leaked.
+
+Held by the maintainer key alone, with no Safe role and no queue: the
+owner role of the terms verifier (the terms version and hash new consents
+are recorded against, and which routers may record a consent) and of
+`LegacyDeployer` (which routers may deploy a legacy). Neither can touch a
+legacy, a lock or a holding that exists; a wrong setting there would make
+NEW creates fail until it is corrected.
 
 ## What we will and won't upgrade
 
@@ -92,33 +135,117 @@ What the timelock and the Safe own today:
   implementation and its Permit2 vault at creation time. Upgrades affect
   how NEW contracts are created; your existing contract keeps the exact
   code you audited (or your beneficiary's claim card references) forever.
+  When legacy v3 became the code of new wallet legacies on 2026-11-13,
+  every legacy created before kept its own: an owner who wants v3 creates
+  a new legacy.
+- **A queued operation that will not run is cancelled the same day.** A
+  ready operation never expires and anyone may execute it, so nothing we
+  decided against is left in the queue.
 
 ## What is deliberately NOT timelocked
 
-Honesty over theater. Two classes of admin action work instantly:
+Honesty over theater. These admin actions work instantly, all from the
+governance Safe unless noted. None of them can move, freeze or re-price a
+legacy, a lock or a holding that exists:
 
-- **The create pause.** In an active incident we can halt NEW legacy or
-  timelock creation immediately, from the Safe. Exit paths are unaffected:
-  pausing can protect new users, never trap existing ones.
+- **Pausing new creates.** We can halt NEW wallet-legacy creation, and
+  separately NEW timelock creation, at once. Exit paths are unaffected:
+  a pause can keep new users out of a problem, never trap existing ones.
 - **Stopping automatic renewals.** If the key that renews legacies for
   active owners misbehaves, the Safe can switch renewals off at once.
   Turning them back on, with a new key, goes through the 48-hour queue.
   Owners can always check in themselves.
-- **Operational settings** (token whitelists, plan configuration). These
-  cannot touch existing contracts or user balances.
+- **Pausing new Shield Vault deposits.** New holdings and top-ups only;
+  every exit of every holding keeps working. This is how deposits into the
+  earlier vault were closed on 2026-11-11.
+- **Fee rates for what is created next.** The delivery fee a NEW legacy
+  copies at creation, and the fee for Shield Vault holdings opened later.
+  The contracts cap both at 0.5%, and neither can change for a legacy or a
+  holding that exists.
+- **The timelock router's creation settings, and the treasury.** Which
+  vault contracts, token list and swap router a NEW lock, gift or Save
+  deposit goes through, and withdrawing the fees collected in `Payment`.
+  What a hostile use of them could do is stated under
+  [The honest limit](#the-honest-limit).
+- **Operational settings**: the token and NFT collection lists, Premium
+  plans, coupons and referrer shares, and which terms version new consents
+  are recorded against. Most are set by the maintainer key day to day.
+  These cannot touch existing contracts or user balances. (Removing an NFT
+  collection from its list stops new naming only; an item already named
+  stays claimable until its owner saves the NFT list again or changes the
+  first-line beneficiaries or shares, either of which drops it for good.)
+
+Three levels, to keep them apart:
+
+- **No key can do it instantly**: pause a claim, a check-in, a delete or a
+  withdrawal (no such function exists anywhere), or change the fee of a
+  legacy or a holding that exists.
+- **Only the 48-hour queue could do it**: change the code a router or a
+  timelock vault runs, which includes how the router instructs existing legacies
+  and how the vaults release locked funds. That is the reason the queue is
+  public and a separate key watches it.
+- **Nothing can do it**: change the code of a legacy contract, a pull vault
+  or a Shield Vault. They have no upgrade path.
 
 ## The honest limit
 
 The timelock is a transparency window with a brake, not yet full
 multi-party control. Until the Safe is two-of-three, the maintainer key can
-still queue an upgrade on its own; what it can no longer do is cancel, and
-what it never could do is skip the queue. A malicious or mistaken operation
-cannot land silently: our monitoring alerts on every `CallScheduled`, the
-guardian key has 48 hours to cancel, and you have 48 hours to exit if you
-disagree with any queued change. The remaining steps, in order and each
-visible on-chain when it happens: the Safe to two of three, the maintainer
-key losing the proposer role, and the delay rising from 48 hours to 7
-days.
+still queue an upgrade on its own, directly or as one of the Safe's two
+owners; what it can no longer do is cancel, and what it never could do is
+skip the queue. The guardian key can cancel, and while the Safe's threshold
+is one it could also queue through the Safe.
+
+And with a threshold of one, either owner key alone can do everything the
+Safe can do without the queue, including changing the Safe's own owners
+and threshold. None of it can move, freeze or re-price a legacy, a lock or
+a holding that exists. Pausing new creates or deposits, or stopping
+renewals, is an annoyance. Two powers are more than that. The timelock
+router's creation settings decide which vault contracts and which swap
+router a NEW lock, gift or Save deposit goes through, so a hostile change
+could misdirect what someone locks after it; the router's own withdraw
+functions would also stop finding existing locks until it is set back,
+while each vault's `withdraw` keeps paying the lock's recipient, whoever
+calls it. And the `Payment` roles can withdraw the fees collected.
+
+A malicious or mistaken queued operation cannot land silently: our
+monitoring alerts on every `CallScheduled`, the guardian key has 48 hours
+to cancel, and you have 48 hours to exit if you disagree with any queued
+change. The remaining steps, in order and each visible on-chain when it
+happens: the Safe to two of three, the maintainer key losing the proposer
+role, and the delay rising from 48 hours to 7 days. None of the three is
+done yet.
+
+That monitoring runs in one place, our own worker, and alerts by email. An
+independent second watcher is not in place yet, which is one more reason to
+[watch the queue yourself](#watch-the-queue-yourself).
+
+## What was reviewed, and by whom
+
+The upgrade process protects you from a silent change. It says nothing
+about whether the code is right, so here is the other half, stated exactly:
+
+- The contracts were audited twice (reports of January 2025 and October
+  2025): by RockSolid Security (the legacy suite) and by CDSecurity (the
+  full suite, including the timelocks and Premium).
+- No published audit report covers anything deployed since October 2025.
+  That includes every clone implementation wallet legacies have used
+  (clones began in May 2026) and the one-transaction create of 2026-07-27
+  (Permit2 permissions, signed gas-free claims, check-ins and timelock
+  withdrawals, consent in the transaction, the create pauses). Internal
+  adversarial review is on record for: `LegacyPullVault`, automatic
+  renewal, `QuantumRecoveryRegistry`, `UpgradeTimelock` (a thin subclass
+  of OpenZeppelin's audited `TimelockController`), `ShieldVault`, the
+  destination wallet on timelock claims (2026-09-24), and the upgrade of
+  2026-11-07 (`LegacyPullVaultV2`, the clone new legacies used until
+  2026-11-13, the router settings that now wait in the timelock, and the
+  coupon codes and referrer shares in `PremiumRegistry`).
+- Legacy v3 (mainnet since 2026-11-13 20:42 UTC) and Shield Vault v3
+  (mainnet since 2026-11-11) went live before an external review, which is
+  still to be commissioned.
+
+The longer version, with the tooling evidence and the compiler assessment,
+is in [Architecture, Review status](README.md#review-status).
 
 ## Watch the queue yourself
 
@@ -133,6 +260,15 @@ days.
 - Roles: call `hasRole(role, account)` on the timelock with
   `PROPOSER_ROLE`, `CANCELLER_ROLE` or `EXECUTOR_ROLE`
   (`keccak256` of those strings) and the addresses in the table above.
+- What new wallet legacies get: on the router
+  ([`0x4E81E1Ed3F6684EB948F8956b8787967b1a6275b`](https://etherscan.io/address/0x4E81E1Ed3F6684EB948F8956b8787967b1a6275b#readProxyContract)),
+  `legacyImplementation()` is today
+  `0xF9B6241Ab7513181C9Ed4F0920E0B008fB9264e9` (legacy v3) and
+  `pullVault()` is `0xC6640962618f9D729032487EC5DEf226BF6F43E3`
+  (`LegacyPullVaultV2`). `upgradeTimelock()` names the only address that
+  can change them, `createPaused()` says whether new creates are paused,
+  and `activityAttestor()` is the key that may renew (zero when renewals
+  are stopped).
 - Every implementation we queue is verified on Etherscan before scheduling,
   so the diff is inspectable during the full waiting period.
 - Changelog entries are written when an operation is queued, with its

@@ -13,11 +13,14 @@ might not notice in time: tokens taken through a permission you gave long
 ago, a new permission to move your tokens, a contract your wallet now
 runs, or a transaction you did not send. Block explorers already email
 plain transfers; these alerts cover what they do not explain. They watch
-what leaves, not what arrives: incoming ETH and NFTs are not covered, on
+what leaves, not what arrives: incoming ETH and NFTs are left out, on
 purpose, because that is where spam and fake tokens live.
 
 They work on Ethereum mainnet. Open them from **Settings**, **Wallet
-alerts** (`app.10102.io/settings?tab=alerts`).
+alerts** (`app.10102.io/settings?tab=alerts`). They store an email on our
+server, so
+[Cypherpunk Mode](hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode)
+does not show them.
 
 ## Free and Premium
 
@@ -115,12 +118,33 @@ card shows its confirmed balance in dollars, labelled watch-only.
   server, so the lookup never comes from your browser.
 - **One address.** Bitcoin wallets that change their receive address spread
   a balance over many addresses; the watch shows only the one you added.
-- **Watch-only.** A legacy covers Ethereum assets only, so a Bitcoin
+- **Watch-only.** A legacy can include Ethereum assets only, so a Bitcoin
   address counts in what you watch, never in what a legacy can deliver.
 
-The watch list itself stays in your browser, like every watched wallet. You
-can back it up encrypted with one wallet signature to restore it on another
-device.
+### The watch list on every device
+
+Since 2026-11-11 the watch list follows your wallet. Once you
+[sign in on a device](authentication.md#sign-in-on-each-device), the
+Ethereum and Bitcoin addresses you watch show there with their labels and
+live balances.
+
+- **Signing in** sends up this device's list and brings down the one your
+  wallet already has.
+- **The newer change wins.** Every add and removal carries when it was
+  made. An address removed on one device after it was added on another
+  leaves both, and one you watch again after that comes back. Adding an
+  address that is already on the list renames it or says it is there.
+- **What is stored**: the addresses and their labels, encrypted, shown
+  only to your signed-in wallet. Balances are read live and never stored.
+  Amounts you typed in by hand stay on the device where you typed them.
+- **Without signing in**, the list lives in this browser. **Back up** and
+  **Restore** move it to another device with one signature each.
+  **Delete backup** deletes the addresses and labels stored for your
+  wallet: they also leave every device where it is signed in, and this
+  device keeps its list.
+- **To stop**: Settings, Devices, **Delete my synced data** deletes the
+  names and the watch list stored for your wallet and stops syncing. Each
+  device keeps its own list.
 
 ## Privacy
 
@@ -133,10 +157,11 @@ device.
   watched address encrypted, one key per record, and your wallet address
   as a keyed hash next to its encrypted copy. Turning alerts off deletes
   the record.
-- **No watch list on our side.** We keep no list of what you watch, except
-  the encrypted backup if you make one. A watched Bitcoin address passes
-  through our server only to read its balance, kept in memory for a minute
-  and not stored.
+- **Your watch list, only if you ask.** We store the addresses you watch
+  only when you sign in on a device or make a backup, encrypted item by
+  item. Without either, we keep no list of what you watch. A watched
+  Bitcoin address passes through our server to read its balance, kept in
+  memory for a minute and not stored for that.
 
 {% hint style="info" %}
 **Honest limits.** An alert warns you; it cannot stop a transaction. To make

@@ -1,7 +1,7 @@
 ---
 description: >-
-  Connect and disconnect wallets, and sign in on each device so your alerts
-  and names follow your wallet. We support every common Ethereum wallet via
+  Connect and disconnect wallets, and sign in on each device so your alerts,
+  names and watch list follow your wallet. We support every common Ethereum wallet via
   standard connectors: WalletConnect, Ledger, Trezor, MetaMask, and more.
 ---
 
@@ -23,7 +23,7 @@ If your wallet exposes a standard provider, it'll show up in the Connect modal a
 
 ## Connect
 
-1. Click **Connect Wallet** at the top right of the app.
+1. Click **Connect wallet** at the top right of the app.
 2. Choose your wallet from the modal.
 3. Complete the connection flow in your wallet's UI:
    - Extensions open a popup asking for approval.
@@ -47,7 +47,7 @@ Click your wallet address in the top right, then **Disconnect**. You'll be retur
 
 ## Sign in on each device
 
-Some things in 10102 belong to your wallet rather than to one browser: your wallet alerts, and the names you give your legacies and beneficiaries. To see them on your phone and your laptop alike, sign in once on each device.
+Some things in 10102 belong to your wallet rather than to one browser: your wallet alerts, the names you give your legacies and beneficiaries, and, since 2026-11-11, the addresses you watch in **Assets elsewhere** on Home. To see them on your phone and your laptop alike, sign in once on each device.
 
 1. Open **Settings**, **Devices**. The same **Sign in on this device** button also appears next to wallet alerts and in Assets elsewhere on Home.
 2. Sign one message. It is not a transaction: it costs nothing and puts nothing on the blockchain. Your wallet shows: "Sign in to 10102 on this device. This is not a transaction and costs nothing."
@@ -56,8 +56,9 @@ After that, on this device:
 
 - **Wallet alerts**: Settings and Home list every alert of this wallet, including ones you set on another device, and you can change the email of each one or turn it off. See [Wallet alerts](./wallet-alerts.md#on-every-device).
 - **Names**: the names you gave legacies and beneficiaries show here, and the ones typed here show on your other devices. They are stored encrypted on our server and shown only to this wallet, signed in. Where your wallet already has a name for the same item, that name is kept; after that, the latest change from any device wins.
+- **Your watch list**: the Ethereum and Bitcoin addresses you watch in **Assets elsewhere**, with their labels, show on every device with live balances. Signing in sends up this device's list and brings down the one your wallet already has. Every add and removal carries when it was made, and the newer change wins: an address removed on one device after it was added on another leaves both, and one you watch again after that comes back. Stored encrypted, like names; balances are read live and never stored.
 
-**What stays on the device.** Notes to beneficiaries, your watch list, amounts, and the secrets behind a gift link or card never leave this browser through sign-in. Only names do.
+**What stays on the device.** Notes to beneficiaries, amounts you typed in by hand for a watched address, and the secrets behind a gift link or card never leave this browser through sign-in. Only names and the watch list do.
 
 **A copied sign-in does not work elsewhere.** Each browser makes its own key, which it cannot export, and signs every request with it. A copied sign-in message, or a stolen session, is useless without that key.
 
@@ -65,10 +66,10 @@ After that, on this device:
 
 **Sign out.** Settings, Devices has **Sign out on this device** and **Sign out on every device**, for a lost phone or a shared computer.
 
-**Delete my names.** **Delete my names from 10102** deletes the names stored for your wallet, stops syncing them, and signs this wallet out on every device. Each device keeps the names typed on it. You can turn syncing on again later.
+**Delete my synced data.** Settings, Devices, **Delete my synced data** deletes the names and the watch list stored for your wallet, stops syncing them, and signs this wallet out on every device. Each device keeps what was typed or added on it. You can turn syncing on again later with **Keep my data in sync again**.
 
 {% hint style="info" %}
-Sign-in is optional. Without it, everything works as before on this device: legacies, timelocks and claims never depend on it. Cypherpunk Mode hides it, like every email feature.
+Sign-in is optional. Without it, everything works as before on this device: legacies, timelocks and claims never depend on it. [Cypherpunk Mode](./hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode) hides it, like every email feature.
 {% endhint %}
 
 ## Networks
@@ -76,7 +77,7 @@ Sign-in is optional. Without it, everything works as before on this device: lega
 - **Mainnet** (Ethereum mainnet) is the canonical deployment.
 - **Sepolia** is the test network, for trying legacies and timelocks without real funds. It's useful for trying a flow end-to-end (creation, activation, claim) with throwaway ETH: activation periods there are counted in minutes instead of months.
 
-Switch networks in your wallet; the app follows. A link ending in `?network=testnet` opens the app on Sepolia.
+Switch networks in your wallet; the app follows. A link ending in `?network=testnet` opens the app on Sepolia. While the app is on the test network, the address keeps `?network=testnet` as you move between pages and when you disconnect, so a reload or a link you share opens the same network. Switch to Ethereum and it goes away. Before a wallet is connected, the link decides the network; once one is connected, the wallet's network does, and the address follows it.
 
 Sepolia is not a full copy of mainnet. It is for the two foundations, Legacy and Timelock. On any network but mainnet, a band above the header says it is a test network, with **Switch to Ethereum**, and the menu keeps only Home, Legacy and Timelock (plus Pricing). The products built on legacies and timelocks run on Ethereum mainnet only:
 
@@ -85,7 +86,7 @@ Sepolia is not a full copy of mainnet. It is for the two foundations, Legacy and
 - Heirloom,
 - the email wallet.
 
-They leave the menu and Home on Sepolia, and their pages say "(product) runs on Ethereum", with **Switch to Ethereum** and **Back to Home**. The Shield Vault, Stake & Shield, Save and Heirloom have test deployments, so their page also offers **Open the test version**; Save on autopilot and the email wallet have none. Pages for acting on something that already exists stay open on every network: a gift's claim page, a Shield Vault holding's status page and its printed-card claim, the Save on autopilot stop link, and the links in wallet alert emails. Wallet alerts themselves work on mainnet only.
+They leave the menu and Home on Sepolia, and their pages say "(product) runs on Ethereum", with **Switch to Ethereum** and **Back to Home**. ([Cypherpunk Mode](./hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode) answers the same way for most of them, with its own notice.) The Shield Vault, Stake & Shield, Save and Heirloom have test deployments, so their page also offers **Open the test version**; Save on autopilot and the email wallet have none. Pages for acting on something that already exists stay open on every network: a gift's claim page, a Shield Vault holding's status page and its printed-card claim, the Save on autopilot stop link, and the links in wallet alert emails. Wallet alerts themselves work on mainnet only.
 
 If the default Ethereum node providers are slow for you, or you'd rather the app read chain state through your own endpoint, see [Bring your own RPC](./bring-your-own-rpc.md).
 

@@ -128,7 +128,7 @@ you have money opening every month, for as long as you kept saving.
 
 When a lock's date arrives it shows **Ready** in the Timelock tab and in
 **Your locks** on [Home](home.md). Tap **Withdraw** there, or **Claim
-Assets** on the lock's page, confirm once, and the money is back in your
+assets** on the lock's page, confirm once, and the money is back in your
 wallet. With Premium, that confirmation is a free signature and 10102 pays
 the network fee
 ([Gas-Free Check-ins & Claims](premium-features/gas-free-check-ins-and-claims.md)).
@@ -144,12 +144,23 @@ back, free**, to your email wallet or straight to another wallet.
   Nobody can open it early, including us.
 - **No interest.** You get back exactly what you put in.
 - **Not a bank account.** No bank holds the money and no deposit protection
-  covers it. It sits in an audited contract on Ethereum, in your name.
+  applies to it. It sits in a timelock contract on Ethereum, in your name.
+  The timelock contracts were audited in 2025; what was added to them since
+  (the latest change on 2026-11-07) had internal review, not a new audit.
 - **Prices move.** ETH goes up and down. USDC is made to stay close to one
   dollar.
-- **Fees.** From your own wallet, locking is a transaction and so is taking
-  it back; you pay the network fee for each, except that Premium makes
-  taking it back free. With autopilot, 10102 pays them for now, taking your
-  savings back included.
+- **Fees.** A lock carries no delivery fee: you get back what you locked.
+  From your own wallet, locking is a transaction and so is taking it back;
+  you pay the network fee for each, except that Premium makes taking it
+  back free. With autopilot, 10102 pays them for now, taking your savings
+  back included.
+- **Mainnet only, and not in Cypherpunk Mode.** On the Sepolia test network
+  the Save page says "Save runs on Ethereum" (with **Open the test
+  version**; Save on autopilot has none). In
+  [Cypherpunk Mode](hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode)
+  Save and Save on autopilot show a notice instead of the page, with
+  **Leave Cypherpunk Mode**. The autopilot stop link opens everywhere, and
+  a lock you made from your own wallet is a regular timelock, which the
+  mode's Timelock page shows and lets you take back.
 - **Upgrades wait in public.** The contracts that hold locks can be
   upgraded, and every upgrade waits in public for at least 48 hours first.

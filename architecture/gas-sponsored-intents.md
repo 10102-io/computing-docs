@@ -1,8 +1,9 @@
 ---
 description: >-
-  How beneficiaries claim without holding any ETH, and Premium owners check in
-  and withdraw their own timelocks for free: signature-authorized intents the
-  contract verifies on-chain, relayed and paid for by 10102.
+  How beneficiaries claim without holding any ETH, Premium owners check in
+  and withdraw their own timelocks for free, and Shield Vault exits are sent
+  for free: signature-authorized intents the contract verifies on-chain,
+  relayed and paid for by 10102.
 ---
 
 # Gas-Sponsored Intents
@@ -67,6 +68,13 @@ A claim authorization binds, in one signature:
 Anyone who changes their mind about an outstanding signed intent can cancel
 it on-chain by advancing their nonce (`invalidateSponsorNonce`).
 
+On a legacy v3 the same two twins apply: a backup beneficiary claims tokens
+and ETH in their window through `activeLegacyFor` like any other
+beneficiary. What has no signed twin is the NFT claim (`claimNfts`), the
+owner's v3 settings (NFT items, backup beneficiaries, the executor) and the
+executor's attestation: each is called on the legacy contract by the wallet
+itself, which pays its own gas.
+
 ### Timelock withdrawals
 
 The timelock router has the same pattern for withdrawals: `withdraw` is the
@@ -90,7 +98,23 @@ Our relay serves three kinds of withdrawal:
 - **A Save take-back**: an email wallet taking back its own Save on
   autopilot lock (owner, recipient and signer are all that wallet, which
   holds no ETH), free without Premium. It may name another wallet as
-  `payTo`.
+  `payTo`. Since 2026-11-09 one signature can take back every opened lock
+  at once: the relay then calls the vault's public `withdraw` for each
+  lock, in batches, and the vault pays only the lock's recipient. That one
+  signature is checked by the relay, not by a contract, and needs no
+  contract check: whoever calls `withdraw`, the money can only reach the
+  recipient. A take-back to another wallet still carries one
+  contract-verified `WithdrawAuth` per lock.
+
+### Shield Vault
+
+The Shield Vault needs no router twin: its exits (`executePending`,
+`executeFallback`, `claimOwed`, `veto`) pay addresses fixed in advance, so
+the contract lets anyone submit them, and three actions exist in a signed
+form the vault verifies itself (`checkInWithSig`, `cancelPendingWithSig`,
+`claimOwedWithSig`; domain `10102 ShieldVault`, version `2`, bound to the
+vault's address). The relay only carries them. See
+[Shield Vault](shield-vault.md#signed-actions-and-the-free-relay).
 
 ## What a malicious relayer could do
 
@@ -119,9 +143,9 @@ their wallet cannot cover the network fee, the app switches from "send a
 transaction" to "sign an authorization", forwards it to our relay service,
 and tracks the resulting transaction exactly as if the beneficiary had sent
 it. Beneficiaries with ETH simply pay their own fee as before. For a Premium
-owner, **Check in** and **Withdraw** on their own timelock ask for the
-signature first, and the wallet sends a normal transaction if the relay
-declines.
+owner (in the app since 2026-11-09), **Check in** and **Withdraw** on their
+own timelock ask for the signature first, and the wallet sends a normal
+transaction if the relay declines.
 
 Our relay service (the reminder worker) has one route per kind of intent:
 
@@ -131,7 +155,13 @@ Our relay service (the reminder worker) has one route per kind of intent:
 | `/sponsor/checkin` | `activeAliveFor` | Premium owners |
 | `/sponsor/timelock-withdraw` | `withdrawFor` | Premium owners, their own lock, no `payTo` |
 | `/sponsor/gift-withdraw` | `withdrawFor` | gift recipients, and email wallets taking back their own Save lock |
-| `/sponsor/shield` | Shield Vault exits and signed actions | everyone (its check-in by signature: Premium owners) |
+| `/sponsor/save-takeback` | the ERC-20 vault's `withdraw`, batched | email wallets taking back their own opened Save locks, on one signature |
+| `/sponsor/shield` | Shield Vault v2 exits and signed actions | everyone (its check-in by signature: Premium owners) |
+| `/sponsor/shield/<vault>` | the same, for the vault named (Shield Vault v3) | everyone (its check-in by signature: Premium owners) |
+
+One vault per Shield route: a request that names another vault than its
+route's is refused, so a holding number that exists in both vaults can
+never be acted on in the wrong one.
 
 Who gets a free relay is a policy choice in the relayer, not a protocol
 rule: the contract entrypoints themselves don't distinguish. Claims are
@@ -145,8 +175,8 @@ safety (that all lives on-chain); they bound what we spend:
 - **Separate daily budgets.** Every relay is a row in a ledger, counted over
   a rolling 24 hours. The Premium perks (owner check-ins, owner timelock
   withdrawals, Shield Vault check-ins) share their own budget of 25 a day
-  across all owners, a constant in the code. Claims, gift claims, Save
-  take-backs and Shield Vault exits share a second one, and email-wallet
+  across all owners, a constant in the code. Claims, gift claims and
+  Shield Vault exits share a second one, and Save take-backs, email-wallet
   transfers and fee top-ups have caps of their own. None can use up
   another's, so a busy day of check-ins never switches off beneficiary
   claims. Each legacy, timelock or holding also has its own daily cap, and
@@ -155,10 +185,14 @@ safety (that all lives on-chain); they bound what we spend:
   relay's ceiling, it declines (`gas_too_high`) rather than pay a spike.
 - **A gas ceiling per route.** The relay simulates every call first, so an
   intent that would revert costs nothing. The estimate must then fit the
-  route's ceiling: a base of 350,000 gas, plus 80,000 per asset claimed,
-  nothing more for a check-in, 150,000 more for a withdrawal that swaps the
-  stored token back to ETH, 150,000 more for a Shield Vault exit and 600,000
-  more for a release to up to 10 people. A token that burns gas in its
+  route's ceiling: 350,000 gas for a check-in or a timelock or gift
+  withdrawal, 150,000 more when the withdrawal swaps the stored token back
+  to ETH; for the Shield Vault, 950,000 for a release to up to 10 people,
+  600,000 to finish a withdrawal or a settings change, and 500,000 for its
+  other actions. A claim's ceiling is worked out from the claim itself: the tokens
+  listed, the number of beneficiaries paid, how that legacy's code pays its
+  fee, and whether it is a legacy v3; never above 5,000,000, so a very
+  large claim is made in parts. A token that burns gas in its
   transfer would otherwise make one relay cost a block. Above the ceiling
   the relay declines (`gas_too_costly`); below it, the transaction goes out
   with an explicit gas limit (the estimate plus a fifth and 10,000 gas,
@@ -204,4 +238,6 @@ its way. A paid fallback goes out only when the signature was never used.
 - [Create flow v2](create-flow-v2.md)
 - [EOA activity auto-renew](eoa-activity-auto-renew.md): the other
   "10102 pays the gas" mechanism, for automatic timer renewals
+- [Shield Vault](shield-vault.md): the exits and signed actions the relay
+  carries for holdings
 - [Upgrade Policy](upgrade-policy.md)

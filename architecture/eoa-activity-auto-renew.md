@@ -45,6 +45,16 @@ claim that deserves scrutiny.
   least a day apart (or half the inactivity period, if that is shorter).
   These are the attestor's own rules: the contract cannot read an
   account's nonce, so it enforces the bounds below instead.
+- **After an executor's attestation (legacy v3).** On a legacy v3 whose
+  executor has attested the owner's death (see
+  [An executor](legacy-contracts-created-with-eoas.md#an-executor)), the
+  attestor renews only when the wallet has sent a transaction *after* the
+  attestation, and cites that later count. The attestation puts the claim
+  date 30 days out, inside the renewal window, and activity from before it
+  must not cancel it. If the read fails, the attestor skips the legacy.
+  This too is the attestor's own rule: on-chain, any renewal counts as
+  owner activity and would cancel the attestation, which is one more thing
+  a compromised attestor could delay, within the same bounds.
 - **Router-only.** The mechanism lives in the upgradeable router, not in
   the per-legacy contracts, so it covers every existing EOA legacy with
   zero changes to deployed legacy contracts.
@@ -119,6 +129,17 @@ off to each other:
   Renewals emit a dedicated on-chain event distinct from a real check-in,
   and the reminders that ask you to "check in for real" as the budget runs
   down are never suppressed by attested renewals.
+- A real check-in is one you make yourself: a transaction from your wallet,
+  or the check-in a Premium owner signs and our relay sends. Both refill
+  the 12-month budget.
+- Owners who saved an email are told what happened: a "renewed
+  automatically" notice after each attested renewal (the new date, the
+  12-month limit, how to turn it off), a notice 14 days before Premium ends
+  and again once it has ended while a legacy relies on renewal. The worker
+  is also built to send one notice if renewals are stopped for everyone.
+  Beneficiaries with a
+  reminder email still get the ordinary "timer was reset" email after a
+  renewal; it does not yet say that the reset was automatic.
 
 ## Verify it yourself
 
@@ -130,6 +151,9 @@ off to each other:
   `TransferEOALegacyAutoRenewed` event for every attested renewal.
 - Every bound above is in the verified router source on Etherscan; nothing
   depends on the attestor's off-chain code being correct.
+- Automatic renewal was added after the two audits. It had internal
+  adversarial review and has not had a published audit; see
+  [Review status](README.md#review-status).
 - Without opting in, nothing changes for you: your legacy's timer resets
   only on your own interactions with it, exactly as described in
   [Indexing & Activity Tracking](indexing-and-activity-tracking.md).

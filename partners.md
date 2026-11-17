@@ -6,7 +6,9 @@ description: >-
 
 # Partner Program
 
-10102 Computing Legacy is free to use; revenue comes from the optional Premium plan ($99/year or $399 lifetime, paid on-chain) and a small fee when assets are delivered. Partners who introduce their audience or clients to the app earn a share of the Premium purchases they bring, with an attribution system designed so you never have to take our word for a number.
+10102 Computing Legacy is free to use; revenue comes from the optional Premium plan ($99/year or $399 lifetime, paid on-chain in ETH, USDC or USDT) and a small fee when assets are delivered (0.25% today). Partners who introduce their audience or clients to the app earn a share of the Premium purchases they bring, with an attribution system designed so you never have to take our word for a number. Partner shares are computed on Premium purchases.
+
+What Premium adds for the people you introduce, as of November 2026: email reminders, automatic renewal, gas-free check-ins and timelock withdrawals, contingent beneficiaries, authorized watchers, and, on wallet legacies created since 2026-11-13, backup beneficiaries for each share and an executor. The full list is in [Premium Features](user-guide/premium-features/README.md).
 
 This page is the practical guide. The legally binding mechanics live in the published [Partner Program Terms](https://10102.io/partner-terms) (EN and FR).
 
@@ -19,11 +21,15 @@ This page is the practical guide. The legally binding mechanics live in the publ
 
 ## Your code at checkout, credited on chain
 
-Your code can also be registered as a coupon in the Premium contract, naming your wallet. Then:
+Since 2026-11-07 the Premium contract (`PremiumRegistry`, [`0x44Ae934Ef4a30FF11f9665174dDFa9F0c93bEA27`](https://etherscan.io/address/0x44Ae934Ef4a30FF11f9665174dDFa9F0c93bEA27)) knows coupon codes and referrer wallets, and the app's checkout uses them since 2026-11-09. Your code can be registered there as a coupon, naming your wallet. Then:
 
-- **A buyer can type it at checkout.** The **Coupon code** field (Settings, 10102 Membership) checks the code on chain. Your link carries it too: the app reads the coupon behind the link, and when the coupon gives a discount, it fills the field for the buyer to see.
+- **A buyer can type it at checkout.** The **Coupon code** field (Settings, 10102 Membership) checks the code on chain. Your link carries it too: the app reads the coupon behind the link, and when the coupon gives a discount, it fills the field for the buyer to see. The price shown is the price charged.
 - **You are credited on chain.** The purchase event names your wallet as the referrer, whether the code was typed or came from your link. A coupon that names its own referrer takes precedence over a link's.
-- **Your share can be paid inside the purchase.** When your wallet is registered with a share, the contract pays it to your wallet in the same transaction, in the token the buyer paid with (ETH, USDC or USDT); the rest goes to 10102. If that transfer fails, the share goes to 10102 and the purchase still goes through. A purchase made by the referrer's own wallet is attributed but never paid.
+- **Your share can be paid inside the purchase.** When your wallet is registered with a share, the contract pays it to your wallet in the same transaction, in the token the buyer paid with (ETH, USDC or USDT); the rest goes to 10102. The share is a percentage of what the buyer actually pays, after any discount. If that transfer fails, the share goes to 10102 and the purchase still goes through. A purchase made by the referrer's own wallet is attributed but never paid.
+
+The limits are in the contract's code, not in our word: a coupon can take at most 50% off, and a referrer's share can be at most 30% of a purchase. A coupon can carry a last day and a maximum number of uses. A code is public once someone has used it, because it travels in the transaction; treat it as a public code from that moment.
+
+Two practical points about the wallet you give us. We register a share only after you have signed a message from that wallet, so we do not register a share for a wallet its holder has not shown to control. And it should be a wallet that can simply receive ETH and tokens: a contract wallet that needs more than a little gas to accept ETH, or an address a token has blocked, would have the transfer fail, and the share of that purchase would go to 10102 as described above.
 
 Not every code is a coupon; we set it up with you. A code that is not a coupon works through your link only, as above. There is no public code.
 
@@ -35,7 +41,7 @@ Premium is bought on-chain, so every attributed purchase corresponds to a real, 
 - Each purchase can be credited **once**, ever; replayed or duplicate reports are rejected.
 - The system stores no personal data: an attribution is a transaction hash, a wallet address that is already public on-chain, and your code.
 
-Your statement gives you the transaction references, and you can confirm every one of them on Etherscan yourself.
+Your statement gives you the transaction references, and you can confirm every one of them on Etherscan yourself. For a purchase made with an on-chain coupon or referrer, the transaction's `PlanSubscribedWithCode` event states the amount paid, the code, the referrer wallet and the share that wallet received in that same transaction (zero when no share was registered or the transfer failed).
 
 ## Self-serve stats
 

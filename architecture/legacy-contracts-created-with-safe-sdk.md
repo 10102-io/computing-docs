@@ -1,7 +1,7 @@
 ---
 description: >-
-  How Safe-owned legacies (Multisig and Transfer) integrate with an existing
-  Safe via Safe Guards and Safe Modules, and how the lifecycle events flow.
+  How a Multisig legacy integrates with an existing Safe via a Safe Guard and
+  a Safe Module, and how the lifecycle events flow.
 ---
 
 # Legacy Contracts Created with Safe SDK
@@ -9,48 +9,48 @@ description: >-
 A [Safe](https://app.safe.global) is a multi-signature smart account on Ethereum: a predefined threshold of owner keys is required to execute any transaction. 10102 integrates with Safe using the two extension points Safe exposes to third-party code: **Guards** and **Modules**.
 
 - [Safe Guards](https://docs.safe.global/advanced/smart-account-guards): hooks that run on every transaction a Safe executes. 10102 uses a Guard to capture the timestamp of the Safe's last outgoing transaction.
-- [Safe Modules](https://docs.safe.global/advanced/smart-account-modules): code that can execute transactions on behalf of the Safe without the usual multi-sig approval flow. 10102 uses a Module to execute the final activation action (transferring assets, or adding beneficiaries as owners) when the inactivity window elapses.
+- [Safe Modules](https://docs.safe.global/advanced/smart-account-modules): code that can execute transactions on behalf of the Safe without the usual multi-sig approval flow. 10102 uses a Module to execute the final activation action (adding beneficiaries as owners) when the inactivity window elapses.
 
-Two legacy flavors live on this path:
+One legacy flavor lives on this path today:
 
-- **Multisig legacy**: hands over control of the Safe itself by adding beneficiaries as co-signers on activation.
-- **Transfer legacy (Safe owner)**: transfers specific assets out of the Safe to beneficiaries on activation, proportional to configured allocations.
+- **Multisig legacy**: hands over control of the Safe itself by adding beneficiaries as co-signers on activation. Everything the Safe holds, NFTs included, passes with it.
+
+{% hint style="info" %}
+**Retired: the Safe-backed Transfer legacy.** A second flavor, which transferred specific assets out of the Safe on activation, was hidden from the app on 2026-05-01 and retired on 2026-05-18. It never had a legacy on mainnet. Its router's bytecode remains on-chain; the app and the contracts repository no longer reference it. The sections below that mention it are kept for the record. To split specific assets between addresses, use a wallet legacy: [Legacy Contracts Created with EOAs](legacy-contracts-created-with-eoas.md).
+{% endhint %}
 
 ## Contract roles
 
 | Contract | Purpose |
 |---|---|
 | `MultisigLegacyRouter` | Creates and updates Multisig legacies. Enforces that edits come from the Safe itself (at threshold). |
-| `TransferLegacyRouter` | Creates and updates Safe-owner Transfer legacies. |
-| Per-legacy `MultisigLegacyContract` | Stores beneficiaries, activation trigger, name/note for a single Multisig legacy. |
-| Per-legacy `TransferLegacyContract` | Stores beneficiaries, allocations, asset list, activation trigger for a single Safe-owner Transfer legacy. |
-| `SafeGuard` | Installed on the owner's Safe. Persists `lastTimestampTxs` on every Safe execution. |
-| `SafeLegacyModule` | Installed on the owner's Safe. Empowered to execute the activation on behalf of the Safe at threshold-bypass. |
+| Per-legacy `MultisigLegacyContract` | Stores beneficiaries, activation trigger, name/note for a single Multisig legacy. It is also the **Safe Module**: enabled on the owner's Safe, it is what adds the beneficiaries as owners at activation. The only Safe transactions its code can make are adding owners and setting the threshold. |
+| `SafeGuard` | Deployed with the legacy and installed on the owner's Safe. Persists `lastTimestampTxs` on every Safe execution. |
+| `TransferLegacyRouter`, `TransferLegacyContract` | Retired (see above). |
 
-All of these live in the public [`computing-sc`](https://github.com/10102-io/computing-sc) repository; addresses are in `contract-addresses.json`.
+The live ones are in the public [`computing-sc`](https://github.com/10102-io/computing-sc) repository; addresses are in `contract-addresses.json`. The legacy v3 features (NFT items, backup beneficiaries, an executor) exist for wallet legacies only, not for Multisig legacies.
 
 ## Creating a legacy from a Safe
 
 ### Step 1: Have a Safe
 
-The user needs an existing Safe wallet. If they don't have one, they create it at [app.safe.global](https://app.safe.global) with their chosen signer set and threshold. 10102 does _not_ deploy Safes on your behalf.
+The user needs an existing Safe wallet. If they don't have one, they create it at [app.safe.global](https://app.safe.global) with their chosen signer set and threshold. 10102 does _not_ deploy Safes on your behalf. A Safe can have one legacy; a wallet that signs for several Safes can give each its own.
 
 ### Step 2: Connect and configure
 
-1. The user connects to the 10102 app as a Safe (via WalletConnect or the Safe app embed).
-2. They configure the legacy in the UI: beneficiaries, allocations (Transfer) or threshold-on-activation (Multisig), activation trigger (inactivity window), name/note.
-3. The app builds a Safe transaction bundle containing:
+1. The user connects a wallet that is one of the Safe's owners and names the Safe.
+2. They configure the legacy in the UI: beneficiaries, the threshold after activation, activation trigger (inactivity window), name/note.
+3. That owner sends one transaction from their own wallet: `MultisigLegacyRouter.createLegacy(safe, ...)`. The router checks that the sender is an owner of the Safe and that the Safe has no guard yet, then deploys the per-legacy contract and its guard.
+4. The app then proposes a Safe transaction with two calls:
    - `setGuard(SafeGuard)`: installs the 10102 guard on the Safe.
-   - `enableModule(SafeLegacyModule)`: enables the 10102 module on the Safe.
-   - `createLegacy(...)`: calls the appropriate router with legacy configuration.
-4. The bundle goes through the Safe's normal multi-sig approval and execution flow: co-signers sign until threshold is reached, then it executes atomically.
+   - `enableModule(legacy contract)`: enables the per-legacy contract as a module on the Safe.
+
+   It goes through the Safe's normal multi-sig approval and execution flow: co-signers sign until threshold is reached, then it executes. Until it does, the legacy contract exists and can do nothing on the Safe.
 
 ### Step 3: On-chain effects
 
-Once the bundle executes:
-
-- The Safe emits `ChangeGuard` and `EnableModule` events. The subgraph indexes them and marks the Safe as 10102-enabled.
-- The Router emits a `LegacyCreated` event (exact name varies by router; see the ABIs). The subgraph creates a legacy entity with the Safe address as creator, the beneficiaries, allocations / threshold, and activation trigger.
+- The Router emits `MultisigLegacyCreated`. The subgraph creates a legacy entity with the Safe, the creating owner, the beneficiaries, the threshold and the activation trigger.
+- When the Safe transaction executes, the Safe emits `ChangedGuard` and `EnabledModule`. The subgraph indexes them and marks the legacy live once it has seen both.
 - `SafeGuard` initializes `lastTimestampTxs` to the creation block timestamp.
 
 ## Activity tracking (the happy path)
@@ -64,20 +64,14 @@ Because the Guard lives _inside_ the Safe, activity detection for Safe-owned leg
 Any Safe owner can initiate an edit (beneficiary changes, allocation changes, name/note, activation trigger). The edit is a normal Safe transaction and requires threshold signatures just like the creation. When it executes:
 
 - The per-legacy contract's state is updated.
-- The Router emits an `LegacyUpdated` event (name varies); the subgraph updates the entity.
+- The Router emits the matching update event (`MultisigLegacyConfigUpdated`, `MultisigLegacyBeneficiariesUpdated`, `MultisigLegacyActivationTriggerUpdated` or `MultisigLegacyNameNoteUpdated`); the subgraph updates the entity.
 - `SafeGuard.lastTimestampTxs` is updated by the underlying Safe execution, so edits implicitly reset the inactivity timer.
 
-One asymmetry worth naming: **off-chain notification settings (watchers, email reminders) are managed by `PremiumSetting`, which gates those edits on the original creator EOA, not the Safe at threshold.** So any Safe owner can edit beneficiaries and activation triggers, but only the single EOA who submitted the original creation transaction can edit watchers or reminder configuration. This is tracked as a known asymmetry to resolve via a future `PremiumSetting` upgrade.
+One asymmetry worth naming: **notification settings (watchers, email reminders) are managed by `PremiumSetting`, not by the router.** Until 2026-11-07 only the single EOA that submitted the original creation transaction could edit them. Since the `PremiumSetting` upgrade of that date the legacy's own Safe may edit them too, next to that creator. The app still offers these settings to the creator only; doing it from the Safe means building the Safe transaction by hand for now. Premium, and the timing of reminders, remain the creator's.
 
 ## Deleting a legacy
 
-Delete is also a Safe transaction at threshold. The bundle includes:
-
-- `deleteLegacy(...)`: tells the Router to tear down the per-legacy contract state.
-- `setGuard(0x0)`: removes the 10102 guard from the Safe.
-- `disableModule(SafeLegacyModule)`: removes the 10102 module from the Safe.
-
-The Safe emits `ChangeGuard`, `DisableModule`, and the Router emits a `LegacyDeleted` event. The subgraph marks the legacy as deleted. The Safe is left in exactly the state it was in before creation: no residual permissions, no residual guards.
+Delete is a Safe transaction at threshold with two calls: `setGuard(0x0)` and `disableModule(legacy contract)`. The Safe emits `ChangedGuard` and `DisabledModule`. The Multisig router has no delete function and emits no delete event. The subgraph marks the legacy deleted when it sees the Safe's guard change to anything other than the legacy's own guard. The Safe is left without the 10102 guard and module; the per-legacy contract stays on-chain with no power over the Safe.
 
 Users can also tear down manually via Safe's Transaction Builder at [app.safe.global](https://app.safe.global) (calling `setGuard(0x0)` + `disableModule(...)` on the Safe directly), which is the fallback path if the 10102 UI is ever unavailable.
 
@@ -88,15 +82,15 @@ When a beneficiary attempts to activate a legacy (via the app, via Safe, or via 
 1. The caller is one of the configured beneficiaries (primary, or contingent after their window elapses).
 2. `block.timestamp - SafeGuard.lastTimestampTxs >= configuredInactivityWindow`.
 
-If both checks pass, the Router invokes the `SafeLegacyModule` to execute the activation action on behalf of the Safe, bypassing the normal threshold, because the Module is pre-authorized for this one specific action and nothing else.
+If both checks pass, the Router calls the per-legacy contract, which, as a module the Safe enabled at creation, executes the activation action on behalf of the Safe, bypassing the normal threshold. Its code performs this one action and nothing else.
 
 ### Multisig legacy activation
 
 The Module executes `addOwnerWithThreshold(beneficiary_i, newThreshold)` once per beneficiary, then `changeThreshold(configuredThreshold)` to the value the owner specified at creation. The Safe emits `AddedOwner` and `ChangedThreshold` events; the subgraph updates the Safe's owner set and records the legacy as activated. Post-activation, the Safe is now co-owned by the beneficiaries at the new threshold, and everything it holds, stakes, or governs is under their collective control.
 
-### Transfer legacy (Safe owner) activation
+### Transfer legacy (Safe owner) activation (retired)
 
-The Module executes a series of `transfer` calls (ETH and ERC-20), moving the configured allocations out of the Safe to the beneficiary addresses. The per-legacy contract emits an `Activated` event; the subgraph marks it activated. The Safe itself is untouched (it just becomes lighter by the allocated amounts).
+Kept for the record; this flavor was retired in May 2026 and no legacy of it exists on mainnet. The Module executed a series of `transfer` calls (ETH and ERC-20), moving the configured allocations out of the Safe to the beneficiary addresses. The per-legacy contract emits an `Activated` event; the subgraph marks it activated. The Safe itself is untouched (it just becomes lighter by the allocated amounts).
 
 ## Why this design
 

@@ -63,6 +63,8 @@ In practice that means an agent can:
 - Build a pre-filled setup URL that hands the user off to the web app to review and sign.
 - Read a wallet's portfolio-health summary (below).
 
+In the service's source, the MCP tools have no read yet for what a wallet legacy of the new version adds (the NFTs it names, backup beneficiaries, the executor) or for Shield Vault holdings. Both are public on-chain and indexed by the subgraph (see [Build with us](#build-with-us)). A setup link creates the legacy itself; NFTs, backups and an executor are set afterwards on the legacy's own page, by its owner.
+
 ### Portfolio health
 
 Agents can read a wallet's token-health summary: the same readout the app's dashboard widget shows, powered by the Computing Tokens research pipeline ([tokens.10102.io](https://tokens.10102.io)). Two ways in:
@@ -102,6 +104,10 @@ https://venice-proxy-production.up.railway.app/v1/chat/completions
 ## Build with us
 
 - **Source code:** the contracts and routers are open source at [github.com/10102-io/computing-sc](https://github.com/10102-io/computing-sc).
+- **Addresses:** the contracts live on mainnet are listed in [Architecture](architecture/README.md#mainnet-addresses), and in full in [`contract-addresses.json`](https://github.com/10102-io/computing-sc/blob/main/contract-addresses.json). A wallet legacy created since May 2026 is a 45-byte clone (the first 22 are full contracts) whose code contains the address of the implementation it runs; read that before assuming which functions a given legacy has.
 - **Agent docs:** the canonical agent onboarding doc is published at [AGENTS.md](https://github.com/10102-io/computing/blob/main/AGENTS.md).
-- **Subgraph:** indexed Legacy and Timelock state is served from The Graph gateway: `https://gateway.thegraph.com/api/subgraphs/id/FXzZDbZxzdWaYGTPEcxN2AatbucRooQWfY67moam8oCd`.
+- **Subgraph:** indexed Legacy and Timelock state is served from The Graph gateway: `https://gateway.thegraph.com/api/subgraphs/id/FXzZDbZxzdWaYGTPEcxN2AatbucRooQWfY67moam8oCd`. Since 2026-11-11 it also indexes each legacy v3 clone (NFT items, backup beneficiaries, the executor, per-share claims), both Shield Vaults, and the Premium coupon and referrer events. See [Indexing & Activity Tracking](architecture/indexing-and-activity-tracking.md).
+- **Terms, machine-readable:** `https://app.10102.io/terms/current.json` carries the terms in force (`version`, `updated`, `format`, `hash`, `text`). `hash` is the keccak256 of `text` and equals `activeTermsHash()` on the `EIP712LegacyVerifier`, so an agent can check the text against the chain before showing it to a user.
+- **Relaying is permissionless:** the signed claim, check-in and withdrawal entry points, and the Shield Vault's exits, can be submitted by anyone. Our relay is one implementation; see [Gas-Sponsored Intents](architecture/gas-sponsored-intents.md).
+- **Review status, before you build on it:** the contracts were audited twice (reports of January 2025 and October 2025); no published audit report covers anything deployed since October 2025, and the current wallet legacy version and Shield Vault v3 went live before an external review. The exact list is in [Architecture](architecture/README.md#review-status).
 - **Non-custodial and on-chain:** every flow is operable directly from the Ethereum contracts. Reads are free, setup is a handoff to a wallet signature, and no part of this stack can move a user's assets without that signature.

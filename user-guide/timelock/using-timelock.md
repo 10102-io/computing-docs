@@ -8,7 +8,7 @@ description: >-
 
 Navigate to the **Timelock** tab of the app. You'll see any timelocks you've created, and any beneficiary timelocks others have set up with you as the recipient.
 
-To create a new one, click **Create timelock** and pick a flavor: Timelock, Soft Timelock, or Beneficiary Timelock.
+To create a new one, click **Create a timelock** and pick a flavor: Timelock, Soft Timelock, or Beneficiary Timelock.
 
 ## Common concepts
 
@@ -42,7 +42,7 @@ A timelock holds what you explicitly approve for it. For each asset:
 
 ### Create
 
-1. **Timelock** tab → **Create timelock** → select **Timelock**.
+1. **Timelock** tab → **Create a timelock** → select **Timelock**.
 2. Configure:
    - **Name**: private label.
    - **Duration**: how long to lock for. Supports any duration up to contract limits.
@@ -56,10 +56,12 @@ A timelock holds what you explicitly approve for it. For each asset:
 Once the lock elapses:
 
 1. Open the timelock's details page; the status will read **Ready**.
-2. Click **Claim Assets**. Sign one transaction.
+2. Click **Claim assets**. Sign one transaction.
 3. Assets return to your wallet.
 
-Your open timelocks are also listed in **Your locks** on [Home](../home.md), with a **Withdraw** button.
+Your open timelocks are also listed in **Your locks** on [Home](../home.md), which opens from the timelocks chip, with a **Withdraw** button.
+
+Timelocks carry no delivery fee: the 0.25% that applies when heirs claim a legacy does not apply when you take a timelock back, or when a recipient claims one. You pay network gas.
 
 {% hint style="info" %}
 **Free with Premium.** For a timelock your wallet created for itself, standard or soft, Premium turns that transaction into a free signature and 10102 pays the network fee. The assets go only to your wallet. If the free send is not possible right now, your wallet sends it and you pay the gas. See [Gas-Free Check-ins & Claims](../premium-features/gas-free-check-ins-and-claims.md#timelock-withdrawals-free-for-premium-owners).

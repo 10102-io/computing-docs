@@ -12,37 +12,47 @@ The point: **your legacy lives on Ethereum, not on our website.** As long as ben
 
 ## What's on the card
 
-- **Legacy ID**: the on-chain identifier, used directly with the router contract.
-- **Legacy contract address**: where the allocations and approvals live.
-- **Router contract address**: the router beneficiaries call to activate.
-- **Activation instructions**: short, plain-language steps describing the function to call and what arguments it expects.
-- **Network**: mainnet, Sepolia, etc.
-- **QR codes**: scannable links for the contract address and router address, so beneficiaries don't have to hand-type 42-character hex strings.
+One card is made for each beneficiary. It carries:
 
-## What's intentionally _not_ on the card
+- **The beneficiary's name and address**, as you entered them.
+- **Router contract address**: the contract the claim functions are called on.
+- **Legacy ID**: the number typed into the claim functions.
+- **Legacy contract address**: for the record only; no function is called there.
+- **Network** and the legacy's type.
+- **Tokens to claim** (wallet legacies): the addresses of the tokens in your legacy on the day the card was made. The claim function needs them.
+- **How to claim, step by step**: which function to call on a block explorer and what to fill in, and a link to the full written guide.
 
-- **The owner's wallet address.** Many owners don't want beneficiaries to know which wallet the legacy belongs to until activation. The card is designed to be handable to a beneficiary in advance (inside a sealed envelope, with a lawyer, in a safety deposit box) without leaking that link.
-- **The list of assets.** This intentionally isn't pinned to paper. Asset lists change over time (you approve more, you remove some) and the card shouldn't go stale. Beneficiaries can look up the current asset list from the contract via any explorer.
-- **Personal data or email addresses.** The card is purely on-chain coordinates.
+For a Multisig legacy the card names the Safe the beneficiaries become co-signers of.
+
+## What's _not_ on the card
+
+- **No private key.** The card says so at the top. A beneficiary whose wallet you generated needs the separate private-key sheet as well.
+- **The owner's wallet address** of a wallet legacy is not printed. It can be read from the legacy contract on a block explorer, so do not treat the card as hiding it.
+- **Email addresses, amounts and shares.**
+
+{% hint style="warning" %}
+**The token list goes stale.** The card lists the tokens in your legacy on the day it was made. If you add a token later, print the card again: the claim function pays out only the tokens named in the call, and the legacy contract does not store that list. A token left out of a claim can be claimed with another call that names it.
+{% endhint %}
 
 ## When to print it
 
 Print (or regenerate) the card whenever:
 
 - You first deploy a legacy.
-- You change the legacy's address (e.g. you delete and recreate).
+- You change the legacy's address (e.g. you delete and recreate, or you [move it to the new version](./move-to-the-new-version.md): the moved legacy has a new address, and cards printed before name the old one).
 - You change beneficiaries and want the new ones to have a fresh copy.
+- You add or remove a token in your legacy.
 - Your previous copies are unaccounted for.
 
 ## How beneficiaries use it without our app
 
 If `app.10102.io` is unreachable for any reason, a beneficiary can still claim. The card includes step-by-step instructions, but the short version is:
 
-1. Wait until the activation window has elapsed (time since the owner's last outgoing transaction exceeds the configured threshold).
+1. Wait until the activation window has elapsed. The card's first step shows how to check: the router's `checkActiveLegacy` with the Legacy ID answers true or false.
 2. Open any Ethereum interface that supports calling an arbitrary contract; Etherscan's _Contract → Write_ tab works.
 3. Connect the beneficiary's wallet.
-4. Call the router's activation function with the **Legacy ID** from the card.
-5. Sign. Pay gas. Assets are distributed according to the allocations the owner configured.
+4. Call the router's `activeLegacy` with the **Legacy ID**, the token addresses from the card, and `isETH_` set to true.
+5. Sign. Pay gas. The tokens named in the call are distributed according to the allocations the owner configured.
 
 This is the same function our UI calls behind the scenes. The contracts don't know where the call came from.
 
@@ -50,16 +60,25 @@ This is the same function our UI calls behind the scenes. The contracts don't kn
 **Self-test.** If you're unsure the card is complete, hand a copy to a technically-minded friend and ask them: "If I disappeared and 10102's website didn't exist, could you initiate the claim for my beneficiaries from this alone?" If yes, the card is doing its job.
 {% endhint %}
 
+## Links to hand over with it (new version)
+
+A wallet legacy of the new version also has two public pages, and their links are worth keeping with the card. The owner's legacy page shows the heir page link once backup heirs are on, and the executor page link once an executor is named. Without backup heirs the page shows no heir link: the address is `app.10102.io/heir/1/` followed by the legacy's contract address.
+
+- **The heir page**, `app.10102.io/heir/1/<legacy address>`: where an heir, and a backup heir of one share, sees their part and their turn and claims tokens and NFTs. Backup heirs are not in the indexed list of heirs that **Legacies for Me** is built from, so this link is how they find the legacy.
+- **The executor page**, `app.10102.io/executor/1/<legacy address>`: where the executor you named reads what a confirmation does and confirms. See [Name an Executor](../premium-features/executor.md).
+
+Both pages read the chain directly. The executor page can be read without a wallet. The heir page asks you to connect the wallet that was named before it shows your part. They are part of our app: if it were unreachable, the contracts remain callable from any Ethereum interface, as above.
+
 ## Where to find it
 
-- On a legacy's details page after creation, an action downloads the card as a printable PDF.
-- Regenerate at any time. The card is derived from on-chain data, so it's always up to date.
-- We don't store a copy on our servers. Keep the PDF (or a print) somewhere your beneficiaries can reach it when they need it.
+- On a legacy's details page, the row of each beneficiary has an action that downloads that beneficiary's card as an image (PNG) to print.
+- Make it again at any time, and after every change to the tokens in your legacy.
+- We don't store a copy on our servers. Keep the file (or a print) somewhere your beneficiaries can reach it when they need it.
 
 ## Privacy considerations
 
 - Treat a Legacy Claim Card like you'd treat a will document: give it to people who need it, store copies securely, update when things change.
-- The card doesn't contain private keys or anything sensitive beyond on-chain public coordinates, but it _does_ contain the pre-activation pointer to a specific legacy, which is information some owners treat as private.
+- The card contains no private key. It does contain the beneficiary's name and address and the pointer to a specific legacy, which is information some owners treat as private.
 - If you've given someone a copy and want to revoke their ability to claim, delete and recreate the legacy (which generates a new contract address).
 
 ## See also

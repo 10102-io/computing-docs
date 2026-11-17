@@ -9,8 +9,16 @@ description: >-
 Heirloom is a presentation layer over the deployed `TimeLockRouter`
 contract: a sealed gift IS a timelock of the contract's `Gift` type,
 created with `createTimelockedGift`. No new contract was deployed for the
-feature; everything below runs on the audited router that also powers
-beneficiary timelocks.
+feature; everything below runs on the router that also powers beneficiary
+timelocks. That router was part of the CDSecurity audit of October 2025.
+Its upgrades since then have not had a published audit: the
+one-transaction create of 2026-07-27 (Permit2 creates, the signed
+withdrawal a gasless gift claim uses, consent recorded for gifts, the
+create pause), the destination wallet in a claim signature (2026-09-24,
+below; internal adversarial review) and the refusal of empty or
+zero-minimum creates with an exact-date lock for Save (2026-11-07;
+internal adversarial review). A gift itself carries no 10102 fee, at sealing or at
+claim.
 
 ## Escrow: two lanes, one seal
 

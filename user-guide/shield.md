@@ -14,9 +14,30 @@ sheet you printed at the start stops it and moves everything to a wallet
 you chose in advance. If you go silent for a long time, the holding can go
 to the people you name.
 
-Open it from **Shield Vault** in the menu, or at `app.10102.io/shield`. It
-runs on Ethereum, in the contract
-`0xA1EA2F8C0518458975E09ED63bf5D48980f76C38`.
+Open it from **Vault** in the menu, or at `app.10102.io/shield`. It runs
+on Ethereum.
+
+**Two vaults, by the date a holding was opened.** Each is its own
+contract, and a holding stays in the one it was opened in:
+
+| Opened | Contract | Today |
+|---|---|---|
+| Since 2026-11-11 | Shield Vault v3, `0x1610DC8D25475959D5ba9395c4CE02456B51EB59` | New holdings open here. |
+| Before 2026-11-11 | Shield Vault v2, `0xA1EA2F8C0518458975E09ED63bf5D48980f76C38` | Deposits are paused, so nothing can be opened or added. Every exit keeps working: withdraw, cancel, stop with the sheet, release, and claims. |
+
+The app never says "v2" or "v3": a holding in the earlier vault reads
+"Opened before the November 2026 update. It keeps the terms it opened
+with." The steps on this page are the same for both; where they differ
+(the fee, the status page address, **Add more**), this page says so.
+
+{% hint style="warning" %}
+**Shield Vault v3 is live without an independent audit.** Our team
+reviewed and tested it, and it was checked with automated testing and
+analysis tools. No outside firm has audited it. The earlier vault had two
+internal adversarial reviews, and no independent audit either. Neither can be
+upgraded: a fix would be a new vault, and every holding can leave through
+its own wait.
+{% endhint %}
 
 ## Making one
 
@@ -50,6 +71,13 @@ Five decisions, one per step. Nothing is sent until the last one.
    chain that you accepted the terms for this holding. If one of the first
    three is interrupted, come back and it continues where it stopped.
 
+The fee line on that last step reads, for a holding that names people:
+"Fee: 0.25% of what is released to your people if you go silent, fixed
+now for this holding. Your own withdrawals, cancels and stops are free."
+A holding opens only once the vault's fee is on screen; it is read again
+before the first confirmation, and if it rose, the page says so before
+anything is sent.
+
 The last confirmation is its own transaction, because the vault does not
 record terms itself. The holding does not depend on it: if it fails, the
 holding is open and protected, and the page offers **Record it now** to try
@@ -66,8 +94,8 @@ made: a 30-day wait and your people after 12 months, both changeable
 before you confirm. wstETH keeps the same amount while its value in ETH
 grows with staking rewards, and your holding shows what it is worth in
 ETH today. Prefer instant access? **Keep it in my wallet** leaves the
-staked ETH in your wallet with a legacy backup instead, with no
-protection against theft.
+staked ETH in your wallet, in a legacy that activates after inactivity,
+with no wait on withdrawals and so nothing that stops a stolen key.
 
 ## Using it
 
@@ -76,17 +104,29 @@ Your holdings show on the same page, with one main action each:
 - **Check in** restarts the silence clock. With Premium it is free: you
   sign, and we send and pay for the transaction.
 - **Add more** puts more of the same token in, under the same settings.
-  It counts as a check-in.
+  It counts as a check-in. It is not offered on a holding opened before
+  2026-11-11, because deposits into the earlier vault are paused: open a
+  new holding instead.
 - **Withdraw** starts the wait for an amount or for everything, to an
   address you choose. You can cancel it any time before it completes.
 - **Change settings** (the wait, the people, the sheet) also waits the
   current delay, so a thief cannot shorten the wait or swap your people
   first.
-- **Finish** appears when the wait is over. After that moment anyone can
-  finish it, which is why a stop must come before the wait ends.
+- **Finish withdrawal**, or **Apply the change** for a settings change,
+  appears when the wait is over. After that moment anyone can finish it,
+  which is why a stop must come before the wait ends.
 
-Each holding has a public status page, `app.10102.io/shield/1/<number>`,
-that family can open without a wallet to see what is waiting.
+Each holding has a public status page that family can open without a
+wallet to see what is waiting. Holding numbers start again at 1 in each
+vault, so the address names the vault:
+
+- A holding opened since 2026-11-11:
+  `app.10102.io/shield/1/<vault address>/<number>`.
+- A holding opened before: `app.10102.io/shield/1/<number>`. Links of
+  this form that you printed or were emailed keep opening that holding.
+
+If one vault cannot be read for a moment, the page shows the holdings it
+could read and says which ones are missing; nothing changed on them.
 
 **Email alerts, free and optional.** Where they are available, the page
 offers to email you the moment a withdrawal or a change starts on any
@@ -133,8 +173,10 @@ After the silence period passes with no activity, anyone can release the
 holding to the people you named, in their shares. If one share cannot be
 delivered (for example an address a token has blocked), it is kept for
 that address and can be claimed later from the status page; the others
-are paid anyway. Finishing a release costs the family nothing: the page
-sends it for free.
+are paid anyway. Finishing a release needs no ETH from the family: the
+page sends it for free. On a holding opened since 2026-11-11, this
+release is the one moment the vault's fee is taken (0.25% at launch, fixed
+when the holding opened); see Fees below.
 
 Someone named by a printed card opens `app.10102.io/shield/claim`, scans
 the card (or types what is printed on it) and enters the wallet the share
@@ -157,15 +199,35 @@ wallet, no ETH and no fee for the claim itself are needed.
 - **The vault pays no interest.** You get back exactly the tokens you put
   in. A token that grows by itself, like wstETH, keeps growing while it
   waits.
-- **Reviewed, not yet audited.** The contract had two adversarial reviews
-  before deployment and has not had an independent audit yet. It cannot
-  be upgraded: a fix would be a new vault, and every holding can leave
-  through its own wait.
-- **Fees.** None from 10102 since 2026-11-09: nothing is taken when you
-  withdraw or when it goes to your people. Each holding keeps the rate
-  shown when it was opened, so this can never go up for a holding you
-  already have. Steps you send from your own wallet pay the Ethereum
-  network fee.
+- **Reviewed, not yet audited.** In the app's words, for the vault new
+  holdings open in: "Our team reviewed and tested this vault. No outside
+  firm has audited it yet." That is Shield Vault v3: internal review and
+  automated testing and analysis, no independent audit. The earlier vault
+  had two internal adversarial reviews, and no independent audit either.
+  Neither can be upgraded: a fix would be a new vault, and every holding
+  can leave through its own wait.
+- **Fees.** The vault's fee is shown before you open a holding and fixed
+  into it, so it can never go up for a holding you already have. The
+  governance Safe can set at most 0.5% for holdings opened later.
+  - **A holding opened since 2026-11-11** (v3): 0.25% at launch, taken
+    **only** when the holding is released to the people you named after
+    your silence, once. Your own withdrawals, cancelling one, stopping
+    one with the recovery sheet, and claiming a share that was kept are
+    free. A holding that names nobody reads "No fee unless you later name
+    people".
+  - **A holding opened before 2026-11-11** (v2) keeps the terms it opened
+    with: the rate fixed into it when it opened, which the holding's own
+    fee line shows. Where that rate is not zero, it is taken from what
+    leaves by a withdrawal or to your people; stopping it with the sheet
+    is free.
+  - Steps you send from your own wallet pay the Ethereum network fee.
+- **In Cypherpunk Mode** the page shows a notice instead ("The Shield
+  Vault is not part of Cypherpunk Mode"), because the vault's alerts and
+  free sends use our server. Stopping is never behind it: the notice has
+  a **Stop it** button, and `app.10102.io/shield#stop` opens the stop
+  form in the mode too. Status pages and the printed-card claim open in
+  every mode. See
+  [Cypherpunk Mode](hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode).
 
 How it works underneath, with the threat model:
 [Quantum Readiness](../architecture/quantum-readiness.md).

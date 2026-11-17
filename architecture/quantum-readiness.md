@@ -6,7 +6,7 @@ description: >-
 
 # Quantum Readiness
 
-Your 10102 plan is measured in decades. On that horizon, one risk stands out
+A legacy is measured in decades. On that horizon, one risk stands out
 as both real and widely misunderstood: sufficiently large quantum computers
 are expected to break the elliptic-curve signatures (secp256k1 ECDSA) that
 every Ethereum wallet uses today. This page explains the honest threat
@@ -87,6 +87,10 @@ is deliberately minimal:
   through its usual transaction flow, so the commitment is recorded for the
   Safe address itself. There is no dependency on Safe or on any wallet
   brand.
+* **Reviewed internally, not by an audit firm.** The registry had an
+  adversarial review and carries full test coverage and static-analysis
+  evidence; it has not had an independent audit. See
+  [Review status](README.md#review-status).
 
 The app's register flow generates a fresh 32-byte secret on your device,
 has you download a printable backup sheet (the only copy), and registers
@@ -103,12 +107,15 @@ plain hash preimage", and two different preimages use it:
 * **A Shield Vault recovery sheet**: the digest is
   `keccak256(abi.encode(tag, chainId, vault, owner, secret, recoveryWallet))`
   with `tag = keccak256("10102.ShieldVault.veto.v2")`, and the context
-  address is the vault. The retired first vault used
+  address is the vault. Shield Vault v2 and v3 share this format; each
+  digest binds its own vault's address, so a sheet made for one never
+  verifies on the other. The retired first vault used
   `"10102.ShieldVault.veto.v1"` and no `owner` field.
 
 A sheet's secret becomes public the moment it stops a withdrawal, so it is
 never an account's recovery path: the dashboard counts only commitments
-whose context is not a Shield Vault. Anyone reading the registry should
+whose context is not a Shield Vault (the first vault, v2 or v3). Anyone
+reading the registry should
 tell the two apart the same way, by the context address, since the scheme
 number is the same.
 
@@ -129,27 +136,37 @@ sequenceDiagram
 The registry on its own is a **readiness step, not an enforcement
 mechanism**. Nothing in it can move funds, veto a transaction, or stop an
 attacker. Its value is the provable pre-break timestamp, which enforcement
-layers can honor. The first such layer is live:
-[Protect a holding](../user-guide/shield.md) (ShieldVault) reads a
-registry commitment as the secret that stops a withdrawal. Coins outside
-it, in a plain wallet or a legacy, are exactly as protected as before. We
+layers can honor. The first such layer is live: the
+[Shield Vault](shield-vault.md) reads a registry commitment as the secret
+that stops a withdrawal ([Protect a holding](../user-guide/shield.md) is
+the user's side of it). Coins outside it, in a plain wallet or a legacy, are
+exactly as protected as before. We
 would rather tell you exactly what you bought than sell you a
 stronger-sounding claim.
 
 ## Enforcement: what is live, what is next
 
 1. **Delay plus veto, in a standalone holding. Live since 2026-09-28.**
-   ShieldVault (`0xA1EA2F8C0518458975E09ED63bf5D48980f76C38` on Ethereum
-   since 2026-09-29; the first vault, `0x83074f8519F54AF05f7C48911E432e0C44dBEE69`,
-   is retired):
+   New holdings open in Shield Vault v3
+   (`0x1610DC8D25475959D5ba9395c4CE02456B51EB59` on Ethereum since
+   2026-11-11). Holdings opened before stay in v2
+   (`0xA1EA2F8C0518458975E09ED63bf5D48980f76C38`, since 2026-09-29), where
+   every exit keeps working and new deposits are paused; the first vault,
+   `0x83074f8519F54AF05f7C48911E432e0C44dBEE69`, is retired. In each:
    withdrawals and setting changes announce themselves and wait a delay
    the owner chose; during the wait, revealing the pre-registered secret
    moves everything to the recovery wallet bound into it. It works even
    against an attacker who fully controls the owner's key, classical or
-   quantum. Reviewed adversarially before deployment, not yet
-   independently audited. See [Protect a holding](../user-guide/shield.md).
+   quantum. Neither vault is independently audited: v2 was reviewed
+   adversarially before deployment, v3 was reviewed internally and went
+   live before an external review, which is still to be commissioned. Both
+   carry test coverage, fuzz and static-analysis evidence. See
+   [Shield Vault](shield-vault.md) for the contract and
+   [Protect a holding](../user-guide/shield.md) for the steps.
 2. **A Safe module** adding the same delay and veto to an existing Safe
-   without moving funds. Next, not scheduled.
+   without moving funds. Not built and not scheduled: the Shield Vault
+   already serves holdings, and a guard with a bug can block a Safe. We
+   will look at it again when Safe owners ask for it.
 
 Practical hygiene that costs nothing meanwhile: prefer receiving long-term
 holdings at fresh addresses that have never signed, and treat a Safe (whose

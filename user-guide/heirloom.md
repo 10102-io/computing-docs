@@ -8,8 +8,11 @@ description: >-
 
 Heirloom seals value for someone until a date that matters: a Bar or Bat
 Mitzvah, a wedding, a birth, an 18th birthday. The gift is held by the same
-audited timelock contract the rest of the app uses. Until the opening date
-nobody can take it out, including you.
+timelock contracts the rest of the app uses (audited in 2025; what was
+added to them since had internal review, not a new audit). Until the
+opening date nobody can take it out, including you. A gift carries no
+delivery fee: the 0.25% taken when heirs claim a legacy does not apply to
+gifts.
 
 The thing you send is a gift. Heirloom is the product that seals it.
 
@@ -192,3 +195,19 @@ wallet. Here is exactly what happens, so you can decide if it fits.
 - **Sponsored claims are capped**: gas sponsorship is bounded by daily
   caps to keep the feature abuse-proof. If the day's budget is exhausted,
   claiming still works self-paid, or free again the next day.
+
+## In Cypherpunk Mode and on the test network
+
+- **Cypherpunk Mode**: Heirloom stays open, because a sealed gift is a
+  timelock. There, sending a gift asks nothing of our servers: the gift
+  goes to a wallet address or onto a printed card ("Just their email" is
+  not offered), and after sealing the app does not offer to email the
+  link. The link, its QR code and the printable card remain, and claiming
+  is unchanged. See
+  [Cypherpunk Mode](hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode).
+- **Test network**: Heirloom is a mainnet product. On Sepolia its page
+  says "Heirloom runs on Ethereum", with **Open the test version** for
+  trying it with test funds. A gift's claim page opens on every network.
+- **Hide amounts**: with the header's eye on, a gift's amount on its claim
+  page shows as four dots, and the eye stays in the header there so the
+  recipient can show it again.

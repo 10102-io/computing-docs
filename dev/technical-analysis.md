@@ -24,7 +24,7 @@ This is a deliberate EVM design choice (the state trie doesn't carry per-account
 
 When we started, four approaches were on the table:
 
-1. **Off-chain oracle**: have a backend service watch wallets and submit activity attestations on demand. _Rejected as the mandatory path:_ centralizes trust on our backend, violates "plan survives us." (A much narrower, strictly **opt-in** form of this later shipped as [auto-renew](../architecture/eoa-activity-auto-renew.md), with every safety bound on-chain so the attestor can only ever delay activation; see below.)
+1. **Off-chain oracle**: have a backend service watch wallets and submit activity attestations on demand. _Rejected as the mandatory path:_ centralizes trust on our backend, violates "your setup survives us." (A much narrower, strictly **opt-in** form of this later shipped as [auto-renew](../architecture/eoa-activity-auto-renew.md), with every safety bound on-chain so the attestor can only ever delay activation; see below.)
 2. **Decentralized oracle**: delegate to a general-purpose oracle network that already tracks wallet activity. _Rejected:_ no decentralized oracle we evaluated had production-grade coverage of EOA activity data, and bridging a third-party activity verdict back on-chain at activation time adds an external dependency (and a recurring cost) to the one moment that matters most. We'd rather not put an oracle in the activation trust path.
 3. **Custom wallet functionality**: require the owner to use a wallet that exposes a last-tx hook. _Partially adopted:_ this is exactly what the Safe Guard integration does for Safe users.
 4. **Restructured flow**: redesign the UX so the contract doesn't need to know the owner's _general_ last-tx timestamp at all, and instead tracks activity that the contract _can_ see natively. _Adopted for EOAs:_ each EOA legacy keeps an on-chain inactivity timer scoped to the legacy itself, reset by any interaction with it (edits, withdrawals, swaps) or an explicit "I'm still alive" heartbeat.
@@ -55,9 +55,9 @@ if (_lastTimestamp + lackOfOutgoingTxRange > block.timestamp) {
 return true;     // inactive long enough; eligible for activation
 ```
 
-`_lastTimestamp` is reset to `block.timestamp` by any owner interaction with the legacy: creating it, editing beneficiaries/allocations/trigger/name, withdrawing, the auto-swap / unswap helpers, receiving ETH directly from the owner, or the explicit `activeAlive` ("I'm still alive") heartbeat. A beneficiary can then call activation permissionlessly; the contract itself decides whether the window has elapsed.
+`_lastTimestamp` is reset to `block.timestamp` by any owner interaction with the legacy: creating it, editing beneficiaries/allocations/trigger, withdrawing, the auto-swap / unswap helpers, receiving ETH directly from the owner, or the explicit `activeAlive` ("I'm still alive") heartbeat. A beneficiary can then call activation permissionlessly; the contract itself decides whether the window has elapsed.
 
-This is, in effect, the check-in model: the thing teams usually reject as "babysit the app" UX. We make it tolerable two ways: **normal management of the legacy already counts** (any edit resets the timer, so an owner who is actively maintaining their plan rarely needs a bare heartbeat), and **the heartbeat is cheap and explicit** (~21k gas, one button) for owners who aren't otherwise touching it.
+This is, in effect, the check-in model: the thing teams usually reject as "babysit the app" UX. We make it tolerable two ways: **normal management of the legacy already counts** (any edit resets the timer, so an owner who is actively maintaining their legacy rarely needs a bare heartbeat), and **the heartbeat is cheap and explicit** (~21k gas, one button, and free for a Premium owner, who can sign it and have it relayed) for owners who aren't otherwise touching it.
 
 The honest trade-off: an EOA owner who is busy on-chain elsewhere but never touches their legacy will see the timer keep counting. Arbitrary transactions from their EOA are invisible to the per-legacy contract, and by default nothing fills that gap; the owner is expected to check in. We accept that limitation in exchange for an activation path that is fully on-chain, free of external dependencies, and impossible for any off-chain party to spoof.
 
@@ -78,6 +78,19 @@ Safe owners get a strictly nicer property: the Safe Guard updates the activity t
 | Guard gets disabled without a matching legacy delete | Edge case we test against. Router detects missing Guard at activation and blocks. Legacy can be cleaned up via the explicit delete flow. | N/A |
 
 The failure we care about most is the one that activates _too early_, because it's irreversible. For EOAs the relevant risk runs the other way: the timer can only be reset by the owner, so the realistic failure is activating _too late_ (owner forgot to check in), which is recoverable; they just heartbeat. Our design prefers a recoverable delay over an irreversible premature disbursement.
+
+## The one deliberate exception: an executor (legacy v3)
+
+Wallet legacies created since 2026-11-13 let the owner name an **executor**, and that is the first mechanism in the product that can move a claim date _earlier_. Estate planners asked for such a role.
+
+We kept it inside the same preference for recoverable errors, as far as that goes:
+
+- The executor can act only after the owner has been silent for half the window, never on a fresh legacy.
+- An attestation does not release anything. It moves the claim date to 30 days after it, if that is sooner than the normal date.
+- Any owner activity in those 30 days cancels it, and the owner is emailed if they left an address.
+- The executor can never be a beneficiary or a backup, and never receives anything.
+
+What we could not make safe by construction, and say out loud: **nobody verifies the attestation.** A contract cannot know that someone has died. An owner who names an executor is trusting that person not to attest falsely while the owner is silent but alive, and an owner who is unreachable for the 30 days (in hospital, say) cannot cancel. Naming no executor keeps the legacy exactly as the sections above describe. The feature is off by default and part of Premium. Mechanics: [An executor](../architecture/legacy-contracts-created-with-eoas.md#an-executor).
 
 ## Future: account abstraction
 

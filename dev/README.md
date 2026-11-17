@@ -20,17 +20,18 @@ We deliberately kept this section small. There are thousands of small decisions 
 
 A few opinions we fall back on when we're not sure which way to go:
 
-- **Plan survives us.** Every feature must have a path to activation that doesn't require our UI, servers, or company. This is the single most important principle. It shows up as the Legacy Claim Card, as verified contracts on Etherscan, as public source code and audits, as multisig-controlled upgradeability.
+- **Your setup survives us.** Every feature must have a path to activation that doesn't require our UI, servers, or company. This is the single most important principle. It shows up as the Legacy Claim Card, as verified contracts on Etherscan, as public source code and audits, as upgrades that wait in a public queue, and as legacy contracts that cannot be upgraded at all.
 - **On-chain authoritative, off-chain additive.** Anything our backend or any third-party service (e.g. Mailjet for the off-chain reminder worker) contributes must be verifiable against on-chain state, and its absence must degrade UX but not correctness. Activation itself takes no off-chain input; there is no activity oracle in the trust path.
 - **Two thin routers beat one fat one.** The EOA and Safe legacy flows share ~80% of their semantics, but the 20% that differs is different enough that conflating them makes both paths carry each other's complexity. The same applies to the three timelock flavors (Timelock / Soft / Gift) being distinct code paths.
 - **Explicit is better than clever.** For a long time this principle meant the EOA create flow was two separate transactions (deploy, then approve), because the explicit version was easier for users to verify than a wallet-magic bundle. Create-flow v2 collapsed that to a single confirmation _without_ giving up the property the two steps protected: the permission the user grants is a Permit2 allowance to one immutable, published vault contract that any wallet can verify, which is strictly easier to audit than N approvals to a fresh per-user address. The durable form of the principle: never trade verifiability for fewer clicks; look for the design that gets both. See [How Legacy Creation Works](../architecture/create-flow-v2.md).
-- **Fail closed on activation.** We bias every uncertain case toward _not_ activating early: a delayed real claim is recoverable (the owner heartbeats, the beneficiary retries once the window elapses), a premature disbursement is not. For EOAs this is why the inactivity timer only resets on the owner's own legacy interactions rather than on a best-effort guess about their wider wallet activity.
+- **Fail closed on activation.** We bias every uncertain case toward _not_ activating early: a delayed real claim is recoverable (the owner heartbeats, the beneficiary retries once the window elapses), a premature disbursement is not. For EOAs this is why the inactivity timer only resets on the owner's own legacy interactions rather than on a best-effort guess about their wider wallet activity. The one deliberate exception, an executor the owner may name on a legacy v3, is argued in [Inactivity Detection](technical-analysis.md#the-one-deliberate-exception-an-executor-legacy-v3).
+- **Say what was not audited.** The contracts were audited twice (reports of January 2025 and October 2025). No published audit report covers anything deployed since October 2025, and two of those deployments went live before an external review. Every page that describes them says so; the list is in [Review status](../architecture/README.md#review-status).
 
 ## What's _not_ here
 
 We deliberately don't publish:
 
-- The specific signer set of the `DefaultProxyAdmin` Safe. Available on request; not broadcast to reduce targeting.
+- Who holds the keys behind the governance addresses. The addresses themselves, their roles and the Safe's threshold are public and listed in the [Upgrade Policy](../architecture/upgrade-policy.md).
 - Operational runbooks, incident playbooks, or internal monitoring dashboards. Those belong in a private ops repo, not in user-facing docs.
 - Unsigned/unpublished upgrade plans. When we do upgrade, the plan is published before the transaction.
 

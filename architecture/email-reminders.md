@@ -2,9 +2,10 @@
 description: >-
   How email reminders are driven from on-chain state: an off-chain
   reminder-worker reads PII-free notify signals, keeps recipient emails
-  encrypted, and sends them, while the plan keeps working even if email
-  delivery fails. Plus the worker's non-email passes: protocol stats and
-  prices, the upgrade-queue watch, and an ops readout.
+  encrypted, and sends them, while every legacy keeps working even if email
+  delivery fails. Plus the worker's other passes: owner notices, Shield
+  Vault and wallet alerts, protocol stats and prices, the upgrade-queue
+  watch, and an ops readout.
 ---
 
 # Email Reminders
@@ -105,7 +106,7 @@ This page covers **email reminders** first (with the worker's other passes summa
 
 If the email layer is entirely broken (worker down, `email-proxy` down, Mailjet down), the only consequence is that reminder emails don't send. The legacy itself continues to work exactly as specified on-chain. A beneficiary whose reminder never arrives can still activate on time via the app, or via Etherscan using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md), because the on-chain state has all the information needed.
 
-This is the "plan survives us" principle in action: email reminders are a _better experience_, never a _requirement_.
+This is the "your setup survives us" principle in action: email reminders are a _better experience_, never a _requirement_.
 
 ## Beyond email: the worker's other passes
 
@@ -117,17 +118,38 @@ The worker periodically computes aggregate protocol statistics (counts and value
 
 ### Upgrade-queue watch
 
-The worker also watches the protocol's `UpgradeTimelock`, the contract every proxy upgrade must be publicly queued on, per the [Upgrade Policy](upgrade-policy.md). It scans the timelock's logs and raises an alert the moment anything happens there: an operation scheduled, executed, or cancelled, or the minimum delay changed. Alerts always go to the service log, and additionally to an ops email when configured.
+The worker also watches the protocol's `UpgradeTimelock`, the contract every proxy upgrade must be publicly queued on, per the [Upgrade Policy](upgrade-policy.md). It scans the timelock's logs and raises an alert the moment anything happens there: an operation scheduled, executed, or cancelled, or the minimum delay changed. Since the wallet-legacy router's settings for new legacies moved behind the timelock (2026-11-07), it alerts on those too: a change of the implementation, the pull vault, the renewal key, the router's admin or its payment contract, saying whether the change came through the timelock. Alerts always go to the service log, and additionally to an ops email when configured.
 
-This is the operational half of the upgrade policy's honesty story: the 48-hour queue only protects users if someone is actually watching it. A queued upgrade nobody expected is the signal to cancel and rotate keys. And because the events are public, anyone can run the same watch themselves straight from Etherscan.
+This is the operational half of the upgrade policy's honesty story: the 48-hour queue only protects users if someone is actually watching it. A queued upgrade nobody expected is the signal to cancel and rotate keys. And because the events are public, anyone can run the same watch themselves straight from Etherscan. Honest limit: this watch runs in one place and alerts by email only; there is no independent second watcher yet.
 
 ### Gas-sponsored relaying
 
-The worker is also the relayer behind [gas-sponsored intents](gas-sponsored-intents.md): it accepts a user's signed EIP-712 authorization (a beneficiary's claim, or an owner's check-in), submits the corresponding router transaction, and pays the gas. Every safety property lives on-chain; the worker only adds spending bounds (daily caps, a gas-price ceiling) and simulates each call before paying for it. Claims are relayed free for everyone; sponsored check-ins are a Premium perk. If this pass is down, nothing is lost but the convenience: the direct, pay-your-own-gas paths always work.
+The worker is also the relayer behind [gas-sponsored intents](gas-sponsored-intents.md): it accepts a user's signed EIP-712 authorization (a beneficiary's claim, an owner's check-in or timelock withdrawal, a gift claim, a Shield Vault exit), submits the corresponding transaction, and pays the gas. Every safety property lives on-chain; the worker only adds spending bounds (daily caps, a gas-price ceiling, a gas ceiling per route) and simulates each call before paying for it. Claims, gift claims and Shield Vault exits are relayed free for everyone; sponsored check-ins and owner timelock withdrawals are a Premium perk. If this pass is down, nothing is lost but the convenience: the direct, pay-your-own-gas paths always work.
 
 ### Auto-renew attestations
 
 The [auto-renew attestor](eoa-activity-auto-renew.md) runs as a pass of this same worker: for EOA legacies whose owner opted in, it observes the owner's public transaction count and renews the inactivity timer near the deadline, within the strict on-chain bounds described on its page.
+
+### Owner notices
+
+Emails to the address an owner saved as owner of a legacy, each sent at most once per event. Removing that address in the reminder settings stops them all.
+
+- **Renewed automatically**: after an attested renewal, with the new date, the 12-month limit and how to turn renewal off.
+- **Premium ending under automatic renewal**: 14 days before Premium ends and once it has ended, naming every legacy that relies on renewal.
+- **Renewals stopped**: if the renewal key is switched off for everyone, the worker is built to tell each owner who opted in, once, to check in themselves.
+- **An executor's attestation (legacy v3)**: when the executor of a legacy attests the owner's death, the owner is emailed. The attestation moves the claim date to 30 days out and any check-in cancels it, so the 30 days only help an owner who hears about it. This notice was live before legacy v3 was. An owner who saved no email gets no such notice; the attestation is still public on-chain.
+
+### Shield Vault alerts
+
+For a holding whose owner left an email (optional, one signature, stored encrypted): an email when a withdrawal or a settings change starts on the holding, and again a day before it can complete. Both vaults are watched. The alert cannot stop anything; it tells the owner in time to cancel or to use the recovery sheet. See [Shield Vault](shield-vault.md).
+
+### Wallet alerts
+
+Opt-in emails about a watched wallet: tokens leaving in a transaction the wallet did not send, a new permission to move its tokens, a transaction it sent, code delegated to it (EIP-7702), and for Premium a Bitcoin address. The email must be confirmed by link first, and the email and the watched address are stored encrypted. The user-facing page is [Wallet alerts and the Bitcoin watch](../user-guide/wallet-alerts.md).
+
+### Names and the watch list across devices
+
+A wallet that signs in on a device (one EIP-4361 signature, no transaction) can keep the names it gave its legacies and beneficiaries, and its watch list, on the worker: each item encrypted, shown only to that signed-in wallet, and deleted from Settings, Devices. Nothing of this goes on-chain, and without the sign-in it all stays in the browser.
 
 ### Ops-status readout
 

@@ -12,7 +12,7 @@ Watchers are a first-class way to coordinate with people who need visibility but
 
 ## Configuring
 
-Go to **Settings → Authorized Watchers** and select a legacy to manage watchers for.
+Go to **Settings → Authorized watchers** and select a legacy to manage watchers for.
 
 For each watcher you add:
 
@@ -74,22 +74,24 @@ There is nothing for the watcher to enable or pay for: the entry point appears a
 
 The same rule applies here as everywhere: the advisor view is read-only. A watcher can never check in, edit, delete, or activate a legacy from it; opening a contract leads to the same read-only detail view as the watchlist.
 
-## Contingent beneficiaries are automatically watchers
+## A backup beneficiary and a second backup are automatically watchers
 
-Second-line and third-line contingent beneficiaries are, by default, added as watchers with **limited visibility**. The owner can change their visibility at any time (e.g. upgrade an estate-lawyer contingent to full visibility).
+The backup beneficiary and the second backup of a legacy (older pages call them second-line and third-line contingent beneficiaries) are, by default, added as watchers with **limited visibility**. The owner can change their visibility at any time (e.g. upgrade an estate-lawyer backup to full visibility).
 
-- Contingents can't be removed from the watcher list directly; they're removed by editing the legacy itself (removing them from the contingent configuration).
-- When their line activates, they move from **My Watchlist** to **Legacies for Me** with full-visibility beneficiary access.
+- They can't be removed from the watcher list directly; they're removed by editing the legacy itself.
+- When their period starts, they move from **My Watchlist** to **Legacies for Me** with full-visibility beneficiary access.
+
+Backup heirs of a single share, on a wallet legacy of the new version, are set on the legacy's page, not through the watcher settings. The owner sends them the legacy's heir page link; see [Backup Beneficiaries and Backup Heirs](./manage-contingent-beneficiaries.md#backup-heirs-for-each-share). An executor gets the link to the executor page.
 
 ## Real-world use cases
 
 - **Consolidated oversight across wallets.** You manage several EOAs and Safes; watchers let a single dashboard see all of them without any one wallet having access to the others.
-- **Estate coordination.** A lawyer references the plan from off-chain documents. Limited visibility preserves the owner's privacy while the unique identifier lets documents unambiguously point to a specific plan.
-- **Family peace-of-mind.** A spouse or adult child has visibility without control: they know the plan exists, can see it's still active, but can't accidentally tamper.
-- **Monitoring counterparty plans.** Professional setups where one party's 10102 legacy is a contingency for another party's obligations.
+- **Estate coordination.** A lawyer references the legacy from off-chain documents. Limited visibility preserves the owner's privacy while the unique identifier lets documents unambiguously point to a specific legacy.
+- **Family peace-of-mind.** A spouse or adult child has visibility without control: they know the legacy exists, can see it's still active, but can't accidentally tamper.
+- **Monitoring a counterparty's legacy.** Professional setups where one party's 10102 legacy is a contingency for another party's obligations.
 
 ## See also
 
 - [Configure Email Reminders](./configure-email-reminders.md)
-- [Manage Contingent Beneficiaries](./manage-contingent-beneficiaries.md)
+- [Backup Beneficiaries and Backup Heirs](./manage-contingent-beneficiaries.md)
 - [Concepts: Creator vs. signer (Safe legacies)](../concepts.md#creator-vs-signer-safe-legacies)
