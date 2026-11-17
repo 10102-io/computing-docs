@@ -6,7 +6,7 @@ description: >-
 
 # About
 
-**10102 Computing Legacy** is a set of open-source Ethereum smart contracts, with a thin web app on top, that lets people decide how their on-chain assets pass on and lock funds until a date they choose. Assets stay in the owner's own wallet until the rules they set are met. There is no custody, and every legacy, timelock, gift and Shield Vault holding can be operated directly from the contracts if the app or the company disappears; what runs on our servers (email reminders and alerts, free relays, Save on autopilot, Guardian) would stop. The core contracts were audited twice (reports of January 2025 and October 2025); no published audit report covers what was deployed since, and the table below says exactly which is which.
+**10102 Computing Legacy** is a set of open-source Ethereum smart contracts, with a web app on top, that lets people decide how their on-chain assets pass on and lock funds until a date they choose. Assets stay in the owner's own wallet until the rules they set are met. There is no custody, and every legacy, timelock, gift and Shield Vault holding can be operated directly from the contracts if the app or the company disappears; what runs on our servers (email reminders and alerts, free relays, Save on autopilot, Guardian) would stop. The core contracts were audited twice (reports of January 2025 and October 2025); no published audit report covers what was deployed since, and the table below says exactly which is which.
 
 Development started in June 2024. Live on Ethereum mainnet since October 2024, under the `10102-io` GitHub organization since January 2026.
 

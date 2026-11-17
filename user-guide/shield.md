@@ -30,7 +30,7 @@ The app never says "v2" or "v3": a holding in the earlier vault reads
 with." The steps on this page are the same for both; where they differ
 (the fee, the status page address, **Add more**), this page says so.
 
-{% hint style="warning" %}
+{% hint style="info" %}
 **Shield Vault v3 is live without an independent audit.** Our team
 reviewed and tested it, and it was checked with automated testing and
 analysis tools. No outside firm has audited it. The earlier vault had two

@@ -8,11 +8,11 @@ description: >-
 
 Security for digital assets has matured. Smart contracts get audited, wallets get hardware-hardened, users get more discerning. Legacy planning for digital assets has not kept up. Most "solutions" still rely on centralized custodians, legal instruments designed for fiat assets, or a scrap of paper shoved in a safe that nobody remembers where.
 
-**10102 Computing Legacy** is a small, auditable set of Ethereum smart contracts (plus a thin app on top) that lets you define the rules for how your on-chain assets pass on, and executes them automatically when those rules are met. No custody. No subscription required for the core flows. No middleman the legacy depends on.
+**10102 Computing Legacy** is a set of open-source Ethereum smart contracts, with a web app on top, that lets you define the rules for how your on-chain assets pass on, and executes them automatically when those rules are met. No custody. No subscription required for the core flows. No middleman the legacy depends on.
 
 The protocol has been live on Ethereum mainnet since **October 2024** and independently audited twice ([RockSolid Security, report January 2025](https://github.com/10102-io/computing-sc/blob/main/Security_Review_Computing_Will.pdf); [CDSecurity, report October 2025](https://github.com/CDSecurity/audits)). Development started in June 2024; the original contracts repository is [archived and public](https://github.com/10102-labs/computing-sc-og), preserved when the project moved to the `10102-io` GitHub organization in January 2026.
 
-{% hint style="warning" %}
+{% hint style="info" %}
 **What the two audits do not include.** They were made on the legacy, timelock and Premium contracts as they stood in 2025. What came later had internal adversarial review and automated testing and analysis, not an independent audit. That includes the two newest contracts on mainnet: the new version of the wallet legacy (every wallet legacy created since 2026-11-13: NFTs, backup heirs, an executor) and Shield Vault v3 (every holding opened since 2026-11-11). Each page that describes them says so again.
 {% endhint %}
 
