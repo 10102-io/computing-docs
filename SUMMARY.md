@@ -43,6 +43,7 @@
   * [Email Reminders](architecture/email-reminders.md)
   * [Upgrade Policy](architecture/upgrade-policy.md)
   * [Quantum Readiness](architecture/quantum-readiness.md)
+* [Claim Guide](claim-guide.md)
 * [Agents & Builders](agents-and-builders.md)
 * [For Estate Planners](for-estate-planners.md)
 * [Partner Program](partners.md)

@@ -87,7 +87,7 @@ The anonymous MCP surface above is free and stays open; partner keys never restr
 - A key can also carry your **referral-program code**: setup links then attribute Premium purchases by the clients your agent onboards to your partner account, on the same on-chain-verified ledger as regular referral links. See [Partner Program](partners.md).
 - An unknown key is rejected with `401` rather than silently falling back to anonymous access, so a typo is visible immediately.
 
-Partner keys are provisioned manually. To request one, reach out via [GitHub](https://github.com/10102-io/computing) or [info@10102.io](mailto:info@10102.io).
+Partner keys are provisioned manually. To request one, write to [info@10102.io](mailto:info@10102.io).
 
 ## Pay-per-call inference (x402)
 
@@ -105,7 +105,7 @@ https://venice-proxy-production.up.railway.app/v1/chat/completions
 
 - **Source code:** the contracts and routers are open source at [github.com/10102-io/computing-sc](https://github.com/10102-io/computing-sc).
 - **Addresses:** the contracts live on mainnet are listed in [Architecture](architecture/README.md#mainnet-addresses), and in full in [`contract-addresses.json`](https://github.com/10102-io/computing-sc/blob/main/contract-addresses.json). A wallet legacy created since May 2026 is a 45-byte clone (the first 22 are full contracts) whose code contains the address of the implementation it runs; read that before assuming which functions a given legacy has.
-- **Agent docs:** the canonical agent onboarding doc is published at [AGENTS.md](https://github.com/10102-io/computing/blob/main/AGENTS.md).
+- **Agent docs:** a summary written for AI assistants is served at `https://app.10102.io/llms.txt`. An agent working on the contracts starts from [AGENTS.md](https://github.com/10102-io/computing-sc/blob/main/AGENTS.md) in their repository.
 - **Subgraph:** indexed Legacy and Timelock state is served from The Graph gateway: `https://gateway.thegraph.com/api/subgraphs/id/FXzZDbZxzdWaYGTPEcxN2AatbucRooQWfY67moam8oCd`. Since 2026-11-11 it also indexes each legacy v3 clone (NFT items, backup beneficiaries, the executor, per-share claims), both Shield Vaults, and the Premium coupon and referrer events. See [Indexing & Activity Tracking](architecture/indexing-and-activity-tracking.md).
 - **Terms, machine-readable:** `https://app.10102.io/terms/current.json` carries the terms in force (`version`, `updated`, `format`, `hash`, `text`). `hash` is the keccak256 of `text` and equals `activeTermsHash()` on the `EIP712LegacyVerifier`, so an agent can check the text against the chain before showing it to a user.
 - **Relaying is permissionless:** the signed claim, check-in and withdrawal entry points, and the Shield Vault's exits, can be submitted by anyone. Our relay is one implementation; see [Gas-Sponsored Intents](architecture/gas-sponsored-intents.md).

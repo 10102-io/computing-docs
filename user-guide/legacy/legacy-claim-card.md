@@ -20,7 +20,7 @@ One card is made for each beneficiary. It carries:
 - **Legacy contract address**: for the record only; no function is called there.
 - **Network** and the legacy's type.
 - **Tokens to claim** (wallet legacies): the addresses of the tokens in your legacy on the day the card was made. The claim function needs them.
-- **How to claim, step by step**: which function to call on a block explorer and what to fill in, and a link to the full written guide.
+- **How to claim, step by step**: which function to call on a block explorer and what to fill in, and the address of the full written guide, [docs.10102.io/claim-guide](../../claim-guide.md). A card made before 2026-11-18 prints an address that does not open; its own steps are complete, and a card made again carries the new one.
 
 For a Multisig legacy the card names the Safe the beneficiaries become co-signers of.
 
@@ -85,3 +85,4 @@ Both pages read the chain directly. The executor page can be read without a wall
 
 - [Create a Legacy Contract](./create-a-legacy-contract.md): the card is generated from here.
 - [Activate a Legacy Contract and Claim Funds](./activate-a-legacy-contract-and-claim-funds.md): the beneficiary's side.
+- [Claim Guide](../../claim-guide.md): the long form of the card's steps, for the person holding it.

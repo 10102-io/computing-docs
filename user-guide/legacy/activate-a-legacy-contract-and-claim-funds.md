@@ -107,7 +107,7 @@ Useful as a backup path if our UI is down, or if you already live in Safe's inte
 
 ## Via a blockchain explorer (any legacy)
 
-This is the path your Legacy Claim Card describes. You can reach it any time, with or without our UI.
+This is the path your Legacy Claim Card describes. You can reach it any time, with or without our UI. The [Claim Guide](../../claim-guide.md) walks through it in full, for wallet and Multisig legacies, with what each error means.
 
 1. Open an explorer like Etherscan for the network the legacy is on.
 2. Navigate to the **Router contract** from the card. It's a **Transfer Legacy Router** (or EOA Router) for Transfer legacies.
