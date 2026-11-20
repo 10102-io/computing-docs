@@ -75,7 +75,7 @@ Safe owners get a strictly nicer property: the Safe Guard updates the activity t
 | Owner active elsewhere but never touches the legacy | Guard captures the activity automatically; timer stays fresh. | By default the timer _keeps counting_, since only legacy interactions count; the owner must heartbeat or edit to reset it. With [auto-renew](../architecture/eoa-activity-auto-renew.md) enabled, the attestor renews for them near the deadline. |
 | Owner changes signer set on Safe | Guard still tracks activity; legacy continues to work. | N/A |
 | Owner rotates EOA key | N/A | Key rotation isn't visible to the legacy at all; the inactivity timer keeps counting. Owners need an explicit heartbeat or edit after rotation. |
-| Guard gets disabled without a matching legacy delete | Edge case we test against. Router detects missing Guard at activation and blocks. Legacy can be cleaned up via the explicit delete flow. | N/A |
+| Guard gets disabled without a matching legacy delete | Edge case we test against. With the router upgrade of November 2026 (on Ethereum from 2026-11-21 23:00 UTC) the Router refuses to activate a legacy whose Guard is no longer the Safe's; before it, the clock simply stopped at the last transaction the Guard saw. Legacy can be cleaned up via the explicit delete flow. | N/A |
 
 The failure we care about most is the one that activates _too early_, because it's irreversible. For EOAs the relevant risk runs the other way: the timer can only be reset by the owner, so the realistic failure is activating _too late_ (owner forgot to check in), which is recoverable; they just heartbeat. Our design prefers a recoverable delay over an irreversible premature disbursement.
 

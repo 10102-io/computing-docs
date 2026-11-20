@@ -25,7 +25,7 @@ One legacy flavor lives on this path today:
 |---|---|
 | `MultisigLegacyRouter` | Creates and updates Multisig legacies. Enforces that edits come from the Safe itself (at threshold). |
 | Per-legacy `MultisigLegacyContract` | Stores beneficiaries, activation trigger, name/note for a single Multisig legacy. It is also the **Safe Module**: enabled on the owner's Safe, it is what adds the beneficiaries as owners at activation. The only Safe transactions its code can make are adding owners and setting the threshold. |
-| `SafeGuard` | Deployed with the legacy and installed on the owner's Safe. Persists `lastTimestampTxs` on every Safe execution. |
+| `SafeGuard` | Deployed with the legacy and installed on the owner's Safe. Persists `lastTimestampTxs` on every Safe execution. Two versions exist; see [Guard versions](#guard-versions). |
 | `TransferLegacyRouter`, `TransferLegacyContract` | Retired (see above). |
 
 The live ones are in the public [`computing-sc`](https://github.com/10102-io/computing-sc) repository; addresses are in `contract-addresses.json`. The legacy v3 features (NFT items, backup beneficiaries, an executor) exist for wallet legacies only, not for Multisig legacies.
@@ -41,11 +41,14 @@ The user needs an existing Safe wallet. If they don't have one, they create it a
 1. The user connects a wallet that is one of the Safe's owners and names the Safe.
 2. They configure the legacy in the UI: beneficiaries, the threshold after activation, activation trigger (inactivity window), name/note.
 3. That owner sends one transaction from their own wallet: `MultisigLegacyRouter.createLegacy(safe, ...)`. The router checks that the sender is an owner of the Safe and that the Safe has no guard yet, then deploys the per-legacy contract and its guard.
-4. The app then proposes a Safe transaction with two calls:
+4. The app then proposes a Safe transaction with three calls:
    - `setGuard(SafeGuard)`: installs the 10102 guard on the Safe.
    - `enableModule(legacy contract)`: enables the per-legacy contract as a module on the Safe.
+   - the Safe calls the guard's `checkTransaction` hook itself. A Safe reads its guard before it executes a transaction, so the guard does not see the transaction that installs it. With this call the guard counts the set-up, and the inactivity window runs from the set-up instead of from the creation.
 
-   It goes through the Safe's normal multi-sig approval and execution flow: co-signers sign until threshold is reached, then it executes. Until it does, the legacy contract exists and can do nothing on the Safe.
+   On a Safe 1.5.0, with a version 2 guard, there is a fourth call, `setModuleGuard(SafeGuard)`, so that what a module does for the Safe counts as activity too. A module that acts on its own, such as a standing allowance, then restarts the waiting period each time it acts, like a transaction of the owners. The app leaves the fourth call out when the Safe already runs a module guard of its own.
+
+   The transaction goes through the Safe's normal multi-sig approval and execution flow: co-signers sign until threshold is reached, then it executes. Until it does, the legacy contract exists and can do nothing on the Safe.
 
 ### Step 3: On-chain effects
 
@@ -59,6 +62,15 @@ Every time the Safe executes _any_ outgoing transaction (not just 10102 ones), t
 
 Because the Guard lives _inside_ the Safe, activity detection for Safe-owned legacies is fully on-chain and passive: every Safe transaction counts, with no oracle and no check-in chore. Pure-EOA legacies use a per-legacy timer instead; see [Indexing & Activity Tracking](indexing-and-activity-tracking.md) for that story.
 
+### Guard versions
+
+A guard is deployed once per legacy and is not upgradeable, so a legacy keeps the guard it was created with.
+
+- **Version 1** (every legacy created so far on Ethereum). Its hook is not reserved to the Safe: a call from another address can start the inactivity window again. That can delay an activation; it cannot bring one forward, and it moves nothing.
+- **Version 2** (`GUARD_VERSION()` is 2). The time moves on two occasions only: the Safe itself calls a hook, or anyone calls `sync()` while the Safe's transaction count differs from the one the guard noted, which proves the Safe executed a transaction the guard did not see. The guard keeps that count (`lastNonce()`), and none of its hooks can revert, so it cannot stand between a Safe and its transactions.
+
+Version 2 comes with an upgrade of `LegacyDeployer` and `MultisigLegacyRouter` that is live on Sepolia since 2026-11-19 and scheduled on Ethereum, where it can take effect from 2026-11-21 23:00 UTC. From then on every new legacy gets a version 2 guard, and the owners of an existing legacy get one by deleting it and creating it again. The record, with the evidence and its limits, is `docs/plans/safe-legacy-guard-2026-11.md` in the contracts repository ([pull request 19](https://github.com/10102-io/computing-sc/pull/19)). Like everything deployed since October 2025, this change has no published audit report.
+
 ## Editing a legacy
 
 Any Safe owner can initiate an edit (beneficiary changes, allocation changes, name/note, activation trigger). The edit is a normal Safe transaction and requires threshold signatures just like the creation. When it executes:
@@ -71,18 +83,24 @@ One asymmetry worth naming: **notification settings (watchers, email reminders) 
 
 ## Deleting a legacy
 
-Delete is a Safe transaction at threshold with two calls: `setGuard(0x0)` and `disableModule(legacy contract)`. The Safe emits `ChangedGuard` and `DisabledModule`. The Multisig router has no delete function and emits no delete event. The subgraph marks the legacy deleted when it sees the Safe's guard change to anything other than the legacy's own guard. The Safe is left without the 10102 guard and module; the per-legacy contract stays on-chain with no power over the Safe.
+Delete is a Safe transaction at threshold with two calls: `setGuard(0x0)` and `disableModule(legacy contract)`, and `setModuleGuard(0x0)` where the set-up had set it. The app removes only what is this legacy's own: a guard or module guard that is not the legacy's stays. The Safe emits `ChangedGuard` and `DisabledModule`. The Multisig router has no delete function and emits no delete event. The subgraph marks the legacy deleted when it sees the Safe's guard change to anything other than the legacy's own guard. The Safe is left without the 10102 guard and module; the per-legacy contract stays on-chain with no power over the Safe.
 
 Users can also tear down manually via Safe's Transaction Builder at [app.safe.global](https://app.safe.global) (calling `setGuard(0x0)` + `disableModule(...)` on the Safe directly), which is the fallback path if the 10102 UI is ever unavailable.
 
 ## Activation: the endgame
 
-When a beneficiary attempts to activate a legacy (via the app, via Safe, or via Etherscan using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md)), the Router checks:
+Anyone may send the activation (via the app, or via Etherscan using the [Legacy Claim Card](../user-guide/legacy/legacy-claim-card.md)): the caller gains nothing by it, because only the configured beneficiaries become owners. The check is on time alone:
 
-1. The caller is one of the configured beneficiaries (primary, or contingent after their window elapses).
-2. `block.timestamp - SafeGuard.lastTimestampTxs >= configuredInactivityWindow`.
+- `block.timestamp - SafeGuard.lastTimestampTxs >= configuredInactivityWindow`.
 
-If both checks pass, the Router calls the per-legacy contract, which, as a module the Safe enabled at creation, executes the activation action on behalf of the Safe, bypassing the normal threshold. Its code performs this one action and nothing else.
+With the upgrade described under [Guard versions](#guard-versions), the Router asks two more things before it activates any Safe legacy, also one with a version 1 guard:
+
+- the legacy is still set up on its Safe: its guard is the Safe's guard and the legacy an enabled module (`GuardSafeWalletInvalid()`, `ModuleSafeWalletInvalid()` otherwise). Before, a Safe that took the guard off and left the module enabled had a clock that no longer moved;
+- a version 2 guard has seen the Safe's last transaction (`GuardBehindSafeWallet()` otherwise; `sync()` on the guard brings it up to date and starts the window again).
+
+`checkActiveLegacy(legacyId)` then answers `false` wherever the activation would revert.
+
+If the checks pass, the Router calls the per-legacy contract, which, as a module the Safe enabled at creation, executes the activation action on behalf of the Safe, bypassing the normal threshold. Its code performs this one action and nothing else.
 
 ### Multisig legacy activation
 

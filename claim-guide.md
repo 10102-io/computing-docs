@@ -117,8 +117,18 @@ The Safe records the time of its last transaction. The legacy can be claimed onc
 3. Find `checkActiveLegacy`, type the **Legacy ID** from the card and press **Query**.
 
 - `true`: it can be claimed. Go on to step 2.
-- `false`: the Safe was active too recently. Wait and check again later.
+- `false`: it cannot be claimed now. Most often the Safe was active too recently: wait and check again later. If the answer stays `false` long after the period should have passed, see the next section.
 - `LegacyNotFound`: wrong Legacy ID, or wrong network.
+
+### If the answer stays `false`
+
+The router is being upgraded: on Ethereum the change is scheduled to take effect on 2026-11-21 at 23:00 UTC. From then on it answers `false` in two more cases, and each can be read from the chain without a wallet.
+
+1. On the router's page, `legacyAddresses(legacyId)` gives the legacy contract and `guardAddresses(legacyId)` the guard contract. On the legacy contract, `getLegacyOwner()` gives the Safe.
+2. **Is the legacy still connected to its Safe?** Open the Safe's address on the explorer, **Read as Proxy**, and call `isModuleEnabled` with the legacy contract's address. `false` means the owners of the Safe disconnected the legacy: it cannot be claimed, and only they can connect it again. The same holds when the Safe no longer runs the legacy's guard; `app.safe.global` shows a Safe's guard and modules under Settings, Modules, to anyone who opens the Safe by its address.
+3. **Has the guard counted the Safe's last transaction?** Open the guard contract's page. If it lists `lastNonce` and `sync` (legacies created after the upgrade), compare `lastNonce()` with `nonce()` on the Safe. If the two numbers differ, the Safe made a transaction the guard did not see. Anyone can have it counted: under **Write Contract** on the guard, send `sync`. The inactivity period starts again from that moment, so wait it out and repeat step 1. If the guard lists neither function, it has nothing to count and this case does not apply.
+
+If the legacy is connected, the guard is up to date and the answer is still `false`, the period has not passed: `getLastTimestampTxs()` on the guard is the time it runs from.
 
 ### Step 2: claim
 
@@ -140,6 +150,8 @@ If the Safe address was left off the card at the owner's request, read it from t
 | The explorer shows | What it means | What to do |
 |---|---|---|
 | `NotEnoughContitionalActive` | The inactivity period has not passed: a Safe transaction started it again. | Repeat step 1 and wait for `true`. |
+| `GuardBehindSafeWallet` | The Safe made a transaction its guard has not counted. | Send `sync` on the guard (see "If the answer stays `false`"), then wait out the period. |
+| `GuardSafeWalletInvalid` or `ModuleSafeWalletInvalid` | The legacy is no longer connected to its Safe: the owners removed its guard or disabled it. | This path is closed unless the owners connect it again. Speak to whoever handles the owner's affairs. |
 | `LegacyNotActive` | The legacy was already claimed, or the owner removed it. | Go to step 3 and look at the Safe's owners: you may already be a co-signer. |
 | `LegacyNotFound` | Wrong Legacy ID, or wrong network. | Check the card and the network the explorer shows. |
 | `ExecTransactionFromModuleFailed` | The Safe no longer accepts the legacy: the owner disconnected it. | This path is closed. Speak to whoever handles the owner's affairs. |
@@ -149,7 +161,7 @@ If the Safe address was left off the card at the owner's request, read it from t
 
 - On the router: `legacyAddresses(legacyId)` and `guardAddresses(legacyId)` give the legacy contract and the guard contract for your Legacy ID.
 - On the legacy contract: `getBeneficiaries()` lists who becomes a co-signer, `getMinRequiredSignatures()` the threshold after the claim, `getTriggerActivationTimestamp()` the time from which it can be claimed.
-- On the guard contract: `getLastTimestampTxs()` is the time of the Safe's last transaction.
+- On the guard contract: `getLastTimestampTxs()` is the time of the Safe's last transaction. On a guard of a legacy created after the November 2026 upgrade, `lastNonce()` is the Safe's transaction count as the guard last saw it.
 
 ## Where this page is kept
 
