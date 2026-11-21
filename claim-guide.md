@@ -122,7 +122,7 @@ The Safe records the time of its last transaction. The legacy can be claimed onc
 
 ### If the answer stays `false`
 
-The router is being upgraded: on Ethereum the change is scheduled to take effect on 2026-11-21 at 23:00 UTC. From then on it answers `false` in two more cases, and each can be read from the chain without a wallet.
+Since an upgrade of the router, live on Ethereum since 2026-11-21, it answers `false` in two more cases, and each can be read from the chain without a wallet.
 
 1. On the router's page, `legacyAddresses(legacyId)` gives the legacy contract and `guardAddresses(legacyId)` the guard contract. On the legacy contract, `getLegacyOwner()` gives the Safe.
 2. **Is the legacy still connected to its Safe?** Open the Safe's address on the explorer, **Read as Proxy**, and call `isModuleEnabled` with the legacy contract's address. `false` means the owners of the Safe disconnected the legacy: it cannot be claimed, and only they can connect it again. The same holds when the Safe no longer runs the legacy's guard; `app.safe.global` shows a Safe's guard and modules under Settings, Modules, to anyone who opens the Safe by its address.

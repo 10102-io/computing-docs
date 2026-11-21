@@ -66,10 +66,10 @@ Because the Guard lives _inside_ the Safe, activity detection for Safe-owned leg
 
 A guard is deployed once per legacy and is not upgradeable, so a legacy keeps the guard it was created with.
 
-- **Version 1** (every legacy created so far on Ethereum). Its hook is not reserved to the Safe: a call from another address can start the inactivity window again. That can delay an activation; it cannot bring one forward, and it moves nothing.
+- **Version 1** (every legacy created on Ethereum before 2026-11-21 23:05 UTC). Its hook is not reserved to the Safe: a call from another address can start the inactivity window again. That can delay an activation; it cannot bring one forward, and it moves nothing.
 - **Version 2** (`GUARD_VERSION()` is 2). The time moves on two occasions only: the Safe itself calls a hook, or anyone calls `sync()` while the Safe's transaction count differs from the one the guard noted, which proves the Safe executed a transaction the guard did not see. The guard keeps that count (`lastNonce()`), and none of its hooks can revert, so it cannot stand between a Safe and its transactions.
 
-Version 2 comes with an upgrade of `LegacyDeployer` and `MultisigLegacyRouter` that is live on Sepolia since 2026-11-19 and scheduled on Ethereum, where it can take effect from 2026-11-21 23:00 UTC. From then on every new legacy gets a version 2 guard, and the owners of an existing legacy get one by deleting it and creating it again. The record, with the evidence and its limits, is `docs/plans/safe-legacy-guard-2026-11.md` in the contracts repository ([pull request 19](https://github.com/10102-io/computing-sc/pull/19)). Like everything deployed since October 2025, this change has no published audit report.
+Version 2 came with an upgrade of `LegacyDeployer` and `MultisigLegacyRouter` that is live on Sepolia since 2026-11-19 and on Ethereum since 2026-11-21 23:05 UTC. Since then every new legacy gets a version 2 guard, and the owners of an existing legacy get one by deleting it and creating it again. The record, with the evidence and its limits, is `docs/plans/safe-legacy-guard-2026-11.md` in the contracts repository ([pull request 19](https://github.com/10102-io/computing-sc/pull/19)). Like everything deployed since October 2025, this change has no published audit report.
 
 ## Editing a legacy
 
@@ -93,7 +93,7 @@ Anyone may send the activation (via the app, or via Etherscan using the [Legacy 
 
 - `block.timestamp - SafeGuard.lastTimestampTxs >= configuredInactivityWindow`.
 
-With the upgrade described under [Guard versions](#guard-versions), the Router asks two more things before it activates any Safe legacy, also one with a version 1 guard:
+Since the upgrade described under [Guard versions](#guard-versions), the Router asks two more things before it activates any Safe legacy, also one with a version 1 guard:
 
 - the legacy is still set up on its Safe: its guard is the Safe's guard and the legacy an enabled module (`GuardSafeWalletInvalid()`, `ModuleSafeWalletInvalid()` otherwise). Before, a Safe that took the guard off and left the module enabled had a clock that no longer moved;
 - a version 2 guard has seen the Safe's last transaction (`GuardBehindSafeWallet()` otherwise; `sync()` on the guard brings it up to date and starts the window again).

@@ -239,9 +239,11 @@ about whether the code is right, so here is the other half, stated exactly:
   destination wallet on timelock claims (2026-09-24), the upgrade of
   2026-11-07 (`LegacyPullVaultV2`, the clone new legacies used until
   2026-11-13, the router settings that now wait in the timelock, and the
-  coupon codes and referrer shares in `PremiumRegistry`), and the router
+  coupon codes and referrer shares in `PremiumRegistry`), the router
   change of 2026-11-18 (only the claim that ends a legacy releases the
-  owner's create flag).
+  owner's create flag), and the Safe legacy change of 2026-11-21 (a guard
+  whose clock only the Safe moves, and a router that activates a legacy
+  only while it is connected to its Safe).
 - Legacy v3 (mainnet since 2026-11-13 20:42 UTC) and Shield Vault v3
   (mainnet since 2026-11-11) went live before an external review, which is
   still to be commissioned.
