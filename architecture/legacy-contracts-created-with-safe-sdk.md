@@ -70,6 +70,8 @@ It takes the Safe's own number of signatures, like every transaction of the Safe
 
 The app names a queued transaction a check-in only when it is exactly that call, with no value and no gas terms, under the hash the app works out for it itself. It reads the Safe and its queue again when the button is pressed, and what a signer signs or sends is the transaction that was checked.
 
+Since 2026-11-24 every step of a Safe on a legacy's page is read the same way: the set-up, a change and the removal are offered for signing only when the queued transaction makes exactly the calls the app builds for that legacy, as the Safe stands on the chain, under the hash the app works out itself. The same goes for the withdrawal and the unlock of a timelock held by a Safe. Anything else in the Safe's queue is the Safe's own business: it is signed in Safe{Wallet} and leaves the legacy's status as it is.
+
 ### Guard versions
 
 A guard is deployed once per legacy and is not upgradeable, so a legacy keeps the guard it was created with.
