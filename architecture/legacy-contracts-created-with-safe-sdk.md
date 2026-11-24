@@ -58,9 +58,17 @@ The user needs an existing Safe wallet. If they don't have one, they create it a
 
 ## Activity tracking (the happy path)
 
-Every time the Safe executes _any_ outgoing transaction (not just 10102 ones), the Safe's execution hooks call `SafeGuard.checkTransaction(...)`, which updates `lastTimestampTxs`. This is the entire "heartbeat" mechanism for Safe-owned legacies: no explicit check-in button needed, because normal Safe usage _is_ the check-in. The UI also exposes an explicit `I'm still alive` action for owners who want a deliberate heartbeat.
+Every time the Safe executes _any_ outgoing transaction (not just 10102 ones), the Safe's execution hooks call `SafeGuard.checkTransaction(...)`, which updates `lastTimestampTxs`. This is the entire "heartbeat" mechanism for Safe-owned legacies: no check-in is needed, because normal Safe usage _is_ the check-in.
 
 Because the Guard lives _inside_ the Safe, activity detection for Safe-owned legacies is fully on-chain and passive: every Safe transaction counts, with no oracle and no check-in chore. Pure-EOA legacies use a per-legacy timer instead; see [Indexing & Activity Tracking](indexing-and-activity-tracking.md) for that story.
+
+### Check in
+
+For a Safe that is held and rarely used, the legacy's page has **Check in** for the Safe's signers (since 2026-11-23, on a version 2 guard). It is a transaction of the Safe that calls `sync()` on the legacy's guard and moves nothing. The Safe asks its guard before it executes it, like before any transaction, and that is what restarts the waiting period; the call itself then has nothing left to do and cannot fail. Any other transaction of the Safe would do the same. This one says what it is, also in the Safe's own apps.
+
+It takes the Safe's own number of signatures, like every transaction of the Safe: on a 2 of 3 Safe one signer starts it and a second one signs and sends it. The page shows each signer the step that is left, and a Safe that takes one signature sends it in one go. A signer alone cannot restart the waiting period of a Safe that asks for two; the guard goes by what the Safe executes and by nothing else. (On a Safe 1.5.0 a module the owners have enabled counts too, see the fourth call under [Step 2](#step-2-connect-and-configure).)
+
+The app names a queued transaction a check-in only when it is exactly that call, with no value and no gas terms, under the hash the app works out for it itself. It reads the Safe and its queue again when the button is pressed, and what a signer signs or sends is the transaction that was checked.
 
 ### Guard versions
 

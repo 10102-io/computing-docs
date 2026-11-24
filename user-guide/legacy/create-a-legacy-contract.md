@@ -99,13 +99,14 @@ Multisig legacy _is_ your Safe: beneficiaries become co-signers on activation, t
 2. Enter your Safe address. We verify it, and the page says what is wrong when it cannot be used: not an address, not a Safe on this network, already has a legacy, or could not be checked. Each Safe can have one legacy; a wallet that signs for several Safes can give each its own.
 3. Configure:
    - Contract name, beneficiaries (addresses), activation trigger.
+   - How many signatures the Safe needs after activation. As you add beneficiaries the form says what that comes to, for example "After activation: 1 of 5 signatures required": your beneficiaries join the Safe's current signers, and the number counts for all of them.
    - No asset allocation here; beneficiaries take over the Safe itself.
 4. Your Safe signers approve the creation transaction (installs our Safe module and guard).
 
 {{screenshot: configure-multisig-check-safe}}
 
 {% hint style="warning" %}
-The Safe must still be in active use, because Multisig legacy relies on your Safe's last outgoing transaction as a liveness signal. If you don't transact from the Safe at least once per activation window, beneficiaries can activate. Use the heartbeat action on the details page to reset the timer if you don't have another transaction to send.
+The Safe must still be in active use, because Multisig legacy relies on your Safe's last outgoing transaction as a liveness signal. If you don't transact from the Safe at least once per activation window, beneficiaries can activate. If you have no other transaction to send, use **Check in** on the details page: it restarts the waiting period without moving anything, and like every transaction of the Safe it needs the Safe's usual number of signers.
 {% endhint %}
 
 ## After it exists: NFTs, backups and an executor

@@ -38,7 +38,7 @@ Any action that proves you're still around and resets the activation timer. What
 - **Safe legacies**: every Safe transaction counts automatically (the Safe Guard records it), so normal usage keeps the legacy fresh.
 - **EOA legacies**: checking in resets the countdown, and so does any change you make to the legacy. Sending, swapping or signing elsewhere does not, so checking in is up to you. With Premium, [automatic renewal](#auto-renew-eoa-legacies) can count that activity too.
 
-If you don't have another qualifying action to make, **Check in** on the details page resets the timer in a single transaction. With Premium, it is a free signature.
+If you don't have another qualifying action to make, **Check in** on the details page resets the timer. On an EOA legacy it is a single transaction, and with Premium a free signature. On a Safe legacy it is a transaction of the Safe that moves nothing, confirmed by the Safe's usual number of signers.
 
 ## Auto-renew (EOA legacies)
 
