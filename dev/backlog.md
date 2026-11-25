@@ -14,7 +14,6 @@ Last reviewed against what is live on mainnet: 2026-11-16.
 
 ## Active work
 
-- **The governance Safe to 2-of-3.** The Safe already queues upgrades (see Recently shipped), with two owners and a threshold of one. Next: a third owner and a 2-of-3 threshold, after which the maintainer key gives up its proposer role and the upgrade delay rises from 48 hours to 7 days. None of the three is done.
 - **Finishing the app side of legacy v3.** The contracts are live (see Recently shipped). Still open in the app: the older claim card does not yet show a first-line beneficiary's own share as claimed on a legacy with backup beneficiaries, the printed claim card's wording does not yet describe such a legacy, and the fee line does not yet say that on a legacy v3 the fee reaches the treasury as the claimed token. Notification settings for a Safe legacy can be edited by the Safe on-chain, with no screen for it yet.
 - **Clear signing for the new functions.** Descriptors for the create that binds the fee and for Shield Vault v3 are submitted to the clear-signing registry and wait for its review. The legacy v3 settings and claims, the vault's `unbind`, the coupon purchase and the exact-date lock have none yet.
 - **Better error messages and offline tolerance.** Ongoing: the generic "something went wrong" errors are being replaced with specific, actionable messages. Every legacy v3 contract error has plain words since 2026-11-11.
@@ -53,10 +52,19 @@ Formerly on this list, now live on mainnet:
   published audit.
 - **Every known compiler bug assessed.** On 2026-11-12 every contract of ours on mainnet was rebuilt from source to the bytes on the chain and checked against every known bug of its compiler version. None is found to apply; for one optimizer bug the answer is a strong indication, weaker for the contracts built with solc 0.8.20, not a proof.
 - **Continuous checks on the contracts.** Since 2026-10-29 the contracts repository runs its test suite, coverage thresholds for the Shield Vault and the recovery registry, static analysis and a fuzz and invariant suite on every push. The checks inform; they do not block a merge.
-- **Upgrades queued by a Safe.** Since 2026-09-24 the governance Safe
-  queues upgrades and a separate hardware key is the only one that can
-  cancel them; the maintainer key keeps its proposer role until the Safe is
-  2-of-3. See [Upgrade Policy](../architecture/upgrade-policy.md).
+- **The governance Safe takes two of three signatures.** Since 2026-11-25
+  the Safe has three owners and needs two of them, on Ethereum and on
+  Sepolia; until then either of two owners could act alone. What the Safe
+  holds directly (pausing new creates, stopping renewals, the fee and
+  treasury roles, the timelock router's creation settings) now takes two
+  keys. The maintainer key keeps its proposer role and the upgrade delay
+  stays 48 hours; the earlier plan to drop the role and raise the delay
+  to 7 days is not pursued for now. See
+  [Upgrade Policy](../architecture/upgrade-policy.md#the-honest-limit).
+- **Upgrades behind a separate cancel key.** Since 2026-09-24 the
+  governance Safe can queue upgrades and a separate hardware key is the
+  only one that can cancel them. See
+  [Upgrade Policy](../architecture/upgrade-policy.md).
 - **Safe legacies: the Safe manages notifications too.** Since the
   2026-11-07 upgrade a multisig legacy's own Safe may edit its watchers and
   reminder settings, next to the wallet that created it. The app still
@@ -84,7 +92,7 @@ Ideas we think are promising but haven't committed to:
 Items we've explicitly decided to _not_ do now, with enough context to pick them up later:
 
 - **An external review of legacy v3 and Shield Vault v3.** Both went to mainnet without one, a risk we accepted and state wherever they are described. The review is still wanted. It is not commissioned and nothing is scheduled; the scope document for a reviewer is ready. Trigger: the value held in v3 legacies or in Shield Vault v3 grows, or an audit firm is engaged for anything else. Findings would go into the next contract upgrade, and since a legacy and a vault cannot be upgraded, into a notice to their owners.
-- **A second, independent watcher for admin actions.** Today one service of ours watches the upgrade queue and the router's settings and alerts by email. Not every admin action is alerted yet. A watcher outside our own servers, with a phone channel, is evaluated and waits for a decision. Trigger: that decision, the Safe moving to 2-of-3, or more value in v3.
+- **A second, independent watcher for admin actions.** Today one service of ours watches the upgrade queue and the router's settings and alerts by email. Not every admin action is alerted yet. A watcher outside our own servers, with a phone channel, is evaluated and waits for a decision. Trigger: that decision, or more value in v3.
 - **A Safe module adding the Shield Vault's delay and veto to an existing Safe.** Not built: the Shield Vault already serves holdings, and a guard with a bug can block a Safe's transactions. Trigger: Safe owners ask for it, or an audit budget is set.
 - **What estate planners asked for beyond legacy v3.** Per-share backups and an executor are live. Still open, all off-chain: grouping several legacies and timelocks as one estate, note templates that reference legal documents, and an estate summary or instruction letter to export.
 - **Saying how a Shield Vault holding closed.** The status page of a closed holding says only that everything left; the subgraph now has what is needed to name the way and the date. Ready to pick up.

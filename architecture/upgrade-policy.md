@@ -1,8 +1,8 @@
 ---
 description: >-
   How 10102's contracts can change, who can change them, and how you can
-  watch: every upgrade waits in a public 48-hour queue, a Safe queues it,
-  a hardware key can stop it, and exits can never be paused.
+  watch: every upgrade waits in a public 48-hour queue, a separate
+  hardware key can stop it, and exits can never be paused.
 ---
 
 # Upgrade Policy
@@ -47,7 +47,7 @@ queued, delayed operation.
 
 ```mermaid
 flowchart LR
-    A["Proposer (Safe) schedules<br/>public CallScheduled event"] --> B["48-hour public queue<br/>anyone can inspect the verified code"]
+    A["A proposer schedules<br/>public CallScheduled event"] --> B["48-hour public queue<br/>anyone can inspect the verified code"]
     B -->|"guardian key spots a problem"| C["Cancelled<br/>nothing changes"]
     B -->|"delay elapsed"| D["Executed<br/>permissionless: nobody can block it"]
     B -.->|"you disagree"| E["You can exit first:<br/>claim, check in, delete, withdraw<br/>(never pausable)"]
@@ -56,28 +56,29 @@ flowchart LR
 ## Who holds which key
 
 Since 24 September 2026 the roles are split: the key that routinely queues
-changes cannot cancel, and the key that cancels holds no proposer role of
-its own (with one limit while the Safe has a threshold of one, stated
-under the table):
+changes cannot cancel, and the key that cancels cannot queue. It holds no
+proposer role, and since 25 November 2026 the Safe it co-owns takes two
+signatures:
 
 | Role | Holder | Can do | Cannot do |
 |---|---|---|---|
-| Proposer | The governance Safe (two owners, threshold one today), a [Safe](https://app.safe.global) at [`0x60B3da49f05E21a1fcD7e210075A23b75939C3eA`](https://etherscan.io/address/0x60B3da49f05E21a1fcD7e210075A23b75939C3eA) | Queue upgrades and role or delay changes | Execute early, cancel |
-| Proposer (transitional) | The maintainer key `0xfe8b…b630` | Queue routine upgrades from scripts | Cancel; it loses the proposer role once the Safe is 2-of-3 |
-| Canceller | A hardware wallet, [`0x7B61dD775422f465D6b9f28C8EFEE39263ef2579`](https://etherscan.io/address/0x7B61dD775422f465D6b9f28C8EFEE39263ef2579), never connected to a browser extension | Stop anything queued | Queue anything under its own role (but see the Safe's threshold, below) |
+| Proposer | The governance Safe (three owners, two signatures needed), a [Safe](https://app.safe.global) at [`0x60B3da49f05E21a1fcD7e210075A23b75939C3eA`](https://etherscan.io/address/0x60B3da49f05E21a1fcD7e210075A23b75939C3eA) | Queue upgrades and role or delay changes | Execute early, cancel |
+| Proposer | The maintainer key `0xfe8b…b630` | Queue routine upgrades from scripts | Execute early, cancel |
+| Canceller | A hardware wallet, [`0x7B61dD775422f465D6b9f28C8EFEE39263ef2579`](https://etherscan.io/address/0x7B61dD775422f465D6b9f28C8EFEE39263ef2579), never connected to a browser extension | Stop anything queued | Queue anything: it holds no proposer role, and in the Safe it is one owner of three |
 | Executor | Anyone | Execute an operation whose delay has passed | Execute early |
 | Admin | The timelock itself | Grant or revoke roles, change the delay, all through the same queue | Act instantly |
 
-**The Safe today: two owners, threshold one.** Its owners are the guardian
-hardware key and the maintainer key, and one signature is enough. So the
-guardian key, although it holds no proposer role, can queue an operation
-through the Safe as one of its owners; the separation between "queues" and
-"cancels" is complete only once the threshold is two. A third owner and a
-threshold of two of three are planned and not done; when it happens it is
-visible on the Safe itself. Read the live table any time: `hasRole` on the
-timelock, `getOwners()` and `getThreshold()` on the Safe, or the
-open-source `verify-governance` script in the contracts repository, which
-prints every row above as pass or fail.
+**The Safe today: three owners, two signatures.** Since 2026-11-25 18:53
+UTC
+([transaction](https://etherscan.io/tx/0xa5ede822c7469c2ce5cc19be2d68a517792aa01f399c90b15973177b0221d812))
+its owners are the guardian hardware key, the maintainer key and a third
+key, and two of them must sign. Until then it had two owners and one
+signature was enough, so either of them alone could do what the Safe can
+do, and the guardian key could queue an operation through it. Read the
+live table any time: `hasRole` on the timelock, `getOwners()` and
+`getThreshold()` on the Safe, or the open-source `verify-governance`
+script in the contracts repository, which prints every row above, and the
+Safe's threshold and owner count, as pass or fail.
 
 What waits in the 48-hour queue today:
 
@@ -96,6 +97,8 @@ What waits in the 48-hour queue today:
   change them at once.
 - **Which implementations `LegacyPullVaultV2` accepts.** Only the timelock
   can add one, and none can ever be removed.
+- **Which routers may deploy a legacy**, since 2026-11-19: the timelock
+  owns `LegacyDeployer`.
 - **The timelock's own roles and delay.**
 
 What the governance Safe holds directly, without the queue:
@@ -118,10 +121,9 @@ What the governance Safe holds directly, without the queue:
 
 Held by the maintainer key alone, with no Safe role and no queue: the
 owner role of the terms verifier (the terms version and hash new consents
-are recorded against, and which routers may record a consent) and of
-`LegacyDeployer` (which routers may deploy a legacy). Neither can touch a
-legacy, a lock or a holding that exists; a wrong setting there would make
-NEW creates fail until it is corrected.
+are recorded against, and which routers may record a consent). It cannot
+touch a legacy, a lock or a holding that exists; a wrong setting there
+would make NEW creates fail until it is corrected.
 
 ## What we will and won't upgrade
 
@@ -189,18 +191,21 @@ Three levels, to keep them apart:
 
 ## The honest limit
 
-The timelock is a transparency window with a brake, not yet full
-multi-party control. Until the Safe is two-of-three, the maintainer key can
-still queue an upgrade on its own, directly or as one of the Safe's two
-owners; what it can no longer do is cancel, and what it never could do is
-skip the queue. The guardian key can cancel, and while the Safe's threshold
-is one it could also queue through the Safe.
+For upgrades the timelock is a transparency window with a brake, not
+multi-party control. The maintainer key can still queue an upgrade on its
+own. What it cannot do is cancel, and what it never could do is skip the
+queue. We decided on 2026-11-25 to keep it that way for now: routine
+upgrades are queued from scripts with that key, more of them are likely in
+the coming months, and what stands between a queued change and the
+contracts is the public 48-hour wait and a separate key that can cancel.
+The guardian key can cancel, and since the Safe takes two signatures it
+can queue nothing alone.
 
-And with a threshold of one, either owner key alone can do everything the
-Safe can do without the queue, including changing the Safe's own owners
-and threshold. None of it can move, freeze or re-price a legacy, a lock or
-a holding that exists. Pausing new creates or deposits, or stopping
-renewals, is an annoyance. Two powers are more than that. The timelock
+What the Safe can do without the queue takes two of its three keys since
+2026-11-25, changing the Safe's own owners and threshold included. None of
+it can move, freeze or re-price a legacy, a lock or a holding that exists.
+Pausing new creates or deposits, or stopping renewals, is an annoyance.
+Two powers are more than that. The timelock
 router's creation settings decide which vault contracts and which swap
 router a NEW lock, gift or Save deposit goes through, so a hostile change
 could misdirect what someone locks after it; the router's own withdraw
@@ -211,10 +216,12 @@ calls it. And the `Payment` roles can withdraw the fees collected.
 A malicious or mistaken queued operation cannot land silently: our
 monitoring alerts on every `CallScheduled`, the guardian key has 48 hours
 to cancel, and you have 48 hours to exit if you disagree with any queued
-change. The remaining steps, in order and each visible on-chain when it
-happens: the Safe to two of three, the maintainer key losing the proposer
-role, and the delay rising from 48 hours to 7 days. None of the three is
-done yet.
+change. This page used to name three steps to come. The first is done: the
+Safe takes two of three signatures since 2026-11-25. The other two, the
+maintainer key giving up its proposer role and the delay rising from 48
+hours to 7 days, are not planned for now. If that changes, either one is
+a queued operation like any other, visible 48 hours before it takes
+effect, and this page will say so.
 
 That monitoring runs in one place, our own worker, and alerts by email. An
 independent second watcher is not in place yet, which is one more reason to

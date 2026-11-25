@@ -56,7 +56,7 @@ The parts:
 - **Premium contracts**: `PremiumSetting` stores watcher/reminder configuration (addresses only; reminder emails live off-chain); `PremiumRegistry` records subscriptions, coupon codes and referrer shares; `PremiumReminderView` is a standalone read-only contract the reminder service polls for due reminder windows.
 - **Fees and terms**: `Payment` holds the delivery fee rate each new legacy copies at creation (0.25% today) and receives the fees; `EIP712LegacyVerifier` holds the hash of the terms in force and records each consent.
 - **Shield Vault**: `ShieldVaultV3` takes every new holding since 2026-11-11; the earlier `ShieldVault` (v2) keeps its holdings. Both read recovery commitments from the ownerless `QuantumRecoveryRegistry`. See [Shield Vault](shield-vault.md) and [Quantum Readiness](quantum-readiness.md).
-- **Governance**: `UpgradeTimelock` (48 hours), the governance Safe that queues operations, and a guardian hardware key that can cancel them. See [Upgrade Policy](upgrade-policy.md).
+- **Governance**: `UpgradeTimelock` (48 hours), the governance Safe (two of three signatures), the maintainer key that queues routine upgrades, and a guardian hardware key that can cancel them. See [Upgrade Policy](upgrade-policy.md).
 
 ### Mainnet addresses
 
