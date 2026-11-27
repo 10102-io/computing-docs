@@ -79,9 +79,9 @@ The create transaction carries the claim fee you were shown. Right before you si
 
 ### Adding ETH
 
-ETH can't be permissioned directly because it isn't an ERC-20. On the legacy's edit page, **Add ETH to your legacy** converts it into a **supported storage token** (WETH or a liquid staking token) through a built-in swap route; the permission for the resulting token is set up as part of the same flow. The token stays in your wallet until activation.
+ETH can't be permissioned directly because it isn't an ERC-20. On the legacy's edit page, **Add ETH to your legacy** wraps it as **WETH**, the [storage token](../concepts.md#storage-token): 1 WETH for 1 ETH, with no market price involved. The permission for the WETH is set up as part of the same flow. The WETH stays in your wallet until activation.
 
-**Convert back to ETH.** On legacies created since the November 2026 upgrade (2026-11-07 on mainnet), the same card offers **Convert all back to ETH**. It converts the whole balance of the stored token in your wallet, never part of it: once any of it is converted, the legacy stops treating the rest as ETH you set aside. WETH turns back into ETH 1 to 1. Another token converts at the current price, and if the price falls more than 2% before it confirms, nothing is converted. The ETH lands in your wallet, where it is no longer in your legacy. Converting also counts as a check-in. Older legacies cannot do this: swap or unwrap the token in your wallet instead.
+**Convert back to ETH.** On legacies created since the November 2026 upgrade (2026-11-07 on mainnet), the same card offers **Convert all back to ETH**. It converts the whole balance of the stored token in your wallet, never part of it: once any of it is converted, the legacy stops treating the rest as ETH you set aside. WETH turns back into ETH 1 to 1. A legacy that keeps its ETH as another token converts it at the current price, and if the price falls more than 2% before it confirms, nothing is converted. The ETH lands in your wallet, where it is no longer in your legacy. Converting also counts as a check-in. Older legacies cannot do this: swap or unwrap the token in your wallet instead.
 
 ### Print a Legacy Claim Card (optional but recommended)
 
@@ -127,7 +127,7 @@ If you subscribe to Premium, the create form lets you name a backup beneficiary 
 
 **What happens if I move my included tokens?** Nothing breaks. The permission is a promise, not a lock: beneficiaries can only claim what's actually in your wallet on activation. Spend, stake, or move your tokens as usual.
 
-**Can I add ETH directly to the legacy?** Not for Transfer legacies; ETH must be swapped to a storage token first. This is by design: the legacy contract works through ERC-20 token permissions, which ETH doesn't have.
+**Can I add ETH directly to the legacy?** Not for Transfer legacies; ETH must be wrapped as WETH first. This is by design: the legacy contract works through ERC-20 token permissions, which ETH doesn't have.
 
 **Can I include more tokens later?** Yes: on the legacy's edit page, under **Tokens for your legacy**, press **Approve** next to the token. It gives the same standing permission a ticked token gets at creation (Permit2, to the legacy's vault), with no amount to pick or raise later; a token your wallet holds in full in the legacy reads **All in your legacy**. On an older legacy, created before standing permissions, **Approve** sets an amount instead, so approve again when your balance grows.
 

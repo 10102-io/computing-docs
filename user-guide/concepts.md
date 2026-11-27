@@ -50,7 +50,9 @@ When a Safe creates a legacy, it's the Safe (not an individual) that owns it on-
 
 ## Storage token
 
-A substitute for ETH inside the legacy or timelock, because native ETH can't be approved like an ERC-20. When you want to include ETH, you swap it through a built-in route into a supported storage token (WETH, a liquid staking token, etc.) and approve that token instead. You always see the available list in the app.
+The token that stands in for ETH inside a legacy or a timelock, because native ETH can't be approved like an ERC-20. The app uses WETH (wrapped ETH): 1 ETH becomes 1 WETH, and 1 WETH turns back into 1 ETH, through the WETH contract itself, so no market price is involved. In a legacy you convert ETH on the legacy's edit page and the WETH stays in your wallet. In a timelock you send ETH with the create transaction and the lock holds it as WETH.
+
+Staked ETH is not a storage token. A timelock can hold it as wstETH, an ordinary token: [Stake ETH and lock it](./timelock/using-timelock.md#stake-eth-and-lock-it).
 
 ## CREATE2
 

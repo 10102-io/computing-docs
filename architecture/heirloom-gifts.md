@@ -22,11 +22,10 @@ claim.
 
 ## Escrow: two lanes, one seal
 
-- **ETH gifts** ride the router's storage-token swap lane. The sealed ETH
-  is converted into a whitelisted storage token at creation (WETH
-  preferred: a 1:1 wrap with no DEX dependency) and held by the router's
-  vault. At claim time the withdrawal unwraps back to ETH, so the
-  recipient receives ETH.
+- **ETH gifts** ride the router's storage-token lane. The sealed ETH is
+  wrapped as WETH at creation (a 1:1 wrap with no DEX dependency) and
+  held by the router's vault. At claim time the withdrawal unwraps back
+  to ETH, so the recipient receives ETH.
 - **USDC gifts** ride the plain ERC-20 lane. `createTimelockedGift`
   performs `safeTransferFrom` into the `TimeLockERC20` vault at sealing,
   after an exact-amount approval. The recipient receives the tokens

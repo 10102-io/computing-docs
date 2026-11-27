@@ -68,7 +68,7 @@ What legacy v3 adds (NFTs, backup beneficiaries, an executor) is not part of the
 A legacy contract holds _rules_, not custody, with one small exception for ETH:
 
 - **ERC-20**: named in the Permit2 permission signed at create. Tokens stay in the owner's wallet; on activation the claim path pulls _only what that permission allows, only on activation_. Tokens can also be added later with a small on-chain Permit2 approval.
-- **ETH**: ETH cannot be permissioned like an ERC-20. The owner swaps ETH for a supported storage token (WETH, a liquid staking token) via the in-app Uniswap integration, and the resulting token is permissioned as above. This keeps the contract's permission surface uniform across assets.
+- **ETH**: ETH cannot be permissioned like an ERC-20. The owner wraps ETH as WETH with the legacy's `autoSwap` (1 WETH for 1 ETH through the WETH contract itself, no exchange), and the WETH is permissioned as above. This keeps the contract's permission surface uniform across assets. `autoSwap` can also buy another token through Uniswap V2; the app offers WETH only.
 - **NFTs** (legacy v3): stay in the owner's wallet too. The owner approves the pull vault as operator for a collection and names single items; see [NFTs](#nfts).
 
 The owner can add or remove assets at any time before activation; removal means revoking the token's permission (directly in the wallet via Permit2, or `approve(0)` for pre-v2 direct approvals), or deleting and recreating the legacy.

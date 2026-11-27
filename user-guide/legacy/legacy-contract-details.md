@@ -29,7 +29,7 @@ After creating a legacy, clicking it from the Legacy page (or its timer in **You
 Shows the ERC-20s approved to the legacy contract, their current allowances, and the per-beneficiary distribution that would happen on activation.
 
 - Only tokens with a non-zero approved amount are shown, keeping the view focused on what actually moves on activation. To see the full list of held tokens with zero allowance, enter edit mode.
-- ETH is not shown in the assets table: ETH can't be approved as an ERC-20, so it's represented by whatever storage token (WETH, a liquid staking token, …) you swapped into. On Home, **Your setup** says how much of the wallet is not in your legacy yet, and why; most often it is ETH.
+- ETH is not shown in the assets table: ETH can't be approved as an ERC-20, so it's represented by the WETH you converted it into. On Home, **Your setup** says how much of the wallet is not in your legacy yet, and why; most often it is ETH.
 - With [Hide amounts](../hide-amounts-and-cypherpunk-mode.md#hide-amounts) on, the amounts on this page show as four dots.
 
 ### Beneficiaries

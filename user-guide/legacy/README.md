@@ -65,7 +65,7 @@ When to pick it: your Safe is your long-term vault, you want beneficiaries to ta
 | | Transfer | Multisig |
 |---|---|---|
 | Wallet type | EOA | Safe only |
-| What passes | Specified ERC-20s + storage tokens; on the new version also NFTs from the list | The entire Safe wallet |
+| What passes | Specified ERC-20s, ETH wrapped as WETH; on the new version also NFTs from the list | The entire Safe wallet |
 | Granularity | Per-asset, per-beneficiary percentages | The wallet is one unit |
 | Requires beneficiaries to coordinate? | No, any one activates | Yes, once they're co-signers |
 | Custody before activation | Owner's wallet | Owner's Safe |

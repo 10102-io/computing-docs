@@ -81,6 +81,11 @@ Creating, keeping, checking in on and changing a legacy carry no 10102 fee. When
 
 ## Storage tokens
 
-ETH can't be granted "approval" the way ERC-20 tokens can. To include native ETH in a Transfer legacy or a Timelock with a uniform approval model, the owner swaps ETH into a **storage token** (WETH, or a liquid staking token like wstETH) via the in-app Uniswap integration, then grants the legacy/timelock approval on that storage token. On activation, the storage token is distributed to beneficiaries; they can unwrap it back to ETH themselves if they want.
+ETH can't be granted "approval" the way ERC-20 tokens can. To include native ETH in a Transfer legacy or a Timelock with a uniform approval model, the app wraps it as WETH, the **storage token**: 1 WETH for 1 ETH through the WETH contract itself, with no exchange and no market price involved. This keeps the contract's permission surface uniform (everything is ERC-20) without forcing the contract to custody native ETH.
 
-This keeps the contract's permission surface uniform (everything is ERC-20) without forcing the contract to custody native ETH.
+- **Transfer legacy**: the owner converts ETH on the legacy's edit page, the WETH lands in the owner's wallet, and the owner grants the legacy permission on it. On activation it is distributed like any other token. Where the legacy allows it, the claim turns it back into ETH in the same transaction; otherwise beneficiaries receive WETH and can unwrap it themselves.
+- **Timelock**: the owner sends ETH with the create transaction, the router wraps it and the vault holds the WETH. The withdrawal unwraps it back to ETH unless the recipient asks for the WETH itself.
+
+The contracts can also buy another token through Uniswap V2 as the storage token. The app does not offer one: WETH is the only choice that needs no market.
+
+Staked ETH goes into a timelock another way, with no storage token and no contract of ours in the stake. On mainnet the app sends the owner's ETH to Lido's wstETH contract, whose `receive()` stakes it and mints `getWstETHByStETH(value)` wstETH to the sender, and then locks that wstETH as a plain ERC-20 (`approve`, then the router's create). A wallet with EIP-5792 atomic batching sends the three calls as one; the lock amount is the quote read just before, so a rate change in between reverts the whole batch. The vault holds wstETH with `withdrawLastAsEth` unset, and the withdrawal pays wstETH with no swap.

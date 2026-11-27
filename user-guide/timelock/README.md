@@ -47,7 +47,8 @@ Three flavors, for three different use cases:
 ## How timelocks hold your assets
 
 - **ERC-20 tokens**: approved to the timelock contract, moved in when you finalize creation. Once in the contract, they can't leave until the lock expires (or, for Soft Timelock, until the waiting period after unlock elapses).
-- **ETH**: can't be held directly (ETH isn't an ERC-20 and can't be approved as one). Instead, you swap ETH into a supported **storage token** (WETH or a liquid staking token) through a built-in swap route, then the timelock holds that token. When the lock expires, you get the storage token back; you can swap it back to ETH at your discretion.
+- **ETH**: can't be held directly (ETH isn't an ERC-20 and can't be approved as one), so the timelock holds it as **WETH** (wrapped ETH), the [storage token](../concepts.md#storage-token). You send the ETH with the create transaction and it is wrapped in that same transaction, 1 WETH for 1 ETH, with no market price involved. At claim you choose: ETH again (the WETH is unwrapped 1 to 1) or the WETH itself.
+- **Staked ETH**: on Ethereum mainnet the form can stake your ETH with Lido and lock the **wstETH** you get for it. Lido's own contract makes the stake at Lido's rate, with no market involved. The lock then holds wstETH and pays out wstETH, not ETH. See [Stake ETH and lock it](./using-timelock.md#stake-eth-and-lock-it).
 - **NFTs and ERC-1155**: not offered in the app's timelock form. Timelocks are focused on fungible asset protection. To hand on an NFT, see [NFTs in a Legacy](../legacy/nfts-in-a-legacy.md).
 - **Fees**: timelocks and gifts carry no delivery fee. You pay network gas.
 - **Test network and Cypherpunk Mode**: timelocks are one of the two foundations, so they work on the Sepolia test network and in [Cypherpunk Mode](../hide-amounts-and-cypherpunk-mode.md#cypherpunk-mode). The products built on them (Save, Heirloom) are mainnet products; Heirloom stays open in Cypherpunk Mode.
